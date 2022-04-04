@@ -9,6 +9,7 @@
     <InputText @bind-Value="User.Username"></InputText>
 </EditForm>
 @code {
+    [Parameter]
     public UserModel User { get; set; } = new();
 
     public async Task HandleSubmit()
