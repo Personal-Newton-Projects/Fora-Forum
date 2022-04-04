@@ -8,8 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+var foraConnectionString = builder.Configuration.GetConnectionString("ForaConnection");
+var authConnectionString = builder.Configuration.GetConnectionString("AuthConnection");
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(foraConnectionString));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(authConnectionString));
 
 var app = builder.Build();
 
@@ -32,6 +34,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();
