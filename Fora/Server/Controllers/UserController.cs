@@ -7,25 +7,32 @@ namespace Fora.Server.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
+        private readonly AppDbContext appDbContext;
+
+        public UserController(AppDbContext appDbContext)
+        {
+            this.appDbContext = appDbContext;
+        }
         // GET: UserController
         [HttpGet]
         public IEnumerable<UserModel> Get()
         {
-            return AppDbContext.Users;
+            return appDbContext.Users;
         }
 
         // GET: UserController/Get/5
         [HttpGet("{id}")]
         public UserModel Get(int id)
         {
-            return AppDbContext.Users.Where(u => u.Id == id).FirstOrDefault();
+            return appDbContext.Users.Where(u => u.Id == id).FirstOrDefault();
         }
 
         // GET: UserController/Post
         [HttpPost]
-        public ActionResult Post(UserModel user)
+        public async Task<ActionResult> Post(UserModel user)
         {
-            AppDbContext.Users.Add(user);
+            await appDbContext.Users.AddAsync(user);
+            await appDbContext.SaveChangesAsync();
             return Ok(user);
         }
 

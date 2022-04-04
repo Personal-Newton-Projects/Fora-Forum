@@ -9,10 +9,10 @@ namespace Fora.Server.Data
 
         }
 
-        public static DbSet<InterestModel> Interests { get; set; }
-        public static DbSet<ThreadModel> Threads { get; set; }
-        public static DbSet<MessageModel> Messages { get; set; }
-        public static DbSet<UserModel> Users { get; set; }
+        public DbSet<InterestModel> Interests { get; set; }
+        public DbSet<ThreadModel> Threads { get; set; }
+        public DbSet<MessageModel> Messages { get; set; }
+        public DbSet<UserModel> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
