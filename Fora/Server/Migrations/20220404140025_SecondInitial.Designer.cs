@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fora.Server.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20220404134544_Initial")]
-    partial class Initial
+    [Migration("20220404140025_SecondInitial")]
+    partial class SecondInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
