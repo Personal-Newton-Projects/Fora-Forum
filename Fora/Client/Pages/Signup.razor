@@ -21,7 +21,7 @@
         User.Threads = new List<ThreadModel>();
         User.Deleted = false;
         User.Banned = false;
-        await UserManager.Create(User);
+        await UserManager.Post(User);
         await JSRuntime.InvokeAsync<UserModel>("console.log", User);
     }
 

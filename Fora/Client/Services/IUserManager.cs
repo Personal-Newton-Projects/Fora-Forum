@@ -2,7 +2,7 @@
 {
     public interface IUserManager
     {
-        Task<UserModel> Create(UserModel user);
+        Task<UserModel> Post(UserModel user);
         Task<List<UserModel>> GetUsers();
     }
 }

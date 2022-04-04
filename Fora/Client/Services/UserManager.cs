@@ -9,7 +9,7 @@ namespace Fora.Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<UserModel> Create(UserModel user)    
+        public async Task<UserModel> Post(UserModel user)    
         {
             var result = await _httpClient.PostAsJsonAsync("api/user/", user);
             user = await result.Content.ReadFromJsonAsync<UserModel>();
