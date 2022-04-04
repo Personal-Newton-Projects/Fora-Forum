@@ -1,5 +1,6 @@
 global using Fora.Server.Data;
 global using Fora.Shared;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,10 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
 var foraConnectionString = builder.Configuration.GetConnectionString("ForaConnection");
 var authConnectionString = builder.Configuration.GetConnectionString("AuthConnection");
+
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(foraConnectionString))
     .AddDbContext<AuthDbContext>(options => options.UseSqlServer(authConnectionString));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>();
+
+
 
 var app = builder.Build();
 
