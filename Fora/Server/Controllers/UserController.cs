@@ -14,9 +14,9 @@ namespace Fora.Server.Controllers
             return AppDbContext.Users;
         }
 
-        // GET: UserController/Details/5
+        // GET: UserController/Get/5
         [HttpGet("{id}")]
-        public UserModel Details(int id)
+        public UserModel Get(int id)
         {
             return AppDbContext.Users.Where(u => u.Id == id).FirstOrDefault();
         }
