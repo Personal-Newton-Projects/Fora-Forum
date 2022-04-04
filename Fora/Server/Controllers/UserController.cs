@@ -22,6 +22,7 @@ namespace Fora.Server.Controllers
         }
 
         // GET: UserController/Create
+        [HttpPost]
         public ActionResult Create(UserModel user)
         {
             AppDbContext.Users.Add(user);
