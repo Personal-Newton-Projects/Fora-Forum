@@ -6,14 +6,17 @@
 <EditForm Model="User" OnSubmit="HandleSubmit"> 
     <DataAnnotationsValidator/>
     <ValidationSummary/>
-    <InputText @bind-Value="User.Username"></InputText>
+    <InputText @bind-Value="User.Username" Placeholder="Username"></InputText>
+    <InputText @bind-Value="User.SignUpPassword" Placeholder="Password"></InputText>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
 @code {
     [Parameter]
     public UserModel User { get; set; } = new();
-
+    
     public async Task HandleSubmit()
     {
+        //Calls method to
         User.Id = 0;
         User.Interests = new List<InterestModel>();
         User.UserInterests = new List<UserInterestModel>();

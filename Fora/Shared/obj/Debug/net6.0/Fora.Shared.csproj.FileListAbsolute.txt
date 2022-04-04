@@ -1,0 +1,12 @@
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\bin\Debug\net6.0\Fora.Shared.deps.json
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\bin\Debug\net6.0\Fora.Shared.dll
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\bin\Debug\net6.0\Fora.Shared.pdb
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\obj\Debug\net6.0\Fora.Shared.csproj.AssemblyReference.cache
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\obj\Debug\net6.0\Fora.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\obj\Debug\net6.0\Fora.Shared.AssemblyInfoInputs.cache
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\obj\Debug\net6.0\Fora.Shared.AssemblyInfo.cs
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\obj\Debug\net6.0\Fora.Shared.csproj.CoreCompileInputs.cache
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\obj\Debug\net6.0\Fora.Shared.dll
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\obj\Debug\net6.0\refint\Fora.Shared.dll
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\obj\Debug\net6.0\Fora.Shared.pdb
+C:\Users\Css\RiderProjects\Projekt\Fora\Shared\obj\Debug\net6.0\ref\Fora.Shared.dll
