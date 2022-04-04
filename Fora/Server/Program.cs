@@ -18,7 +18,13 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(fora
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>();
 
-
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 3;
+    options.Password.RequireDigit = false;
+});
 
 var app = builder.Build();
 
