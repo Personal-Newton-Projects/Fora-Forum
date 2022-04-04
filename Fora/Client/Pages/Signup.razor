@@ -13,7 +13,7 @@
 
     public async Task HandleSubmit()
     {
-        await UserManager.AddUser(User);
+        await UserManager.Create(User);
         await JSRuntime.InvokeAsync<UserModel>("console.log", User);
     }
 
