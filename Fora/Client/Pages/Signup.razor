@@ -1,0 +1,20 @@
+﻿@page "/signup"
+
+@inject IUserManager UserManager
+@inject IJSRuntime JSRuntime
+
+<EditForm Model="User" OnSubmit="HandleSubmit"> 
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <InputText @bind-Value="User.Username"></InputText>
+</EditForm>
+@code {
+    public UserModel User { get; set; } = new();
+
+    public async Task HandleSubmit()
+    {
+        await UserManager.AddUser(User);
+        await JSRuntime.InvokeAsync<UserModel>("console.log", User);
+    }
+
+}
