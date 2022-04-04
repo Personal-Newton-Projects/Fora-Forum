@@ -34,13 +34,20 @@ namespace Fora.Server.Controllers
 
         // Post: api/identityuser
         [HttpPost]
-        public async Task<string> Post(IdentityUser identityUser)
+        public async Task<string> Post(UserModel user)
         { 
-            if(identityUser.UserName != null)
+            if(user.Username != null)
             {
-                if(identityUser.Email != null)
+                if(user.SignUpPassword != null)
                 {
-                    var createUserResult = await signInManager.UserManager.CreateAsync(identityUser, identityUser.Email);
+                    IdentityUser identityUser = new IdentityUser()
+                    {
+                        UserName = user.Username,
+                    };
+
+                    var createUserResult = await signInManager.UserManager
+                        .CreateAsync(identityUser, user.SignUpPassword);
+
                     if(createUserResult.Succeeded)
                     {
                         return signInManager.UserManager
