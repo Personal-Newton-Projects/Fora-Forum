@@ -21,9 +21,9 @@ namespace Fora.Server.Controllers
             return AppDbContext.Users.Where(u => u.Id == id).FirstOrDefault();
         }
 
-        // GET: UserController/Create
+        // GET: UserController/Post
         [HttpPost]
-        public ActionResult Create(UserModel user)
+        public ActionResult Post(UserModel user)
         {
             AppDbContext.Users.Add(user);
             return Ok(user);
