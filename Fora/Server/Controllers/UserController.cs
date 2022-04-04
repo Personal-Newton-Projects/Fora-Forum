@@ -13,21 +13,22 @@ namespace Fora.Server.Controllers
         {
             this.appDbContext = appDbContext;
         }
-        // GET: UserController
+
+        // GET: api/user
         [HttpGet]
         public IEnumerable<UserModel> Get()
         {
             return appDbContext.Users;
         }
 
-        // GET: UserController/Get/5
+        // GET: api/user/{id}
         [HttpGet("{id}")]
         public UserModel Get(int id)
         {
             return appDbContext.Users.Where(u => u.Id == id).FirstOrDefault();
         }
 
-        // GET: UserController/Post
+        // POST: api/user
         [HttpPost]
         public async Task<ActionResult> Post(UserModel user)
         {
