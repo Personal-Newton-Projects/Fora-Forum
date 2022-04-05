@@ -25,7 +25,7 @@ namespace Fora.Client.Services
                 Console.WriteLine("Login attempted");
                 if(!String.IsNullOrEmpty(loginToken))
                 {
-                    StoreUser(loginToken)
+                    StoreUser(loginToken);
                     Console.WriteLine("Logged in");
                 }
             }

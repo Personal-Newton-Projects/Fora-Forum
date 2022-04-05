@@ -2,5 +2,5 @@
 
 public interface IInterestManager
 {
-    
+    Task<List<InterestModel>> GetInterests();
 }

@@ -17,5 +17,10 @@ public class InterestController : Controller
     {
         return appDbContext.Interests;
     }
+    [HttpGet("{id}")]
+    public InterestModel GetInterest(int id)
+    {
+        return appDbContext.Interests.Where(i => i.Id == id).FirstOrDefault();
+    }
     
 }

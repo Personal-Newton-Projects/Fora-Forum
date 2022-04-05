@@ -2,6 +2,7 @@
 
 @inject IUserManager UserManager
 @inject ILoginManager LoginManager
+@inject IInterestManager InterestManager
 @inject IJSRuntime JSRuntime
 
 <EditForm Model="User" OnSubmit="HandleSubmit"> 
@@ -29,7 +30,8 @@
 
     async Task InitializeUser()
     {
-        User.Id = await UserManager.GetUserCount() + 1;
+        // await UserManager.GetUserCount() +
+        User.Id = 1;
         User.Interests = new List<InterestModel>();
         User.UserInterests = new List<UserInterestModel>();
         User.Messages = new List<MessageModel>();
@@ -37,5 +39,4 @@
         User.Deleted = false;
         User.Banned = false;
     }
-
 }

@@ -1,9 +1,22 @@
 ﻿@page "/"
 
+@inject IInterestManager InterestManager
+
+
 <PageTitle>Index</PageTitle>
 <Signup></Signup>
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+@foreach (var item in Interest)
+{
+    <p>item.Name</p>
+}
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    [Parameter]
+    public List<InterestModel>? Interest {get; set;}
+
+    public async Task OnInitializedAsync()
+    {
+        Interest = await InterestManager.GetInterests();
+    }
+}
