@@ -16,12 +16,12 @@ namespace Fora.Client.Services
             this.userManager = UserManager;
         }
 
-        public async Task LogInWithUser(string username, string password)
+        public async Task LogInWithUser(LoginModel login)
         {
             Console.WriteLine("Attempted Login");
-            if(username != null && password != null)
+            if(login.Username != null && login.Password != null)
             { 
-                string loginToken = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/verify/{username}/{password}");
+                string loginToken = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/verify/{login.Username}/{login.Password}");
                 Console.WriteLine("Login attempted");
                 if(!String.IsNullOrEmpty(loginToken))
                 {
