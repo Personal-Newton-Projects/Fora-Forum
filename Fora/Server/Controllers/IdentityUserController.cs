@@ -27,34 +27,35 @@ namespace Fora.Server.Controllers
 
         // GET: api/identityuser/{username}
         [HttpGet("{username}")]
-        public IdentityUser Get(string username)
+        public IdentityUser Get(object username)
         {
-            return signInManager.UserManager.FindByNameAsync(username).Result;
+            return signInManager.UserManager.FindByNameAsync(username.ToString()).Result;
         }
 
         // GET: api/identityuser/get/{id}
         [HttpGet("ID/{id}")]
-        public string GetFromId(string id)
+        public ActionResult GetFromId(object id)
         {
-            return signInManager.UserManager.FindByIdAsync(id).Result.UserName;
+            return new JsonResult(signInManager.UserManager.FindByIdAsync(id.ToString()).Result.UserName, "application/json");
         }
 
         // GET: api/identityuser/verify/{username}/{password}
         [HttpGet("verify/{username}/{password}")]
-        public async Task<string> VerifyLogin(string username, string password)
+        public async Task<ActionResult> VerifyLogin(string username, string password)
         {
             var loginAttemptResult = await signInManager.PasswordSignInAsync(Get(username), password, false, false);
             if (loginAttemptResult.Succeeded)
             {
-                return signInManager.UserManager
-                            .FindByNameAsync(username).Result.Id;
+                var result = await signInManager.UserManager
+                            .FindByNameAsync(username);
+                return new JsonResult(result.Id, "application/json");
             }
-            return String.Empty;
+            return NotFound();
         }
 
         // Post: api/identityuser
         [HttpPost]
-        public async Task<string> Post(UserModel user)
+        public async Task<ActionResult> Post(UserModel user)
         { 
             if(user.Username != null)
             {
@@ -70,14 +71,15 @@ namespace Fora.Server.Controllers
 
                     if(createUserResult.Succeeded)
                     {
-                        return signInManager.UserManager
-                            .FindByNameAsync(identityUser.UserName).Result.Id;
+                        var result = await signInManager.UserManager
+                            .FindByNameAsync(identityUser.UserName);
+                        return new JsonResult(result.Id, "application/json");
                         // Return id if successfull login
                     }
                 }
             }
 
-            return String.Empty;
+            return NotFound();
             
         }
 
