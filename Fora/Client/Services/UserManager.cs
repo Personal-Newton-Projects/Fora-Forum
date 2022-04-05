@@ -11,10 +11,9 @@ namespace Fora.Client.Services
 
         public async Task<UserModel> Create(UserModel user, LoginModel login)    
         {
-            var result = await _httpClient.PostAsJsonAsync("api/identityuser/", login);
-            var createUserResult = await _httpClient.PostAsJsonAsync("api/user/", user);
-            Console.WriteLine(createUserResult.Content.ToString());
-                return user;
+            var result = await _httpClient.PostAsJsonAsync("api/identityuser/", login); // Create IdentityUser
+            var createUserResult = await _httpClient.PostAsJsonAsync("api/user/", user); // Create User
+                return user; //Return created user
 
         }
         public async Task<List<UserModel>> GetUsers()
