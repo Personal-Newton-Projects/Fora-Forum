@@ -32,6 +32,13 @@ namespace Fora.Server.Controllers
             return signInManager.UserManager.FindByNameAsync(username).Result;
         }
 
+        // GET: api/identityuser/get/{id}
+        [HttpGet("ID/{id}")]
+        public string GetFromId(string id)
+        {
+            return signInManager.UserManager.FindByIdAsync(id).Result.UserName;
+        }
+
         // GET: api/identityuser/verify/{username}/{password}
         [HttpGet("verify/{username}/{password}")]
         public async Task<string> VerifyLogin(string username, string password)
