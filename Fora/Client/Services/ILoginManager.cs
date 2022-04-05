@@ -2,7 +2,7 @@
 {
     public interface ILoginManager
     {
-        Task LogInWithUser(string username, string password);
+        Task LogInWithUser(LoginModel login);
         Task StoreUser(string id);
         Task<bool> IsLoggedIn();
         Task<UserModel> GetLoggedInUser();
