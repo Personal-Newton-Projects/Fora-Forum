@@ -1,5 +1,25 @@
-﻿<h3>Login</h3>
+﻿@page "/login"
 
+@inject ILoginManager LoginManager
+@inject IJSRuntime JSRuntime
+
+<EditForm Model="LoginForm" OnSubmit="HandleSubmit"> 
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <InputText @bind-Value="LoginForm.Username" Placeholder="Username"></InputText>
+    <InputText @bind-Value="LoginForm.Password" Placeholder="Password"></InputText>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
 @code {
+    [Parameter]
+    public LoginModel LoginForm { get; set; } = new();
+
+    public async Task HandleSubmit()
+    {
+        Console.WriteLine("Submitted");
+
+        await LoginManager.LogInWithUser(LoginForm);
+        StateHasChanged();
+    }
 
 }
