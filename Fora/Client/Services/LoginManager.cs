@@ -21,10 +21,11 @@ namespace Fora.Client.Services
             Console.WriteLine("Attempted Login");
             if(username != null && password != null)
             { 
-                string loginattemptResult = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/verify/{username}/{password}");
+                string loginToken = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/verify/{username}/{password}");
                 Console.WriteLine("Login attempted");
-                if(!String.IsNullOrEmpty(loginattemptResult))
+                if(!String.IsNullOrEmpty(loginToken))
                 {
+                    StoreUser(loginToken)
                     Console.WriteLine("Logged in");
                 }
             }
