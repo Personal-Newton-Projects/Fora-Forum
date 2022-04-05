@@ -9,12 +9,13 @@ namespace Fora.Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<string> Create(UserModel user)    
+        public async Task<UserModel> Create(UserModel user, LoginModel login)    
         {
-            var result = await _httpClient.PostAsJsonAsync("api/identityuser/", user);
-            var id = await result.Content.ReadFromJsonAsync<string>();
-            Console.WriteLine(id);
-            return id;
+            var result = await _httpClient.PostAsJsonAsync("api/identityuser/", login);
+            var createUserResult = await _httpClient.PostAsJsonAsync("api/user/", user);
+            Console.WriteLine(createUserResult.Content.ToString());
+                return user;
+
         }
         public async Task<List<UserModel>> GetUsers()
         {
