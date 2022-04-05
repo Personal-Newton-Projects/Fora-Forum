@@ -5,38 +5,46 @@
 @inject IInterestManager InterestManager
 @inject IJSRuntime JSRuntime
 
-<EditForm Model="User" OnSubmit="HandleSubmit"> 
+<EditForm Model="Login" OnSubmit="HandleSubmit"> 
     <DataAnnotationsValidator/>
     <ValidationSummary/>
-    <InputText @bind-Value="User.Username" Placeholder="Username"></InputText>
-    <InputText @bind-Value="User.SignUpPassword" Placeholder="Password"></InputText>
+    <InputText @bind-Value="Login.Username" Placeholder="Username"></InputText>
+    <InputText @bind-Value="Login.Password" Placeholder="Password"></InputText>
     <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
 @code {
     [Parameter]
-    public UserModel User { get; set; } = new();
+    public LoginModel Login { get; set; } = new();
 
     public async Task HandleSubmit()
     {
         Console.WriteLine("Submitted");
         //Calls method to
-        await InitializeUser(); // Set all values
 
-        await UserManager.Create(User);
+        var User = await UserManager.Create(
+            await InitializeUserFromLogin(Login),
+            Login
+        );
+
         Console.WriteLine("Created!");
-        await LoginManager.LogInWithUser(User.Username, User.SignUpPassword);
-        await JSRuntime.InvokeAsync<UserModel>("console.log", User);
+        await JSRuntime.InvokeAsync<UserModel>("console.log", Login);
+        //await LoginManager.LogInWithUser(Login);
     }
 
-    async Task InitializeUser()
+    async Task<UserModel> InitializeUserFromLogin(LoginModel login)
     {
+        return new UserModel()
+            {
+                Id = 1,
+                Username = login.Username,
+                Interests = new List<InterestModel>(),
+                UserInterests = new List<UserInterestModel>(),
+                Messages = new List<MessageModel>(),
+                Threads = new List<ThreadModel>(),
+                Deleted = false,
+                Banned = false,
+            };
         // await UserManager.GetUserCount() +
-        User.Id = 1;
-        User.Interests = new List<InterestModel>();
-        User.UserInterests = new List<UserInterestModel>();
-        User.Messages = new List<MessageModel>();
-        User.Threads = new List<ThreadModel>();
-        User.Deleted = false;
-        User.Banned = false;
+
     }
 }
