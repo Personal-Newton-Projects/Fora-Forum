@@ -16,21 +16,30 @@ namespace Fora.Client.Services
             this.userManager = UserManager;
         }
 
+        /// <summary>
+        /// Logins with <paramref name="login"/>
+        /// </summary>
+        /// <param name="login"></param>
         public async Task LogInWithUser(LoginModel login)
         {
             Console.WriteLine("Attempted Login");
             if(login.Username != null && login.Password != null)
             { 
+                // This does not work V
                 string loginToken = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/verify/{login.Username}/{login.Password}");
-                Console.WriteLine("Login attempted");
                 if(!String.IsNullOrEmpty(loginToken))
                 {
-                    StoreUser(loginToken);
+                    StoreUser(loginToken); //Store user in local storage on sucessfull login
                     Console.WriteLine("Logged in");
                 }
             }
         }
 
+        /// <summary>
+        /// Stores user in LocalStorage
+        /// </summary>
+        /// <param name="id">id of IdentityUser</param>
+        /// <returns></returns>
         public async Task StoreUser(string id)
         {
             if(id.Length > 1)
@@ -44,13 +53,20 @@ namespace Fora.Client.Services
 
         }
         
+        /// <summary>
+        /// Checks if the LocalStorage user id is empty
+        /// </summary>
+        /// <returns>true if it isn't</returns>
         public async Task<bool> IsLoggedIn()
         {
            string id = await localStorageService.GetItemAsync<string>("user");
             return id != String.Empty;
         }
 
-        [System.Obsolete("Not implemented", true)]
+        /// <summary>
+        /// Gets the logged in user through api call and id in LocalStorage
+        /// </summary>
+        /// <returns>a <see cref="UserModel"/></returns>
         public async Task<UserModel> GetLoggedInUser()
         {
             if(await IsLoggedIn())
