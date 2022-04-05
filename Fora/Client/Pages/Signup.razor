@@ -28,8 +28,7 @@
             Login // POST: /api/identityuser/
         );
 
-        Console.WriteLine("Created!");
-        await JSRuntime.InvokeAsync<UserModel>("console.log", Login);
+        await JSRuntime.InvokeAsync<UserModel>("console.log", User);
         //await LoginManager.LogInWithUser(Login); Fix first issue then login
     }
 
@@ -42,7 +41,7 @@
     {
         return new UserModel()
             {
-                Id = 1, // await UserManager.GetUserCount() + 1,
+                // Id = 1, // await UserManager.GetUserCount() + 1,
                 Username = login.Username,
                 Interests = new List<InterestModel>(),
                 UserInterests = new List<UserInterestModel>(),
