@@ -11,9 +11,31 @@ namespace Fora.Client.Services
 
         public async Task<UserModel> Create(UserModel user, LoginModel login)    
         {
-            var result = await _httpClient.PostAsJsonAsync("api/identityuser/", login); // Create IdentityUser
             var createUserResult = await _httpClient.PostAsJsonAsync("api/user/", user); // Create User
-                return user; //Return created user
+            if(createUserResult.IsSuccessStatusCode)
+            {
+                Console.WriteLine("User has been created");
+                var createIdentityResult = await _httpClient.PostAsJsonAsync("api/identityuser/", login); // Create IdentityUser
+
+                if(createIdentityResult.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("IdentityUser has been created");
+                    return user; //Return created user
+                }
+                else
+                {
+                    Console.WriteLine($"IdentityUser was NOT created ({createIdentityResult.StatusCode}) and User might be created");
+                    Console.WriteLine("RESOLVE THIS!");
+                    return user;
+                }
+
+            }
+            else
+            {
+                Console.WriteLine($"User was not created ({createUserResult.StatusCode})");
+            }
+            return null;
+            
 
         }
         public async Task<List<UserModel>> GetUsers()
