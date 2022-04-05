@@ -29,7 +29,20 @@ namespace Fora.Server.Controllers
         [HttpGet("{username}")]
         public IdentityUser Get(string username)
         {
-            return authDbContext.IdentityUsers.Where(u => u.UserName.ToLower() == username.ToLower()).FirstOrDefault();
+            return signInManager.UserManager.FindByNameAsync(username).Result;
+        }
+
+        // GET: api/identityuser/verify/{username}/{password}
+        [HttpGet("verify/{username}/{password}")]
+        public async Task<string> VerifyLogin(string username, string password)
+        {
+            var loginAttemptResult = await signInManager.PasswordSignInAsync(Get(username), password, false, false);
+            if (loginAttemptResult.Succeeded)
+            {
+                return signInManager.UserManager
+                            .FindByNameAsync(username).Result.Id;
+            }
+            return String.Empty;
         }
 
         // Post: api/identityuser
@@ -51,7 +64,7 @@ namespace Fora.Server.Controllers
                     if(createUserResult.Succeeded)
                     {
                         return signInManager.UserManager
-                            .FindByNameAsync(identityUser.UserName).Id.ToString();
+                            .FindByNameAsync(identityUser.UserName).Result.Id;
                         // Return id if successfull login
                     }
                 }
