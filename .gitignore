@@ -348,3 +348,9 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+Fora/Client/bin/Debug/net6.0/Fora.Client.dll
+Fora/Client/bin/Debug/net6.0/Fora.Client.dll
+Fora/Client/bin/Debug/net6.0/Fora.Client.dll
+Fora/Client/bin/Debug/net6.0/Fora.Client.pdb
+Fora/Client/bin/Debug/net6.0/Fora.Client.staticwebassets.runtime.json
+Fora/Client/bin/Debug/net6.0/wwwroot/_framework/blazor.boot.json

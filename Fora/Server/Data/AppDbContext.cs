@@ -35,7 +35,15 @@ namespace Fora.Server.Data
                 .HasForeignKey(i => i.UserId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+            //Seeds database with different interests
+            #region InterestSeed
 
+            modelBuilder.Entity<InterestModel>().HasData(
+                new InterestModel {Id = 1, Name = "Animals", Threads = new List<ThreadModel>()},
+                new InterestModel { Id = 2, Name = "Gaming", Threads = new List<ThreadModel>()},
+                new InterestModel {Id = 3, Name ="Philosophy", Threads = new List<ThreadModel>()});
+            #endregion
+            
             // Restrict deletion of thread on user delete (set user to null instead)
             modelBuilder.Entity<ThreadModel>()
                 .HasOne(i => i.User)
@@ -43,6 +51,7 @@ namespace Fora.Server.Data
                 .HasForeignKey(i => i.UserId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+            
 
             // Restrict deletion of thread on message delete (set user to null instead)
             modelBuilder.Entity<MessageModel>()
