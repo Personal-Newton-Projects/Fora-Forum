@@ -47,12 +47,14 @@ namespace Fora.Client.Services
             return id > 0;
         }
 
+        [System.Obsolete("Not implemented", true)]
         public async Task<UserModel> GetLoggedInUser()
         {
             if(await IsLoggedIn())
             {
-
+                return null;
             }
+            return null;
         }
     }
 }
