@@ -7,11 +7,13 @@ namespace Fora.Client.Services
 
         private readonly ILocalStorageService localStorageService;
         private readonly HttpClient _httpClient;
+        private readonly IUserManager userManager;
 
-        public LoginManager(ILocalStorageService localStorageService, HttpClient httpClient)
+        public LoginManager(ILocalStorageService localStorageService, HttpClient httpClient, IUserManager UserManager)
         {
             this.localStorageService = localStorageService;
             this._httpClient = httpClient;
+            this.userManager = UserManager;
         }
 
         public async Task LogInWithUser(string username, string password)
@@ -19,18 +21,18 @@ namespace Fora.Client.Services
             Console.WriteLine("Attempted Login");
             if(username != null && password != null)
             { 
-                var loginattemptResult = await _httpClient.GetFromJsonAsync<int>($"api/identityuser/verify/{username}/{password}");
+                string loginattemptResult = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/verify/{username}/{password}");
                 Console.WriteLine("Login attempted");
-                if(loginattemptResult != 0)
+                if(!String.IsNullOrEmpty(loginattemptResult))
                 {
                     Console.WriteLine("Logged in");
                 }
             }
         }
 
-        public async Task StoreUser(int id)
+        public async Task StoreUser(string id)
         {
-            if(id > 0)
+            if(id.Length > 1)
             {
                 await localStorageService.SetItemAsStringAsync("user", $"{id}");
             }
@@ -43,8 +45,8 @@ namespace Fora.Client.Services
         
         public async Task<bool> IsLoggedIn()
         {
-           int id = await localStorageService.GetItemAsync<int>("user");
-            return id > 0;
+           string id = await localStorageService.GetItemAsync<string>("user");
+            return id != String.Empty;
         }
 
         [System.Obsolete("Not implemented", true)]
@@ -52,7 +54,10 @@ namespace Fora.Client.Services
         {
             if(await IsLoggedIn())
             {
-                return null;
+                string id = await localStorageService.GetItemAsync<string>("user");
+                string username = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/ID/{id}");
+                return await userManager.FindUserByName(username);
+
             }
             return null;
         }
