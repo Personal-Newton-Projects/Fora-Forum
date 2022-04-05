@@ -21,21 +21,28 @@
         Console.WriteLine("Submitted");
         //Calls method to
 
-        var User = await UserManager.Create(
-            await InitializeUserFromLogin(Login),
-            Login
+        var User = await InitializeUserFromLogin(Login); // Create user with set values with our login
+
+        await UserManager.Create( //Post UserModel User and LoginModel Login to:
+            User, // POST: /api/user/
+            Login // POST: /api/identityuser/
         );
 
         Console.WriteLine("Created!");
         await JSRuntime.InvokeAsync<UserModel>("console.log", Login);
-        //await LoginManager.LogInWithUser(Login);
+        //await LoginManager.LogInWithUser(Login); Fix first issue then login
     }
 
+    /// <summary>
+    /// /// Initialize an User with set values from paramref name="login"
+    /// </summary>
+    /// <param name="login"></param>
+    /// <returns>UserModel</returns>
     async Task<UserModel> InitializeUserFromLogin(LoginModel login)
     {
         return new UserModel()
             {
-                Id = 1,
+                Id = 1, // await UserManager.GetUserCount() + 1,
                 Username = login.Username,
                 Interests = new List<InterestModel>(),
                 UserInterests = new List<UserInterestModel>(),
@@ -44,7 +51,7 @@
                 Deleted = false,
                 Banned = false,
             };
-        // await UserManager.GetUserCount() +
+       
 
     }
 }
