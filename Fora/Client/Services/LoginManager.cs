@@ -27,5 +27,32 @@ namespace Fora.Client.Services
                 }
             }
         }
+
+        public async Task StoreUser(int id)
+        {
+            if(id > 0)
+            {
+                await localStorageService.SetItemAsStringAsync("user", $"{id}");
+            }
+            else
+            {
+                await localStorageService.SetItemAsStringAsync("user", $"{0}");
+            }
+
+        }
+        
+        public async Task<bool> IsLoggedIn()
+        {
+           int id = await localStorageService.GetItemAsync<int>("user");
+            return id > 0;
+        }
+
+        public async Task<UserModel> GetLoggedInUser()
+        {
+            if(await IsLoggedIn())
+            {
+
+            }
+        }
     }
 }
