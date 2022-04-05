@@ -25,21 +25,21 @@ namespace Fora.Server.Controllers
             return authDbContext.IdentityUsers;
         }
 
-        // GET: api/identityuser/{username}
-        [HttpGet("{username}")]
-        public IdentityUser Get(object username)
+        // GET: api/identityuser/{name}
+        [HttpGet("{name}")]
+        public IdentityUser Get(string name)
         {
-            return signInManager.UserManager.FindByNameAsync(username.ToString()).Result;
+            return signInManager.UserManager.FindByNameAsync(name).Result;
         }
 
-        // GET: api/identityuser/get/{id}
+        // GET: api/identityuser/ID/{id}
         [HttpGet("ID/{id}")]
-        public ActionResult GetFromId(object id)
+        public ActionResult GetById(string id)
         {
-            return new JsonResult(signInManager.UserManager.FindByIdAsync(id.ToString()).Result.UserName, "application/json");
+            return new JsonResult(signInManager.UserManager.FindByIdAsync(id).Result.UserName, "application/json");
         }
 
-        // GET: api/identityuser/verify/{username}/{password}
+        // GET: api/identityuser/verify/{login}
         [HttpGet("verify/{username}/{password}")]
         public async Task<ActionResult> VerifyLogin(string username, string password)
         {
@@ -55,19 +55,19 @@ namespace Fora.Server.Controllers
 
         // Post: api/identityuser
         [HttpPost]
-        public async Task<ActionResult> Post(UserModel user)
+        public async Task<ActionResult> Post(LoginModel login)
         { 
-            if(user.Username != null)
+            if(login.Username != null)
             {
-                if(user.SignUpPassword != null)
+                if(login.Password != null)
                 {
                     IdentityUser identityUser = new IdentityUser()
                     {
-                        UserName = user.Username,
+                        UserName = login.Username,
                     };
 
                     var createUserResult = await signInManager.UserManager
-                        .CreateAsync(identityUser, user.SignUpPassword);
+                        .CreateAsync(identityUser, login.Password);
 
                     if(createUserResult.Succeeded)
                     {
