@@ -44,11 +44,11 @@ namespace Fora.Server.Controllers
         public async Task<ActionResult> VerifyLogin(string username, string password)
         {
             var loginAttemptResult = await signInManager.PasswordSignInAsync(Get(username), password, false, false);
-            if (loginAttemptResult.Succeeded)
+            if (loginAttemptResult.Succeeded) // If login succeeded
             {
                 var result = await signInManager.UserManager
                             .FindByNameAsync(username);
-                return new JsonResult(result.Id, "application/json");
+                return new JsonResult(result.Id, "application/json"); // Return the ID
             }
             return NotFound();
         }
@@ -63,13 +63,13 @@ namespace Fora.Server.Controllers
                 {
                     IdentityUser identityUser = new IdentityUser()
                     {
-                        UserName = login.Username,
+                        UserName = login.Username, //Create IdentityUser Object with this username
                     };
 
                     var createUserResult = await signInManager.UserManager
-                        .CreateAsync(identityUser, login.Password);
+                        .CreateAsync(identityUser, login.Password); // Finalize creation with password
 
-                    if(createUserResult.Succeeded)
+                    if(createUserResult.Succeeded) 
                     {
                         var result = await signInManager.UserManager
                             .FindByNameAsync(identityUser.UserName);
