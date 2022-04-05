@@ -5,37 +5,37 @@
 @inject IInterestManager InterestManager
 @inject IJSRuntime JSRuntime
 
-<EditForm Model="Login" OnSubmit="HandleSubmit"> 
+<EditForm Model="SignupForm" OnSubmit="HandleSubmit"> 
     <DataAnnotationsValidator/>
     <ValidationSummary/>
-    <InputText @bind-Value="Login.Username" Placeholder="Username"></InputText>
-    <InputText @bind-Value="Login.Password" Placeholder="Password"></InputText>
+    <InputText @bind-Value="SignupForm.Username" Placeholder="Username"></InputText>
+    <InputText @bind-Value="SignupForm.Password" Placeholder="Password"></InputText>
     <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
 @code {
     [Parameter]
-    public LoginModel Login { get; set; } = new();
+    public LoginModel SignupForm { get; set; } = new();
 
     public async Task HandleSubmit()
     {
         Console.WriteLine("Submitted");
         //Calls method to
 
-        var User = await InitializeUserFromLogin(Login); // Create user with set values with our login
+        var User = await InitializeUserFromLogin(SignupForm); // Create user with set values with our login
 
         await UserManager.Create( //Post UserModel User and LoginModel Login to:
             User, // POST: /api/user/
-            Login // POST: /api/identityuser/
+            SignupForm // POST: /api/identityuser/
         );
 
         await JSRuntime.InvokeAsync<UserModel>("console.log", User);
-        //await LoginManager.LogInWithUser(Login); Fix first issue then login
+        await LoginManager.LogInWithUser(SignupForm);
     }
 
     /// <summary>
     /// /// Initialize an User with set values from paramref name="login"
     /// </summary>
-    /// <param //name="login"></param>
+    /// <param name="login"></param>
     /// <returns>UserModel</returns>
     async Task<UserModel> InitializeUserFromLogin(LoginModel login)
     {
