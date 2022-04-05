@@ -48,7 +48,7 @@ namespace Fora.Server.Controllers
             {
                 var result = await signInManager.UserManager
                             .FindByNameAsync(username);
-                return new JsonResult(result.Id, "application/json"); // Return the ID
+                return Ok(result.Id); // Return the ID
             }
             return NotFound();
         }
@@ -73,7 +73,7 @@ namespace Fora.Server.Controllers
                     {
                         var result = await signInManager.UserManager
                             .FindByNameAsync(identityUser.UserName);
-                        return new JsonResult(result.Id, "application/json");
+                        return Ok(result.Id);
                         // Return id if successfull login
                     }
                 }
