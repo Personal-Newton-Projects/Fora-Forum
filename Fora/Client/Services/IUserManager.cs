@@ -4,6 +4,8 @@
     {
         Task<string> Create(UserModel user);
         Task<List<UserModel>> GetUsers();
+        Task<UserModel> GetById(int id);
+        Task<UserModel> FindUserByName(string username);
 
         /// <summary>
         /// Returns the count of registered users

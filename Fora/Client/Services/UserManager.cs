@@ -21,6 +21,17 @@ namespace Fora.Client.Services
            return await _httpClient.GetFromJsonAsync<List<UserModel>>("api/user");
         }
 
+        public async Task<UserModel> GetById(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<UserModel>($"api/user/{id}");
+
+        }
+
+        public async Task<UserModel> FindUserByName(string username)
+        {
+            return GetUsers().Result.Where(u => u.Username == username).FirstOrDefault();
+        }
+
     }
 
 }
