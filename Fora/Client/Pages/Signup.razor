@@ -1,6 +1,7 @@
 ﻿@page "/signup"
 
 @inject IUserManager UserManager
+@inject ILoginManager LoginManager
 @inject IJSRuntime JSRuntime
 
 <EditForm Model="User" OnSubmit="HandleSubmit"> 
@@ -13,19 +14,28 @@
 @code {
     [Parameter]
     public UserModel User { get; set; } = new();
-    
+
     public async Task HandleSubmit()
     {
+        Console.WriteLine("Submitted");
         //Calls method to
-        User.Id = 0;
+        await InitializeUser(); // Set all values
+
+        await UserManager.Create(User);
+        Console.WriteLine("Created!");
+        await LoginManager.LogInWithUser(User.Username, User.SignUpPassword);
+        await JSRuntime.InvokeAsync<UserModel>("console.log", User);
+    }
+
+    async Task InitializeUser()
+    {
+        User.Id = 1;
         User.Interests = new List<InterestModel>();
         User.UserInterests = new List<UserInterestModel>();
         User.Messages = new List<MessageModel>();
         User.Threads = new List<ThreadModel>();
         User.Deleted = false;
         User.Banned = false;
-        await UserManager.Create(User);
-        await JSRuntime.InvokeAsync<UserModel>("console.log", User);
     }
 
 }
