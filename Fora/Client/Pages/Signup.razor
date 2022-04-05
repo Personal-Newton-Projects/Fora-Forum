@@ -29,7 +29,7 @@
 
     async Task InitializeUser()
     {
-        User.Id = 1;
+        User.Id = await UserManager.GetUserCount() + 1;
         User.Interests = new List<InterestModel>();
         User.UserInterests = new List<UserInterestModel>();
         User.Messages = new List<MessageModel>();
