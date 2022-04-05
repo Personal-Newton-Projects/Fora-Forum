@@ -21,9 +21,9 @@ namespace Fora.Client.Services
             { 
                 var loginattemptResult = await _httpClient.GetFromJsonAsync<int>($"api/identityuser/verify/{username}/{password}");
                 Console.WriteLine("Login attempted");
-                if(loginattemptResult != null)
+                if(loginattemptResult != 0)
                 {
-                    Console.WriteLine("Got");
+                    Console.WriteLine("Logged in");
                 }
             }
         }
