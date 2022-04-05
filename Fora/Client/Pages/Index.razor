@@ -1,10 +1,17 @@
 ﻿@page "/"
 
 @inject IInterestManager InterestManager
+@inject ILoginManager LoginManager
 
 
 <PageTitle>Index</PageTitle>
+<h3>Login</h3>
+<Login></Login>
+<h3>Signup</h3>
 <Signup></Signup>
+
+<h4>You're logged in as:</h4>
+<h5>@Username</h5>
 <table class="table m-2">
     <thead>
         <tr>
@@ -31,8 +38,15 @@
     [Parameter]
     public List<InterestModel>? Interest { get; set; } = new();
 
+    string Username { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+        var UserResult = await LoginManager.GetLoggedInUser();
+        if(UserResult != null)
+        {
+            Username = UserResult.Username;
+        }
 
         Interest = await InterestManager.GetInterests();
     }
