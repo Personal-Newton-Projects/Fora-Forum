@@ -34,9 +34,9 @@ namespace Fora.Server.Controllers
 
         // GET: api/identityuser/ID/{id}
         [HttpGet("ID/{id}")]
-        public ActionResult GetById(string id)
+        public ActionResult GetUserById(string id)
         {
-            return new JsonResult(signInManager.UserManager.FindByIdAsync(id).Result.UserName, "application/json");
+            return Ok($"\"{signInManager.UserManager.FindByIdAsync(id).Result.UserName}\"");
         }
 
         // GET: api/identityuser/verify/{login}
@@ -46,9 +46,8 @@ namespace Fora.Server.Controllers
             var loginAttemptResult = await signInManager.PasswordSignInAsync(Get(username), password, false, false);
             if (loginAttemptResult.Succeeded) // If login succeeded
             {
-                var result = await signInManager.UserManager
-                            .FindByNameAsync(username);
-                return Ok(result.Id); // Return the ID
+                var result = Get(username);
+                return Ok($"\"{result.Id}\""); // Return the ID
             }
             return NotFound();
         }
