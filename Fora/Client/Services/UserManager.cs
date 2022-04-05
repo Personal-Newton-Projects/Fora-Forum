@@ -51,7 +51,8 @@ namespace Fora.Client.Services
 
         public async Task<UserModel> FindUserByName(string username)
         {
-            return GetUsers().Result.Where(u => u.Username == username).FirstOrDefault();
+            var Users = await GetUsers();
+            return Users.Where(u => u.Username == username).FirstOrDefault();
         }
 
     }
