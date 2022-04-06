@@ -1,0 +1,21 @@
+﻿@page "/forum/{InterestName}"
+
+@inject IInterestManager InterestManager
+
+<h3>Subforum</h3>
+
+<h3>@Interest.Name</h3>
+
+@code {
+    [Parameter]
+    public string InterestName {get; set;}
+
+    InterestModel Interest;
+
+    protected override async Task OnInitializedAsync() {
+        var interestResult = await InterestManager.GetInterestByName(InterestName);
+        Interest = interestResult;
+
+
+    }
+}
