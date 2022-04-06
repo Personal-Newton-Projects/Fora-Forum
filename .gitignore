@@ -354,3 +354,11 @@ Fora/Client/bin/Debug/net6.0/Fora.Client.dll
 Fora/Client/bin/Debug/net6.0/Fora.Client.pdb
 Fora/Client/bin/Debug/net6.0/Fora.Client.staticwebassets.runtime.json
 Fora/Client/bin/Debug/net6.0/wwwroot/_framework/blazor.boot.json
+Fora/Client/obj/Debug/net6.0/build-gz/AO+YIRb5.gz
+Fora/Client/obj/Debug/net6.0/build-gz/AO+YIRb5.gz
+Fora/Client/obj/Debug/net6.0/build-gz/CWvLnb6O.gz
+*.gz
+Fora/Client/obj/rider.project.restore.info
+Fora/Server/obj/project.packagespec.json
+Fora/Server/obj/rider.project.restore.info
+*.info

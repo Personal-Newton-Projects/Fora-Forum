@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fora.Server.Controllers;
 [ApiController]
@@ -11,25 +12,35 @@ public class InterestController : Controller
     {
         this.appDbContext = appDbContext;
     }
-    // GET: api/interest
+    
+    List<UserInterestModel> UserInterests { get; set; }
+    
     [HttpGet]
-    public IEnumerable<InterestModel> GetInterests()
+    public async Task<IActionResult> GetInterests()
     {
-        return appDbContext.Interests;
+        return base.Ok(await GetDbInterests());
+    }
+    [HttpGet]
+    public async Task<List<InterestModel>> GetDbInterests()
+    {
+        return await appDbContext.Interests.Include(i => i.UserInterests).ToListAsync();
     }
     [HttpGet("{id}")]
     public InterestModel GetInterest(int id)
     {
         return appDbContext.Interests.Where(i => i.Id == id).FirstOrDefault();
     }
-
-    [HttpPost("{id}")]
-    public async Task<InterestModel> AddInterestForUser(InterestModel interest, int id)
+    
+    [HttpPost]
+    public async Task<IActionResult> AddInterestForUser(UserInterestModel userInterest)
     {
-        interest = appDbContext.Interests.FirstOrDefault(i => i.Id == id);
-        await appDbContext.Interests.AddAsync(interest);
-        await appDbContext.SaveChangesAsync();
-        return interest;
+        // interest = appDbContext.Interests.FirstOrDefault(i => i.Id == id);
+        // await appDbContext.Interests.AddAsync(interest);
+        // await appDbContext.SaveChangesAsync();
+        // return interest
+        UserInterests.Add(userInterest);
+        userInterest.User.UserInterests.Add(userInterest);
+        return Ok(await GetDbInterests());
     }
     
     
