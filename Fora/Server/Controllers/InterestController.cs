@@ -33,6 +33,18 @@ public class InterestController : Controller
     {
         return appDbContext.Interests.Where(i => i.Name.ToLower() == name.ToLower()).FirstOrDefault();
     }
+    [HttpPut]
+    public async Task<ActionResult> UpdateUser(UserModel user)
+    {
+        // var dbUser = await appDbContext.Users
+        //     .Include(u => u.UserInterests)
+        //     .FirstOrDefaultAsync(u => u.Id == id);
+        // dbUser = user;
+        var dbUser = await appDbContext.Users.SingleOrDefaultAsync(u => u.Id == user.Id);
+        dbUser = user;
+        await appDbContext.SaveChangesAsync();
+        return Ok(dbUser);
+    }
     
     //[HttpPost]
     //public async Task<IActionResult> AddInterestForUser(UserInterestModel userInterest)
