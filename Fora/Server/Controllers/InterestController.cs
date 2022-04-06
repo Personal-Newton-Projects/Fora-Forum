@@ -28,9 +28,10 @@ public class InterestController : Controller
     }
 
     [HttpGet("/name/{name}")]
+    [Obsolete("Does not work")]
     public InterestModel GetInterestByName(string name)
     {
-        return appDbContext.Interests.Where(i => i.Name == name).FirstOrDefault();
+        return appDbContext.Interests.Where(i => i.Name.ToLower() == name.ToLower()).FirstOrDefault();
     }
     
     //[HttpPost]
