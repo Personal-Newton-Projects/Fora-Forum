@@ -11,4 +11,5 @@ public class InterestManager : IInterestManager
     {
         return await _httpClient.GetFromJsonAsync<List<InterestModel>>("api/interest");
     }
+    
 }

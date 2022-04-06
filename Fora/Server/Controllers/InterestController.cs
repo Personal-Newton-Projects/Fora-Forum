@@ -22,5 +22,15 @@ public class InterestController : Controller
     {
         return appDbContext.Interests.Where(i => i.Id == id).FirstOrDefault();
     }
+
+    [HttpPost("{id}")]
+    public async Task<InterestModel> AddInterestForUser(InterestModel interest, int id)
+    {
+        interest = appDbContext.Interests.FirstOrDefault(i => i.Id == id);
+        await appDbContext.Interests.AddAsync(interest);
+        await appDbContext.SaveChangesAsync();
+        return interest;
+    }
+    
     
 }
