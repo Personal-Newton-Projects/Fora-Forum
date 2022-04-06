@@ -26,6 +26,12 @@ public class InterestController : Controller
     {
         return appDbContext.Interests.Where(i => i.Id == id).FirstOrDefault();
     }
+
+    [HttpGet("/name/{name}")]
+    public InterestModel GetInterestByName(string name)
+    {
+        return appDbContext.Interests.Where(i => i.Name == name).FirstOrDefault();
+    }
     
     //[HttpPost]
     //public async Task<IActionResult> AddInterestForUser(UserInterestModel userInterest)
