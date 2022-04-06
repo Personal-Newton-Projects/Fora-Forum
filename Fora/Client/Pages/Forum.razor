@@ -1,0 +1,26 @@
+﻿@page "/forum"
+
+@inject IInterestManager InterestManager;
+
+<h3>Our Sub-forums</h3>
+
+@foreach (var interest in Interests)
+{
+    <div class="card">
+
+  <div class="card-body">
+    <h5 class="card-title">@interest.Name</h5>
+    <a href="#" class="btn btn-primary">Visit</a>
+  </div>
+</div>
+}
+
+
+@code {
+    List<InterestModel> Interests = new List<InterestModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Interests = await InterestManager.GetInterests();
+    }
+}
