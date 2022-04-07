@@ -45,7 +45,7 @@ namespace Fora.Server.Controllers
             {
                 dbUser = user;
                 await appDbContext.SaveChangesAsync();
-                return Ok(user);
+                return Ok(dbUser);
             }
             return NoContent();
         }
@@ -58,7 +58,7 @@ namespace Fora.Server.Controllers
             {
                 dbUser.UserInterests = userInterests;
                 await appDbContext.SaveChangesAsync();
-                return Ok(user);
+                return Ok(dbUser);
             }
             return NoContent();
         }

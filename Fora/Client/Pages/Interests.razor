@@ -5,45 +5,45 @@
 
 <table class="table m-2">
     <thead>
-    <tr>
-        <th>Interest</th>
-        <th>Options</th>
-    </tr>
+        <tr>
+            <th>Interest</th>
+            <th>Options</th>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var item in Intresse)
-    {
-        <tr>            
-            <td>        
-                @item.Name
-            </td>           
-            <td>               
-                <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
-                <button class="btn btn-primary" style="background-color:red">Remove</button>
-            </td>
-        </tr>
-    }
+        @foreach (var item in Intresse)
+        {
+            <tr>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
+                    <button class="btn btn-primary" style="background-color:red">Remove</button>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
 
-@if(CurrentUser != null)
+@if (CurrentUser != null)
 {
-    if(CurrentUser.UserInterests != null)
+    if (CurrentUser.UserInterests != null)
     {
-         foreach (var item in CurrentUser.UserInterests)
+        foreach (var item in CurrentUser.UserInterests)
         {
-            <p>CurrentUser.UserInterests[@item.InterestId] = </p>   
+            <p>CurrentUser.UserInterests[@item.InterestId] = </p>
         }
     }
-        
+
 }
 
-@if(ChosenInterest != null)
+@if (ChosenInterest != null)
 {
     foreach (var item in ChosenInterest)
     {
-        <p>ChosenInterest[@item.InterestId] </p> 
+        <p>ChosenInterest[@item.InterestId] </p>
     }
 }
 
@@ -66,13 +66,24 @@
 
     public async Task AddInterest(InterestModel interest)
     {
-        ChosenInterest.Add(new UserInterestModel()
+        foreach (UserInterestModel item in ChosenInterest)
         {
-            User = CurrentUser,
-            //UserId = CurrentUser.Id,
-            Interest = interest,
-            //InterestId = interest.Id
-        });
+            if (item.Interest == interest)
+            {
+                return;
+            }
+            if (item.InterestId == interest.Id)
+            {
+                return;
+            }
+        }
+        ChosenInterest.Add(new UserInterestModel()
+            {
+                User = CurrentUser,
+                //UserId = CurrentUser.Id,
+                Interest = interest,
+                //InterestId = interest.Id
+            });
         await SubmitInterest();
     }
     public async Task RemoveInterest(InterestModel interest)
@@ -83,8 +94,8 @@
 
     public async Task SubmitInterest()
     {
-        CurrentUser.UserInterests = ChosenInterest;
-        await UserManager.UpdateUser(CurrentUser);
+        // CurrentUser.UserInterests = ChosenInterest;
+        await UserManager.UpdateUserInterests(CurrentUser, ChosenInterest);
         StateHasChanged();
     }
 
