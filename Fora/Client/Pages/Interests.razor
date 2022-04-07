@@ -33,7 +33,7 @@
     {
          foreach (var item in CurrentUser.UserInterests)
         {
-            <p>CurrentUser.UserInterests[@item.InterestId] = @item.Interest.Name</p>   
+            <p>CurrentUser.UserInterests[@item.InterestId] = </p>   
         }
     }
         
@@ -43,7 +43,7 @@
 {
     foreach (var item in ChosenInterest)
     {
-        <p>ChosenInterest[@item.InterestId] = @item.Interest</p> 
+        <p>ChosenInterest[@item.InterestId] </p> 
     }
 }
 
@@ -69,15 +69,16 @@
         ChosenInterest.Add(new UserInterestModel()
         {
             User = CurrentUser,
-            UserId = CurrentUser.Id,
+            //UserId = CurrentUser.Id,
             Interest = interest,
-            InterestId = interest.Id
+            //InterestId = interest.Id
         });
         await SubmitInterest();
     }
     public async Task RemoveInterest(InterestModel interest)
     {
         ChosenInterest.Remove(ChosenInterest.Where(i => i.Interest == interest).FirstOrDefault());
+        await SubmitInterest();
     }
 
     public async Task SubmitInterest()
