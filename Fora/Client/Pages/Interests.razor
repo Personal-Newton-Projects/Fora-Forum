@@ -25,14 +25,28 @@
     }
     </tbody>
 </table>
-<EditForm Model="CurrentUser" OnSubmit="SubmitInterest">
-    <InputRadioGroup @bind-Value="CurrentUser">
-        @foreach (var unit in Intresse)
+
+
+@if(CurrentUser != null)
+{
+    if(CurrentUser.UserInterests != null)
+    {
+         foreach (var item in CurrentUser.UserInterests)
         {
-            <InputRadio Value="@unit.Id">@unit.Name</InputRadio>    
+            <p>CurrentUser.UserInterests[@item.InterestId] = @item.Interest.Name</p>   
         }
-    </InputRadioGroup>
-</EditForm>
+    }
+        
+}
+
+@if(ChosenInterest != null)
+{
+    foreach (var item in ChosenInterest)
+    {
+        <p>ChosenInterest[@item.InterestId] = @item.Interest</p> 
+    }
+}
+
 
 @code {
     [Parameter]
@@ -40,10 +54,10 @@
 
     [Parameter]
     public UserModel CurrentUser { get; set; } = new();
-    
+
     [Parameter]
     public List<UserInterestModel> ChosenInterest { get; set; } = new();
-    
+
     protected override async Task OnInitializedAsync()
     {
         Intresse = await InterestManager.GetInterests();
@@ -65,11 +79,12 @@
     {
         ChosenInterest.Remove(ChosenInterest.Where(i => i.Interest == interest).FirstOrDefault());
     }
-    
+
     public async Task SubmitInterest()
     {
         CurrentUser.UserInterests = ChosenInterest;
         await UserManager.UpdateUser(CurrentUser);
+        StateHasChanged();
     }
 
 }
