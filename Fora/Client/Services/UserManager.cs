@@ -70,6 +70,24 @@ namespace Fora.Client.Services
 
         }
 
+        public async Task<List<UserInterestModel>> UpdateUserInterests(UserModel user, List<UserInterestModel> userInterests)
+        {
+            var updateResult = await _httpClient.PutAsJsonAsync($"api/user/interest", userInterests, new System.Text.Json.JsonSerializerOptions() { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles });
+
+            if(updateResult.IsSuccessStatusCode)
+            {
+                return userInterests;
+            }
+            else
+            {
+                Console.WriteLine("Update UserInterests failed");
+                return null;
+            }
+
+        }
+
     }
+
+
 
 }
