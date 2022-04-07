@@ -1,6 +1,6 @@
 ﻿namespace Fora.Client.Services
 {
-    public class ThreadManager
+    public class ThreadManager : IThreadManager
     {
         private readonly HttpClient _httpClient;
         public ThreadManager(HttpClient httpClient)
@@ -15,7 +15,7 @@
 
         public async Task<ThreadModel> PostThread(ThreadModel thread)
         {
-            var result = await _httpClient.PostAsJsonAsync("/api/thread", thread);
+            var result = await _httpClient.PostAsJsonAsync("/api/thread/", thread);
             return thread;
         }
     }
