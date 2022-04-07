@@ -55,6 +55,21 @@ namespace Fora.Client.Services
             return Users.Where(u => u.Username == username).FirstOrDefault();
         }
 
+        public async Task<UserModel> UpdateUser(UserModel user)
+        {
+            var updateResult = await _httpClient.PutAsJsonAsync($"api/interest/", user);
+            if(updateResult.IsSuccessStatusCode)
+            {
+                return user;
+            }
+            else
+            {
+                Console.WriteLine("Update User Failed");
+                return null;
+            }
+
+        }
+
     }
 
 }

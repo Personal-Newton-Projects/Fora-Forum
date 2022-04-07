@@ -37,6 +37,16 @@ namespace Fora.Server.Controllers
             return Ok(user);
         }
 
+        [HttpPut]
+        public async Task<ActionResult> Put(int id, UserModel user)
+        {
+            //var dbUser = await appDbContext.Users.Where(u => u.Id == user.Id).FirstOrDefault();
+            //dbUser = user;
+            appDbContext.Users.Update(user);
+            await appDbContext.SaveChangesAsync();
+            return Ok(user);
+        }
+
         //// POST: UserController/Create
         //[HttpPost]
         //[ValidateAntiForgeryToken]

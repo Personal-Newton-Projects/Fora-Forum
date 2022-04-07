@@ -6,4 +6,5 @@ public interface IInterestManager
     Task<InterestModel> GetInterest(int id);
     List<UserInterestModel> UserInterest { get; set; }
     Task<List<UserInterestModel>> PostInterest(InterestModel userInterest);
+
 }

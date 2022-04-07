@@ -25,9 +25,5 @@ public class InterestManager : IInterestManager
         UserInterest = await result.Content.ReadFromJsonAsync<List<UserInterestModel>>();
         return UserInterest;
     }
-        public async Task UpdateUser(UserModel user)
-    {
-        await _httpClient.PutAsJsonAsync($"api/interest/", user);
-    }
-}
+
 }
