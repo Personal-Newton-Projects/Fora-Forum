@@ -3,7 +3,8 @@
 @inject IInterestManager InterestManager
 @inject ILoginManager LoginManager
 
-
+@if (HasPageLoaded == true)
+{
     @if (Interest != null)
     {
         <h3>@Interest.Name Subforum</h3>
@@ -31,7 +32,7 @@
         {
             <div class="border">
                 <a href="/forum/@InterestName/post">
-                <button class="btn btn-primary" >Create Thread</button>
+                    <button class="btn btn-primary">Create Thread</button>
                 </a>
             </div>
         }
@@ -42,6 +43,8 @@
         <h1>Error, subforum not found!</h1>
         <button class="btn btn-primary" onclick="@Reload">Reload</button>
     }
+
+}
 
 
 
@@ -54,11 +57,10 @@
 
     InterestModel? Interest;
 
-    public bool HasPageLoaded { get; set; }
+    public bool HasPageLoaded { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
-        HasPageLoaded = false;
         var interestResult = await InterestManager.GetInterests();
         Interest = interestResult.Where(i => i.Name.ToLower() == InterestName.ToLower()).FirstOrDefault();
 
