@@ -4,19 +4,25 @@
 @inject IInterestManager InterestManager
 @inject IThreadManager ThreadManager
 
-<EditForm Model="@ThreadPost" OnValidSubmit="@HandleSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <InputText class="form-control" @bind-Value="@ThreadPost.ThreadtoCreate.Name">
+@if (HasPageLoaded == true)
+{
+    <EditForm Model="@ThreadtoCreate" OnValidSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <InputText class="form-control" @bind-Value="@ThreadtoCreate.Name">
 
-    </InputText>
+        </InputText>
 
-    <InputTextArea class="form-control" @bind-Value="@ThreadPost.MessagetoPost.Message">
+        @foreach (MessageModel message in ThreadtoCreate.Messages)
+        {
+            <InputTextArea class="form-control" @bind-Value="@message.Message"></InputTextArea>
+        }
 
-    </InputTextArea>
-    <button class="btn btn-success" type="submit">Create Thread</button>
+        <button class="btn btn-success" type="submit">Create Thread</button>
 
-</EditForm>
+    </EditForm>
+}
+
 
 @code {
     [Parameter]
@@ -24,13 +30,20 @@
 
     InterestModel Interest { get; set; }
 
-    public class CreateThreadModel
-    {
-        public ThreadModel ThreadtoCreate;
-        public MessageModel MessagetoPost;
-    }
+    public bool HasPageLoaded { get; set; } = false;
 
-    public CreateThreadModel ThreadPost { get; set; }
+    public ThreadModel ThreadtoCreate { get; set; } = new ThreadModel();
+
+    protected override void OnInitialized()
+    {
+        ThreadtoCreate.Messages = new List<MessageModel>();
+        ThreadtoCreate.Messages.Add(new MessageModel());
+        ThreadtoCreate.Messages[0].Thread = ThreadtoCreate;
+
+        HasPageLoaded = true;
+        StateHasChanged();
+
+    }
 
     async Task HandleSubmit()
     {
@@ -41,13 +54,18 @@
 
         if (await LoginManager.IsLoggedIn())
         {
+            ThreadtoCreate.User = await LoginManager.GetLoggedInUser();
 
+            ThreadtoCreate.Interest = Interest;
 
-            ThreadPost.ThreadtoCreate.User = await LoginManager.GetLoggedInUser();
-            ThreadPost.ThreadtoCreate.Messages.Add(ThreadPost.MessagetoPost);
-            ThreadPost.ThreadtoCreate.Interest = Interest;
+            ThreadtoCreate.Interest.UserInterests = null;
+            ThreadtoCreate.Interest.User = null;
+            ThreadtoCreate.User.Interests = null;
+            ThreadtoCreate.User.Messages.Add(ThreadtoCreate.Messages[0]);
+            ThreadtoCreate.User.Threads.Add(ThreadtoCreate);
+            
 
-            ThreadManager.PostThread(ThreadPost.ThreadtoCreate);
+            ThreadManager.PostThread(ThreadtoCreate);
         }
     }
 
