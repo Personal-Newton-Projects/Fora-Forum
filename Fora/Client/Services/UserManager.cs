@@ -57,7 +57,7 @@ namespace Fora.Client.Services
 
         public async Task<UserModel> UpdateUser(UserModel user)
         {
-            var updateResult = await _httpClient.PutAsJsonAsync($"api/interest/", user);
+            var updateResult = await _httpClient.PutAsJsonAsync($"api/user/", user, new System.Text.Json.JsonSerializerOptions() { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles});
             if(updateResult.IsSuccessStatusCode)
             {
                 return user;
