@@ -1,5 +1,6 @@
 ﻿@page "/interests"
 @inject IInterestManager InterestManager
+@inject IUserManager UserManager
 @inject ILoginManager LoginManager
 
 <table class="table m-2">
@@ -68,7 +69,7 @@
     public async Task SubmitInterest()
     {
         CurrentUser.UserInterests = ChosenInterest;
-        await InterestManager.UpdateUser(CurrentUser);
+        await UserManager.UpdateUser(CurrentUser);
     }
 
 }
