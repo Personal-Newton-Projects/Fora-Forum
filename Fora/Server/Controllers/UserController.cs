@@ -38,13 +38,16 @@ namespace Fora.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put(int id, UserModel user)
+        public async Task<ActionResult> Put(UserModel user)
         {
-            //var dbUser = await appDbContext.Users.Where(u => u.Id == user.Id).FirstOrDefault();
-            //dbUser = user;
-            appDbContext.Users.Update(user);
-            await appDbContext.SaveChangesAsync();
-            return Ok(user);
+            var dbUser = appDbContext.Users.SingleOrDefault(u => u.Id == user.Id);
+            if(dbUser != null)
+            {
+                dbUser = user;
+                await appDbContext.SaveChangesAsync();
+                return Ok(user);
+            }
+            return NoContent();
         }
 
         //// POST: UserController/Create
