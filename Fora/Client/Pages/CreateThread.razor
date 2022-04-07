@@ -1,9 +1,55 @@
 ﻿@page "/forum/{InterestName}/post"
 
 @inject ILoginManager LoginManager
+@inject IInterestManager InterestManager
 @inject IThreadManager ThreadManager
 
+<EditForm Model="@ThreadPost" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <InputText class="form-control" @bind-Value="@ThreadPost.ThreadtoCreate.Name">
+
+    </InputText>
+
+    <InputTextArea class="form-control" @bind-Value="@ThreadPost.MessagetoPost.Message">
+
+    </InputTextArea>
+    <button class="btn btn-success" type="submit">Create Thread</button>
+
+</EditForm>
 
 @code {
+    [Parameter]
+    public string InterestName { get; set; }
+
+    InterestModel Interest { get; set; }
+
+    public class CreateThreadModel
+    {
+        public ThreadModel ThreadtoCreate;
+        public MessageModel MessagetoPost;
+    }
+
+    public CreateThreadModel ThreadPost { get; set; }
+
+    async Task HandleSubmit()
+    {
+
+        var interestResult = await InterestManager.GetInterests();
+        Interest = interestResult.Where(i => i.Name.ToLower() == InterestName.ToLower()).FirstOrDefault();
+
+
+        if (await LoginManager.IsLoggedIn())
+        {
+
+
+            ThreadPost.ThreadtoCreate.User = await LoginManager.GetLoggedInUser();
+            ThreadPost.ThreadtoCreate.Messages.Add(ThreadPost.MessagetoPost);
+            ThreadPost.ThreadtoCreate.Interest = Interest;
+
+            ThreadManager.PostThread(ThreadPost.ThreadtoCreate);
+        }
+    }
+
 
 }
