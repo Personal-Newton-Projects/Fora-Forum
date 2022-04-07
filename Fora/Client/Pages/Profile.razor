@@ -1,0 +1,57 @@
+﻿@page "/profile"
+@using System.Drawing
+@inject IUserManager UserManager
+@inject IInterestManager InterestManager
+@inject ILoginManager LoginManager
+
+<div style="text-align:left">
+    <h3 style="text-align: center">Welcome @Username! This is your profile page!</h3>
+    <table class="table m-2">
+        <thead>
+        <tr>
+            <th>Account Options</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <button @onclick="FlagForDelete" class="btn btn-primary" style="background-color:red">Flag for deletion</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <Interests></Interests>
+</div>
+@code {
+    [Parameter]
+    public UserModel User { get; set; }
+    
+    public bool DeleteStatus { get; set; }
+    
+    public string Username { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        //Username = Login.Username;
+        //await UserManager.FindUserByName(Username);
+        var currentUser = await LoginManager.GetLoggedInUser();
+        Username = currentUser.Username;
+        Username = Username.ToUpperInvariant();
+    }
+
+    public async Task FlagForDelete()
+    {
+        var currentUser = await LoginManager.GetLoggedInUser();
+        User = currentUser;
+        User.Deleted = true;
+        UserManager.UpdateUser(currentUser);
+    }
+
+    public async Task UndoDelete()
+    {
+        var currentUser = await LoginManager.GetLoggedInUser();
+        User = currentUser;
+        User.Deleted = false;
+        UserManager.UpdateUser(currentUser);
+    }
+}
