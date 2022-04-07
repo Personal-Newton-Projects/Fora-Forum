@@ -19,7 +19,7 @@
                 </td>
                 <td>
                     <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
-                    <button class="btn btn-primary" style="background-color:red">Remove</button>
+                    <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
                 </td>
             </tr>
         }
@@ -80,9 +80,9 @@
         ChosenInterest.Add(new UserInterestModel()
             {
                 User = CurrentUser,
-                //UserId = CurrentUser.Id,
+                UserId = CurrentUser.Id,
                 Interest = interest,
-                //InterestId = interest.Id
+                InterestId = interest.Id
             });
         await SubmitInterest();
     }
