@@ -50,6 +50,19 @@ namespace Fora.Server.Controllers
             return NoContent();
         }
 
+        [HttpPut("/interest/{id}")]
+        public async Task<ActionResult> PutUserInterests(int id, List<UserInterestModel> userInterests)
+        {
+            var dbUser = appDbContext.Users.SingleOrDefault(u => u.Id == id);
+            if(dbUser != null)
+            {
+                dbUser.UserInterests = userInterests;
+                await appDbContext.SaveChangesAsync();
+                return Ok(user);
+            }
+            return NoContent();
+        }
+
         //// POST: UserController/Create
         //[HttpPost]
         //[ValidateAntiForgeryToken]
