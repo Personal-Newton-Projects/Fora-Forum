@@ -3,54 +3,66 @@
 @inject IInterestManager InterestManager
 @inject ILoginManager LoginManager
 
-@if(Interest != null)
-{
-        <h3>@Interest.Name Subforum</h3>
-    if(CurrentUser != null) {
-        <h4>Welcome @CurrentUser.Username</h4>
-    }
-    else {
-        <h4>Create an account to contribute to the discussion</h4>
-    }
 
-    @if(Interest.Threads != null)
+    @if (Interest != null)
     {
-        @foreach (ThreadModel thread in Interest.Threads)
+        <h3>@Interest.Name Subforum</h3>
+        if (CurrentUser != null)
+        {
+            <h4>Welcome @CurrentUser.Username</h4>
+        }
+        else
+        {
+            <h4>Create an account to contribute to the discussion</h4>
+        }
+
+        @if (Interest.Threads != null)
+        {
+            @foreach (ThreadModel thread in Interest.Threads)
+            {
+                <div class="border">
+                    <h6>@thread.Name</h6>
+                    <h6>@thread.Messages.Count</h6>
+                </div>
+            }
+        }
+
+        if (CurrentUser != null)
         {
             <div class="border">
-                <h6>@thread.Name</h6>
-                <h6>@thread.Messages.Count</h6>
+                <a href="/forum/@InterestName/post">
+                <button class="btn btn-primary" >Create Thread</button>
+                </a>
             </div>
         }
+
+    }
+    else
+    {
+        <h1>Error, subforum not found!</h1>
+        <button class="btn btn-primary" onclick="@Reload">Reload</button>
     }
 
-    if(CurrentUser != null) {
-        <div class="border">
-            <button class="btn btn-primary">Create Thread</button>
-        </div>
-    }
 
-}
-else
-{
-    <h1>Error, subforum not found!</h1>
-    <button class="btn btn-primary" onclick="@Reload">Reload</button>
-}
 
 
 @code {
     [Parameter]
-    public string InterestName {get; set;}
+    public string InterestName { get; set; }
 
     public UserModel? CurrentUser { get; set; }
 
     InterestModel? Interest;
 
-    protected override async Task OnInitializedAsync() {
+    public bool HasPageLoaded { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        HasPageLoaded = false;
         var interestResult = await InterestManager.GetInterests();
         Interest = interestResult.Where(i => i.Name.ToLower() == InterestName.ToLower()).FirstOrDefault();
 
-        if(await LoginManager.IsLoggedIn())
+        if (await LoginManager.IsLoggedIn())
         {
             CurrentUser = await LoginManager.GetLoggedInUser();
         }
@@ -59,6 +71,7 @@ else
             CurrentUser = null;
         }
 
+        HasPageLoaded = true;
         StateHasChanged();
     }
 
