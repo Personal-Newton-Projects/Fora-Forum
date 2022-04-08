@@ -2,25 +2,34 @@
 
 @inject IInterestManager InterestManager;
 
-<h3>Our Sub-forums</h3>
 
-@foreach (var interest in Interests)
+
+@if (HasPageLoaded == true)
 {
-    <div class="card">
+    <h3>Our Sub-forums</h3>
+    @foreach (var interest in Interests)
+    {
+        <div class="card">
 
-  <div class="card-body">
-    <h5 class="card-title">@interest.Name</h5>
-    <a href="/forum/@interest.Name" class="btn btn-primary">Visit</a>
-  </div>
-</div>
+            <div class="card-body">
+                <h5 class="card-title">@interest.Name</h5>
+                <a href="/forum/@interest.Name" class="btn btn-primary">Visit</a>
+            </div>
+        </div>
+    }
 }
+
 
 
 @code {
     List<InterestModel> Interests = new List<InterestModel>();
 
+    bool HasPageLoaded { get; set; } = false;
+
     protected override async Task OnInitializedAsync()
     {
         Interests = await InterestManager.GetInterests();
+        HasPageLoaded = true;
+        StateHasChanged();
     }
 }
