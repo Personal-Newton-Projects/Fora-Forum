@@ -1,13 +1,14 @@
 ﻿@page "/forum/{InterestName}"
 
 @inject IInterestManager InterestManager
+@inject IThreadManager ThreadManager
 @inject ILoginManager LoginManager
 
 @if (HasPageLoaded == true)
 {
-    @if (Interest != null)
+    @if (CurrentInterest != null)
     {
-        <h3>@Interest.Name Subforum</h3>
+        <h3>@CurrentInterest.Name Subforum</h3>
         if (CurrentUser != null)
         {
             <h4>Welcome @CurrentUser.Username</h4>
@@ -17,9 +18,9 @@
             <h4>Create an account to contribute to the discussion</h4>
         }
 
-        @if (Interest.Threads != null)
+        @if (Threads != null)
         {
-            @foreach (ThreadModel thread in Interest.Threads)
+            @foreach (ThreadModel thread in Threads)
             {
                 <div class="border">
                     <h6>@thread.Name</h6>
@@ -55,14 +56,17 @@
 
     public UserModel? CurrentUser { get; set; }
 
-    InterestModel? Interest;
+    InterestModel? CurrentInterest;
+
+    List<ThreadModel> Threads { get; set; }
 
     public bool HasPageLoaded { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
         var interestResult = await InterestManager.GetInterests();
-        Interest = interestResult.Where(i => i.Name.ToLower() == InterestName.ToLower()).FirstOrDefault();
+        CurrentInterest = interestResult.Where(i => i.Name.ToLower() == InterestName.ToLower()).FirstOrDefault();
+        Threads = await ThreadManager.GetThreadsByInterest(CurrentInterest.Id);
 
         if (await LoginManager.IsLoggedIn())
         {
