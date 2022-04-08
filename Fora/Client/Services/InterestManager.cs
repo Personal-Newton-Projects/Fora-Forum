@@ -8,7 +8,7 @@ public class InterestManager : IInterestManager
         _httpClient = httpClient;
     }
 
-    public List<UserInterestModel> UserInterest { get; set; }
+
     public async Task <List<InterestModel>> GetInterests()
     {
         return await _httpClient.GetFromJsonAsync<List<InterestModel>>("api/interest");
