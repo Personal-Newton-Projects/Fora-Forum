@@ -1,7 +1,43 @@
-﻿@page "/forum/{InterestName}/{ThreadId}"
+﻿@page "/forum/{InterestName}/{ThreadId:int}"
 
-<h3>ViewThread</h3>
+@inject IThreadManager ThreadManager
+@inject IJSRuntime JsRuntime
+
+
+@if (HasPageLoaded)
+{
+    <h4>@ThisThread.Name</h4>
+    <p>@ThisThread.Messages[0].Message</p>
+
+        @foreach (MessageModel message in ThisThread.Messages)
+        {
+            <p>Message</p>
+            <p>Posted By: user</p>
+        }
+}
+
 
 @code {
 
+    [Parameter]
+    public string InterestName { get; set; }
+    [Parameter]
+    public int ThreadId { get; set; }
+
+    ThreadModel ThisThread { get; set; } = new ThreadModel();
+
+    bool HasPageLoaded { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ThreadModel ThisThread = await ThreadManager.GetThread(ThreadId);
+        HasPageLoaded = true;
+        StateHasChanged();
+    }
+
+    void Reload()
+    {
+        StateHasChanged();
+        Console.WriteLine("Reload");
+    }
 }
