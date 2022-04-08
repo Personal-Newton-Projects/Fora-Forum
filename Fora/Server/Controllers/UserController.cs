@@ -89,7 +89,7 @@ namespace Fora.Server.Controllers
         [HttpPut("interest/{id}")]
         public async Task<ActionResult> PutUserInterests(int id, List<UserInterestModel> userInterests)
         {
-            var dbUser = appDbContext.Users.SingleOrDefault(u => u.Id == id);
+            var dbUser = await Get(id);
             if(dbUser != null)
             {
                 dbUser.UserInterests = userInterests;
