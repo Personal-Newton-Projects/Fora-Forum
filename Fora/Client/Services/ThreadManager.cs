@@ -10,17 +10,27 @@
 
         public async Task<List<ThreadModel>> GetThreads()
         {
-            return await _httpClient.GetFromJsonAsync<List<ThreadModel>>("/api/thread");
+            return await _httpClient.GetFromJsonAsync<List<ThreadModel>>("/api/thread/");
         }
 
-        public async Task<ThreadModel> PostThread(ThreadModel thread)
+        public async Task<ThreadModel> GetThread(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<ThreadModel>($"/api/thread/{id}");
+        }
+
+        public async Task<List<ThreadModel>> GetThreadsByInterest(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<List<ThreadModel>>($"/api/thread/interest/{id}");
+        }
+
+        public async Task<ThreadModel> PostThread(PostThreadModel thread)
         {
             //new JsonSerializerOptions() { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }
             // hackfix
 
             var result = await _httpClient.PostAsJsonAsync("/api/thread/", thread);
             new JsonDebug(result);
-            return thread;
+            return await result.Content.ReadFromJsonAsync<ThreadModel>();
         }
     }
 }
