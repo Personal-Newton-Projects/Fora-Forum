@@ -1,5 +1,6 @@
 global using Fora.Shared;
 global using Fora.Client.Managers;
+global using Fora.Shared.PostModels;
 global using System.Net.Http.Json;
 global using Fora.Client.Services;
 using Fora.Client;
