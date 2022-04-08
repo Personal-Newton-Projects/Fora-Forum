@@ -29,7 +29,7 @@ namespace Fora.Client.Services
                 string loginToken = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/verify/{login.Username}/{login.Password}");
                 if(!String.IsNullOrEmpty(loginToken))
                 {
-                    StoreUser(loginToken); //Store user in local storage on sucessfull login
+                    await StoreUser(loginToken); //Store user in local storage on sucessfull login
                     Console.WriteLine("Logged in");
                 }
             }
