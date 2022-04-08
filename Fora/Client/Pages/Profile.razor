@@ -1,57 +1,88 @@
-﻿@page "/profile"
+﻿@page "/profile/{CurrentUserId:int}"
 @using System.Drawing
 @inject IUserManager UserManager
 @inject IInterestManager InterestManager
 @inject ILoginManager LoginManager
 
-<div style="text-align:left">
-    <h3 style="text-align: center">Welcome @Username! This is your profile page!</h3>
-    <table class="table m-2">
-        <thead>
-        <tr>
-            <th>Account Options</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-                <button @onclick="FlagForDelete" class="btn btn-primary" style="background-color:red">Flag for deletion</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <Interests></Interests>
-</div>
+@if (HasPageLoaded)
+{
+    <div style="text-align:left">
+        <h3 style="text-align: center">Welcome @CurrentUser.Username! This is your profile page!</h3>
+        <table class="table m-2">
+            <thead>
+                <tr>
+                    <th>Account Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @if (!CurrentUser.Deleted)
+                        {
+                            <button @onclick="FlagForDelete" class="btn btn-danger">Flag for deletion</button>
+                        }
+                        else
+                        {
+                            <button @onclick="UndoDelete" class="btn btn-warning">Restore Account</button>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <Interests CurrentUser="@CurrentUser"></Interests>
+    </div>
+    <p>is Account deleted?: @CurrentUser.Deleted</p>
+}
+
+
+
 @code {
     [Parameter]
-    public UserModel User { get; set; }
-    
-    public bool DeleteStatus { get; set; }
-    
-    public string Username { get; set; }
+    public int CurrentUserId { get; set; }
+
+    public UserModel CurrentUser { get; set; }
+
+    public bool IsMyProfile { get; set; }
+
+    bool HasPageLoaded { get; set; } = false;
 
     protected async override Task OnInitializedAsync()
     {
-        //Username = Login.Username;
-        //await UserManager.FindUserByName(Username);
-        var currentUser = await LoginManager.GetLoggedInUser();
-        Username = currentUser.Username;
-        Username = Username.ToUpperInvariant();
+        CurrentUser = await UserManager.GetById(CurrentUserId);
+
+        if (CurrentUser == await LoginManager.GetLoggedInUser())
+        {
+            IsMyProfile = true;
+        }
+        else
+        {
+            IsMyProfile = false;
+        }
+
+        HasPageLoaded = true;
+        StateHasChanged();
     }
 
     public async Task FlagForDelete()
     {
-        var currentUser = await LoginManager.GetLoggedInUser();
-        User = currentUser;
-        User.Deleted = true;
-        UserManager.UpdateUser(currentUser);
+        await UserManager.UpdateUser(new PostUserUpdateModel()
+            {
+                Id = CurrentUser.Id,
+                DeleteUser = true,
+                BanUser = false
+            });
+        StateHasChanged();
     }
 
     public async Task UndoDelete()
     {
-        var currentUser = await LoginManager.GetLoggedInUser();
-        User = currentUser;
-        User.Deleted = false;
-        UserManager.UpdateUser(currentUser);
+
+        await UserManager.UpdateUser(new PostUserUpdateModel()
+            {
+                Id = CurrentUser.Id,
+                DeleteUser = false,
+                BanUser = false
+            });
+        StateHasChanged();
     }
 }
