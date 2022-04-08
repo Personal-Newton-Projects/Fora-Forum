@@ -49,11 +49,11 @@
 
 
 @code {
-    [Parameter]
+
     public List<InterestModel>? Intresse { get; set; } = new();
 
     [Parameter]
-    public UserModel CurrentUser { get; set; } = new();
+    public UserModel CurrentUser { get; set; }
 
     [Parameter]
     public List<UserInterestModel> ChosenInterest { get; set; } = new();
@@ -61,7 +61,11 @@
     protected override async Task OnInitializedAsync()
     {
         Intresse = await InterestManager.GetInterests();
-        CurrentUser = await LoginManager.GetLoggedInUser();
+        if(CurrentUser == null)
+        {
+             CurrentUser = await LoginManager.GetLoggedInUser();
+        }
+
     }
 
     public async Task AddInterest(InterestModel interest)
