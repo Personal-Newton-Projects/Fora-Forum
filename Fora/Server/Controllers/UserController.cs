@@ -74,12 +74,18 @@ namespace Fora.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put(UserModel user)
+        public async Task<ActionResult> Put(PostUserUpdateModel postUser)
         {
-            var dbUser = appDbContext.Users.SingleOrDefault(u => u.Id == user.Id);
+            var dbUser = await Get(postUser.Id);
             if(dbUser != null)
             {
-                dbUser = user;
+                if(postUser.NewName != null)
+                {
+                    dbUser.Username = postUser.NewName;
+                }
+                dbUser.Deleted = postUser.DeleteUser;
+                dbUser.Banned = postUser.BanUser;
+
                 await appDbContext.SaveChangesAsync();
                 return Ok(dbUser);
             }
