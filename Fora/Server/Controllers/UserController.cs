@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Fora.Server.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace Fora.Server.Controllers
 {
     [ApiController]
@@ -16,16 +18,50 @@ namespace Fora.Server.Controllers
 
         // GET: api/user
         [HttpGet]
-        public IEnumerable<UserModel> Get()
+        public async Task<IEnumerable<UserModel>> Get()
         {
-            return appDbContext.Users;
+            return await GetFullyIncludedUsers();
+        }
+
+        async Task<IEnumerable<UserModel>> GetFullyIncludedUsers()
+        {
+            List<UserModel> dbUsers = await appDbContext.Users
+                .Include(u => u.UserInterests)
+                .Include(u => u.Interests)
+                .Include(u => u.Threads)
+                .Include(u => u.Messages).ToListAsync<UserModel>();
+
+            foreach (UserModel user in dbUsers)
+            {
+                foreach(UserInterestModel userInterests in user.UserInterests)
+                {
+                    foreach (InterestModel interest in appDbContext.Interests)
+                    {
+                        if(userInterests.InterestId == interest.Id)
+                        {
+                            userInterests.Interest = interest; // Set Interest to interest
+                        }
+                    }
+                    userInterests.User = user; //Set userInterests user to this user
+                }
+
+                foreach(InterestModel interest in user.Interests)
+                {
+                    interest.User = user;
+                }
+
+            }
+
+            return dbUsers;
+
         }
 
         // GET: api/user/{id}
         [HttpGet("{id}")]
-        public UserModel Get(int id)
+        public async Task<UserModel> Get(int id)
         {
-            return appDbContext.Users.Where(u => u.Id == id).FirstOrDefault();
+            var result = await GetFullyIncludedUsers();
+            return result.SingleOrDefault(u => u.Id == id);
         }
 
         // POST: api/user
@@ -50,7 +86,7 @@ namespace Fora.Server.Controllers
             return NoContent();
         }
 
-        [HttpPut("/interest/{id}")]
+        [HttpPut("interest/{id}")]
         public async Task<ActionResult> PutUserInterests(int id, List<UserInterestModel> userInterests)
         {
             var dbUser = appDbContext.Users.SingleOrDefault(u => u.Id == id);
