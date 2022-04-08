@@ -11,18 +11,35 @@
 <Signup></Signup>
 
 <h4>You're logged in as:</h4>
-<h5>@Username</h5>
+
+
+@if (CurrentUser != null)
+{
+    <h5>@CurrentUser.Username</h5>
+    if (@CurrentUser.UserInterests != null)
+    {
+        foreach (var item in CurrentUser.UserInterests)
+        {
+            <p>@item.Interest.Name</p>
+        }
+    }
+
+}
+
 @code {
     string Username { get; set; }
 
+    UserModel CurrentUser { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        var UserResult = await LoginManager.GetLoggedInUser();
-        if(UserResult != null)
+        CurrentUser = await LoginManager.GetLoggedInUser();
+        if (CurrentUser != null)
         {
-            Username = UserResult.Username;
+            Username = CurrentUser.Username;
+            StateHasChanged();
         }
 
-        
+
     }
 }
