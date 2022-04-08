@@ -1,5 +1,6 @@
 global using Fora.Server.Data;
 global using Fora.Shared;
+global using Fora.Client.Managers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
