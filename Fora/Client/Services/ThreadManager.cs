@@ -15,6 +15,9 @@
 
         public async Task<ThreadModel> PostThread(ThreadModel thread)
         {
+            //new JsonSerializerOptions() { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }
+            // hackfix
+
             var result = await _httpClient.PostAsJsonAsync("/api/thread/", thread);
             return thread;
         }
