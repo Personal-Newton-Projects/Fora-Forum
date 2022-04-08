@@ -19,11 +19,10 @@ public class InterestManager : IInterestManager
         return await _httpClient.GetFromJsonAsync<InterestModel>($"api/interest/{id}");
     }
 
-    public async Task <List<UserInterestModel>> PostInterest(InterestModel userInterest)
+    [System.Obsolete("Unused and might not be working!")]
+    public async Task <InterestModel> PostInterest(InterestModel interest)
     {
-        var result = await _httpClient.PostAsJsonAsync("api/interest/",userInterest);
-        UserInterest = await result.Content.ReadFromJsonAsync<List<UserInterestModel>>();
-        return UserInterest;
+        var result = await _httpClient.PostAsJsonAsync("api/interest/",interest);
     }
 
 }
