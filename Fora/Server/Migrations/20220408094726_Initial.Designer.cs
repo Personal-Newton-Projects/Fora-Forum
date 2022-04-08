@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fora.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220404082043_Initial")]
+    [Migration("20220408094726_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,23 @@ namespace Fora.Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Interests");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Animals"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Gaming"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Philosophy"
+                        });
                 });
 
             modelBuilder.Entity("Fora.Shared.MessageModel", b =>
@@ -112,7 +129,7 @@ namespace Fora.Server.Migrations
 
                     b.HasIndex("InterestId");
 
-                    b.ToTable("UserInterestModel");
+                    b.ToTable("UserInterests");
                 });
 
             modelBuilder.Entity("Fora.Shared.UserModel", b =>

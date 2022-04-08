@@ -71,7 +71,7 @@ namespace Fora.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserInterestModel",
+                name: "UserInterests",
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false),
@@ -79,15 +79,15 @@ namespace Fora.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserInterestModel", x => new { x.UserId, x.InterestId });
+                    table.PrimaryKey("PK_UserInterests", x => new { x.UserId, x.InterestId });
                     table.ForeignKey(
-                        name: "FK_UserInterestModel_Interests_InterestId",
+                        name: "FK_UserInterests_Interests_InterestId",
                         column: x => x.InterestId,
                         principalTable: "Interests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserInterestModel_Users_UserId",
+                        name: "FK_UserInterests_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -121,6 +121,21 @@ namespace Fora.Server.Migrations
                         onDelete: ReferentialAction.SetNull);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Interests",
+                columns: new[] { "Id", "Name", "UserId" },
+                values: new object[] { 1, "Animals", null });
+
+            migrationBuilder.InsertData(
+                table: "Interests",
+                columns: new[] { "Id", "Name", "UserId" },
+                values: new object[] { 2, "Gaming", null });
+
+            migrationBuilder.InsertData(
+                table: "Interests",
+                columns: new[] { "Id", "Name", "UserId" },
+                values: new object[] { 3, "Philosophy", null });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Interests_UserId",
                 table: "Interests",
@@ -147,8 +162,8 @@ namespace Fora.Server.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserInterestModel_InterestId",
-                table: "UserInterestModel",
+                name: "IX_UserInterests_InterestId",
+                table: "UserInterests",
                 column: "InterestId");
         }
 
@@ -158,7 +173,7 @@ namespace Fora.Server.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "UserInterestModel");
+                name: "UserInterests");
 
             migrationBuilder.DropTable(
                 name: "Threads");

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Fora.Server.Migrations
+namespace Fora.Server.Migrations.AuthDb
 {
-    public partial class SecondInitial : Migration
+    public partial class InitialAuth : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

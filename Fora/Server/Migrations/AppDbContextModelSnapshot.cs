@@ -127,7 +127,7 @@ namespace Fora.Server.Migrations
 
                     b.HasIndex("InterestId");
 
-                    b.ToTable("UserInterestModel");
+                    b.ToTable("UserInterests");
                 });
 
             modelBuilder.Entity("Fora.Shared.UserModel", b =>
@@ -143,10 +143,6 @@ namespace Fora.Server.Migrations
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
-
-                    b.Property<string>("SignUpPassword")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
                         .IsRequired()

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Fora.Server.Migrations
+namespace Fora.Server.Migrations.AuthDb
 {
     [DbContext(typeof(AuthDbContext))]
     partial class AuthDbContextModelSnapshot : ModelSnapshot
