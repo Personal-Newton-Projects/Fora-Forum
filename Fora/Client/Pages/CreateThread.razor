@@ -28,13 +28,7 @@
 
     InterestModel Interest { get; set; }
 
-    class CreateThreadModel
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-    }
-
-    CreateThreadModel ThreadtoCreate { get; set; } = new CreateThreadModel();
+    PostThreadModel ThreadtoCreate { get; set; } = new PostThreadModel();
 
     public bool HasPageLoaded { get; set; } = false;
 
@@ -58,25 +52,11 @@
         if (await LoginManager.IsLoggedIn())
         {
             UserModel currentUser = await LoginManager.GetLoggedInUser();
-            ThreadModel thread = new ThreadModel()
-                {
-                    Messages = new List<MessageModel>()
-                    {
-                        new MessageModel()
-                        {
-                            Message = ThreadtoCreate.Description
-                        }
-                    },
-                    Name = ThreadtoCreate.Title,
-                    User = currentUser,
-                    UserId = currentUser.Id,
-                    Interest = Interest,
-                    InterestId = Interest.Id,
-                };
 
-                thread.Interest.Threads.Add(thread);
+            ThreadtoCreate.CreatorId = currentUser.Id;
+            ThreadtoCreate.InterestId = Interest.Id;
 
-                await ThreadManager.PostThread(thread);
+            await ThreadManager.PostThread(ThreadtoCreate);
         }
 
         //ThreadtoCreate.User = await LoginManager.GetLoggedInUser();
