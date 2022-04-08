@@ -19,6 +19,7 @@
             // hackfix
 
             var result = await _httpClient.PostAsJsonAsync("/api/thread/", thread);
+            new JsonDebug(result);
             return thread;
         }
     }
