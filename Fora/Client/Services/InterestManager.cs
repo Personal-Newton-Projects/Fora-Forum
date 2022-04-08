@@ -23,6 +23,14 @@ public class InterestManager : IInterestManager
     public async Task <InterestModel> PostInterest(InterestModel interest)
     {
         var result = await _httpClient.PostAsJsonAsync("api/interest/",interest);
+        if(result.IsSuccessStatusCode)
+        {
+            return interest;
+        }
+        else
+        {
+            return null;
+        }
     }
 
 }
