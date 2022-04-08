@@ -55,12 +55,15 @@ namespace Fora.Client.Services
             return Users.Where(u => u.Username == username).FirstOrDefault();
         }
 
-        public async Task<UserModel> UpdateUser(UserModel user)
+        public async Task<UserModel> UpdateUser(PostUserUpdateModel postUser)
         {
-            var updateResult = await _httpClient.PutAsJsonAsync($"api/user/", user, new System.Text.Json.JsonSerializerOptions() { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles});
+            // new System.Text.Json.JsonSerializerOptions() { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles}
+            // hackfix
+
+            var updateResult = await _httpClient.PutAsJsonAsync($"api/user/", postUser);
             if(updateResult.IsSuccessStatusCode)
             {
-                return user;
+                return await updateResult.Content.ReadFromJsonAsync<UserModel>();
             }
             else
             {
