@@ -85,7 +85,8 @@ namespace Fora.Server.Controllers
                     {
                         new MessageModel()
                         {
-                            Message = postThread.Description
+                            Message = postThread.Description,
+                            UserId = postThread.CreatorId
                         }
                     },
                     InterestId = postThread.InterestId
@@ -97,6 +98,24 @@ namespace Fora.Server.Controllers
             }
             return BadRequest();
 
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<MessageModel>> PutMessage(PostMessageModel postMessage)
+        {
+            if(postMessage != null)
+            {
+                var thread = await Get(postMessage.ThreadId);
+                thread.Messages.Add(new MessageModel()
+                {
+                    Message = postMessage.Message,
+                    UserId = postMessage.PosterId
+                });
+
+                await appDbContext.SaveChangesAsync();
+                return Ok(thread.Messages.LastOrDefault()); 
+            }
+            return BadRequest();
         }
 
     }
