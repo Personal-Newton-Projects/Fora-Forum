@@ -73,11 +73,11 @@ namespace Fora.Client.Services
 
         }
 
-        public async Task<List<UserInterestModel>> UpdateUserInterests(UserModel user, List<UserInterestModel> userInterests)
+        public async Task<List<PostUserInterestsModel>> UpdateUserInterests(List<PostUserInterestsModel> userInterests, int id)
         {
             // JsonSerializerOptions() { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }
             // Hackfix
-            var updateResult = await _httpClient.PutAsJsonAsync($"api/user/interest/{user.Id}/", userInterests);
+            var updateResult = await _httpClient.PutAsJsonAsync($"api/user/interest/{id}", userInterests);
             new JsonDebug(updateResult);
 
             if(updateResult.IsSuccessStatusCode)

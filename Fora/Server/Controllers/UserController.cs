@@ -93,14 +93,34 @@ namespace Fora.Server.Controllers
         }
 
         [HttpPut("interest/{id}")]
-        public async Task<ActionResult> PutUserInterests(int id, List<UserInterestModel> userInterests)
+        public async Task<ActionResult> PutUserInterests(List<PostUserInterestsModel> chosenInterests, int id)
         {
-            var dbUser = await Get(id);
-            if(dbUser != null)
+            if (chosenInterests != null)
             {
-                dbUser.UserInterests = userInterests;
-                await appDbContext.SaveChangesAsync();
-                return Ok(dbUser);
+                foreach (var userInterests in chosenInterests)
+                {
+                    // var myinterest = await Get(userInterests.InterestsID);
+                    // myinterest.UserInterests.Add(new UserInterestModel()
+                    // {
+                    //     InterestId = myinterest.Id,
+                    //     UserId = myinterest.Id
+                    // });
+                    InterestModel interest = new InterestModel()
+                    {
+                         Id = userInterests.InterestsID,
+                         UserId = userInterests.UserID,
+                         UserInterests = new List<UserInterestModel>()
+                        {
+                            new()
+                           {
+                                 InterestId = userInterests.InterestsID,
+                                 UserId = userInterests.UserID
+                            }
+                        },
+                     };
+                    await appDbContext.SaveChangesAsync();
+                    return Ok(chosenInterests);
+                }
             }
             return NoContent();
         }

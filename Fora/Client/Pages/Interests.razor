@@ -2,7 +2,6 @@
 @inject IInterestManager InterestManager
 @inject IUserManager UserManager
 @inject ILoginManager LoginManager
-
 <table class="table m-2">
     <thead>
         <tr>
@@ -18,7 +17,7 @@
                     @item.Name
                 </td>
                 <td>
-                    <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
+                    <button type="submit" @onclick="@(() => AddInterest(ThisInterest))" class="btn btn-primary" style="background-color:green">Add</button>
                     <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
                 </td>
             </tr>
@@ -38,18 +37,18 @@
     }
 
 }
-
-
-
 @code {
-
+    [Parameter]
     public List<InterestModel>? Intresse { get; set; } = new();
+    
+    [Parameter]
+    public List<PostUserInterestsModel> ChosenInterest { get; set; } = new List<PostUserInterestsModel>();
+    
+    [Parameter]
+    public InterestModel ThisInterest { get; set; }
 
     [Parameter]
     public UserModel CurrentUser { get; set; }
-
-    [Parameter]
-    public List<UserInterestModel> ChosenInterest { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,41 +57,30 @@
         {
              CurrentUser = await LoginManager.GetLoggedInUser();
         }
-
     }
 
     public async Task AddInterest(InterestModel interest)
     {
-        foreach (UserInterestModel item in ChosenInterest)
+        ChosenInterest.Add( new PostUserInterestsModel()
         {
-            if (item.Interest == interest)
-            {
-                return;
-            }
-            if (item.InterestId == interest.Id)
-            {
-                return;
-            }
-        }
-        ChosenInterest.Add(new UserInterestModel()
-            {
-                User = CurrentUser,
-                UserId = CurrentUser.Id,
-                Interest = interest,
-                InterestId = interest.Id
-            });
+            InterestsID = ThisInterest.Id,
+            UserID = CurrentUser.Id,
+        });
         await SubmitInterest();
     }
     public async Task RemoveInterest(InterestModel interest)
     {
-        ChosenInterest.Remove(ChosenInterest.Where(i => i.Interest == interest).FirstOrDefault());
+        ChosenInterest.Remove(ChosenInterest.Where(i => i.InterestsID == interest.Id).FirstOrDefault());
         await SubmitInterest();
     }
-
+    
     public async Task SubmitInterest()
     {
-        // CurrentUser.UserInterests = ChosenInterest;
-        await UserManager.UpdateUserInterests(CurrentUser, ChosenInterest);
+        foreach (var item in ChosenInterest)
+        {
+            Console.WriteLine(item.InterestsID);
+        }
+        await UserManager.UpdateUserInterests(ChosenInterest, CurrentUser.Id);
         StateHasChanged();
     }
 

@@ -362,3 +362,4 @@ Fora/Client/obj/rider.project.restore.info
 Fora/Server/obj/project.packagespec.json
 Fora/Server/obj/rider.project.restore.info
 *.info
+*.json

@@ -10,28 +10,41 @@
         <h3 style="text-align: center">Welcome @CurrentUser.Username! This is your profile page!</h3>
         <table class="table m-2">
             <thead>
-                <tr>
-                    <th>Account Options</th>
-                </tr>
+            <tr>
+                <th>Account Options</th>
+            </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>
-                        @if (!CurrentUser.Deleted)
-                        {
-                            <button @onclick="FlagForDelete" class="btn btn-danger">Flag for deletion</button>
-                        }
-                        else
-                        {
-                            <button @onclick="UndoDelete" class="btn btn-warning">Restore Account</button>
-                        }
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @if (!CurrentUser.Deleted)
+                    {
+                        <button @onclick="FlagForDelete" class="btn btn-danger">Flag for Deletion</button>
+                    }
+                    else
+                    {
+                        <button @onclick="UndoDelete" class="btn btn-warning">Undo Deletion</button>
+                    }
+                </td>
+            </tr>
             </tbody>
         </table>
         <Interests CurrentUser="@CurrentUser"></Interests>
+        <h3>Account Deletion Status: @CurrentUser.Deleted</h3>
+        <div>
+            <h3>These are all of your messages!</h3>
+            <h4>
+                @foreach (var thread in CurrentUser.Threads)
+                {
+                    @foreach (var item in CurrentUser.Messages)
+                    {
+                        <p>Message(@item.Id): @item.Message was posted in @thread.Name</p>
+                    }
+                }
+            </h4>
+        </div>
     </div>
-    <p>is Account deleted?: @CurrentUser.Deleted</p>
+    
 }
 
 
@@ -49,6 +62,28 @@
     protected async override Task OnInitializedAsync()
     {
         CurrentUser = await UserManager.GetById(CurrentUserId);
+        
+        CurrentUser.Threads.Add(new ThreadModel()
+        {
+            Id = 1,
+            Name = "Apocalypse",
+            UserId = 1
+        });
+        
+        CurrentUser.Messages.Add(new MessageModel()
+        {
+            Id = 1,
+            Message = "Hej",
+            ThreadId = 1,
+            UserId = 1
+        });
+        CurrentUser.Messages.Add(new MessageModel()
+        {
+            Id = 2,
+            Message = "Hejdåre",
+            ThreadId = 2,
+            UserId = 1
+        });
 
         if (CurrentUser == await LoginManager.GetLoggedInUser())
         {

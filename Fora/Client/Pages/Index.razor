@@ -32,7 +32,7 @@
     string Username { get; set; }
 
     UserModel CurrentUser { get; set; }
-
+    
     protected override async Task OnInitializedAsync()
     {
         CurrentUser = await LoginManager.GetLoggedInUser();

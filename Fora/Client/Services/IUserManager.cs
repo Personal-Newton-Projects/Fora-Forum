@@ -7,7 +7,7 @@
         Task<UserModel> GetById(int id);
         Task<UserModel> FindUserByName(string username);
         Task<UserModel> UpdateUser(PostUserUpdateModel postUser);
-        Task<List<UserInterestModel>> UpdateUserInterests(UserModel user, List<UserInterestModel> userInterests);
+        Task<List<PostUserInterestsModel>> UpdateUserInterests(List<PostUserInterestsModel> userInterests, int id);
 
         /// <summary>
         /// Returns the count of registered users
