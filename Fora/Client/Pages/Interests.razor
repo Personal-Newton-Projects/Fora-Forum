@@ -17,7 +17,7 @@
                     @item.Name
                 </td>
                 <td>
-                    <button type="submit" @onclick="@(() => AddInterest(ThisInterest))" class="btn btn-primary" style="background-color:green">Add</button>
+                    <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
                     <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
                 </td>
             </tr>
@@ -42,10 +42,7 @@
     public List<InterestModel>? Intresse { get; set; } = new();
     
     [Parameter]
-    public List<PostUserInterestsModel> ChosenInterest { get; set; } = new List<PostUserInterestsModel>();
-    
-    [Parameter]
-    public InterestModel ThisInterest { get; set; }
+    public List<PostUserInterestsModel> ChosenInterests { get; set; } = new List<PostUserInterestsModel>();
 
     [Parameter]
     public UserModel CurrentUser { get; set; }
@@ -61,26 +58,26 @@
 
     public async Task AddInterest(InterestModel interest)
     {
-        ChosenInterest.Add( new PostUserInterestsModel()
+        ChosenInterests.Add( new PostUserInterestsModel()
         {
-            InterestsID = ThisInterest.Id,
+            InterestsID = interest.Id,
             UserID = CurrentUser.Id,
         });
         await SubmitInterest();
     }
     public async Task RemoveInterest(InterestModel interest)
     {
-        ChosenInterest.Remove(ChosenInterest.Where(i => i.InterestsID == interest.Id).FirstOrDefault());
+        ChosenInterests.Remove(ChosenInterests.Where(i => i.InterestsID == interest.Id).FirstOrDefault());
         await SubmitInterest();
     }
     
     public async Task SubmitInterest()
     {
-        foreach (var item in ChosenInterest)
+        foreach (var item in ChosenInterests)
         {
             Console.WriteLine(item.InterestsID);
         }
-        await UserManager.UpdateUserInterests(ChosenInterest, CurrentUser.Id);
+        await UserManager.UpdateUserInterests(ChosenInterests, CurrentUser.Id);
         StateHasChanged();
     }
 

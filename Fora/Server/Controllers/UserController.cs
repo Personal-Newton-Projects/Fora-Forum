@@ -97,30 +97,26 @@ namespace Fora.Server.Controllers
         {
             if (chosenInterests != null)
             {
-                foreach (var userInterests in chosenInterests)
+                var dbUser = await Get(id);
+                List<UserInterestModel> IntereststoAdd = new List<UserInterestModel>();
+                if(dbUser != null)
                 {
-                    // var myinterest = await Get(userInterests.InterestsID);
-                    // myinterest.UserInterests.Add(new UserInterestModel()
-                    // {
-                    //     InterestId = myinterest.Id,
-                    //     UserId = myinterest.Id
-                    // });
-                    InterestModel interest = new InterestModel()
+                    foreach (var chosenInterest in chosenInterests)
                     {
-                         Id = userInterests.InterestsID,
-                         UserId = userInterests.UserID,
-                         UserInterests = new List<UserInterestModel>()
+
+                        UserInterestModel userInterest = new UserInterestModel()
                         {
-                            new()
-                           {
-                                 InterestId = userInterests.InterestsID,
-                                 UserId = userInterests.UserID
-                            }
-                        },
-                     };
-                    await appDbContext.SaveChangesAsync();
-                    return Ok(chosenInterests);
+                            UserId = chosenInterest.UserID,
+                            User = dbUser,
+                            InterestId = chosenInterest.InterestsID
+                        };
+                        IntereststoAdd.Add(userInterest);
+
+                    }
                 }
+                dbUser.UserInterests = IntereststoAdd;
+                await appDbContext.SaveChangesAsync();
+                return Ok(chosenInterests);
             }
             return NoContent();
         }
