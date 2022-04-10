@@ -3,10 +3,13 @@
 @inject ILoginManager LoginManager
 @inject IInterestManager InterestManager
 @inject IThreadManager ThreadManager
+@inject NavigationManager NavigationManager
 
 @if (HasPageLoaded == true)
 {
-    <EditForm Model="@ThreadtoCreate" OnValidSubmit="@HandleSubmit">
+    @if(CurrentUser != null)
+    {
+            <EditForm Model="@ThreadtoCreate" class="form-group" OnValidSubmit="@HandleSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <InputText class="form-control" @bind-Value="@ThreadtoCreate.Title">
@@ -18,7 +21,15 @@
 
         <button class="btn btn-success" type="submit">Create Thread</button>
 
-    </EditForm>
+        </EditForm>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+  Please log in to post a thread.
+</div>
+    }
+
 }
 
 
@@ -29,6 +40,8 @@
     InterestModel Interest { get; set; }
 
     PostThreadModel ThreadtoCreate { get; set; } = new PostThreadModel();
+
+    UserModel CurrentUser { get; set; }
 
     public bool HasPageLoaded { get; set; } = false;
 
@@ -51,33 +64,17 @@
 
         if (await LoginManager.IsLoggedIn())
         {
-            UserModel currentUser = await LoginManager.GetLoggedInUser();
+            CurrentUser = await LoginManager.GetLoggedInUser();
 
-            ThreadtoCreate.CreatorId = currentUser.Id;
+            ThreadtoCreate.CreatorId = CurrentUser.Id;
             ThreadtoCreate.InterestId = Interest.Id;
 
             await ThreadManager.PostThread(ThreadtoCreate);
+            var lastThread = await ThreadManager.GetThreads();
+            NavigationManager.NavigateTo(NavigationManager.BaseUri + $"/forum/{InterestName}/{lastThread.Last().Id}", forceLoad: true);
         }
-
-        //ThreadtoCreate.User = await LoginManager.GetLoggedInUser();
-
-        //ThreadtoCreate.Interest = Interest;
-        //if (ThreadtoCreate.User.Messages == null)
-        //{
-        //    ThreadtoCreate.User.Messages = new List<MessageModel>();
-        //}
-
-        //ThreadtoCreate.User.Messages.Add(ThreadtoCreate.Messages[0]);
-        //if (ThreadtoCreate.User.Threads == null)
-        //{
-        //    ThreadtoCreate.User.Threads = new List<ThreadModel>();
-        //}
-        //ThreadtoCreate.User.Threads.Add(ThreadtoCreate);
-
-
-        
     }
-    }
-
-
 }
+
+
+
