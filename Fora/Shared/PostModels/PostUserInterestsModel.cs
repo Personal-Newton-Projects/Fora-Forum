@@ -8,7 +8,7 @@ namespace Fora.Shared.PostModels
 {
     public class PostUserInterestsModel
     {
-        public int InterestsID { get; set; }
+        public int InterestID { get; set; }
         public int UserID { get; set; }
     }
 }

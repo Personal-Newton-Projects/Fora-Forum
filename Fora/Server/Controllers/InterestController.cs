@@ -67,7 +67,7 @@ public class InterestController : Controller
         {
             InterestModel interest = new InterestModel()
             {
-                Name = thisInterest.InterestsNAME,
+                Name = thisInterest.Name,
                 UserId = thisInterest.UserID
             };
             await appDbContext.Interests.AddAsync(interest);

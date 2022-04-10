@@ -2,6 +2,6 @@
 
 public class CreateInterestsModel
 {
-    public string InterestsNAME { get; set; }
+    public string Name { get; set; }
     public int UserID { get; set; }
 }

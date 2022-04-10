@@ -29,7 +29,7 @@
 <EditForm Model="@InterestToCreate" OnSubmit="CreateThisInterest">
     <DataAnnotationsValidator/>
     <ValidationSummary/>
-    <InputText @bind-Value="InterestToCreate.InterestsNAME"></InputText>
+    <InputText @bind-Value="InterestToCreate.Name"></InputText>
     <button type="submit" class="btn btn-primary">Create</button>
 </EditForm>
 
@@ -71,14 +71,14 @@
     {
         ChosenInterests.Add( new PostUserInterestsModel()
         {
-            InterestsID = interest.Id,
+            InterestID = interest.Id,
             UserID = CurrentUser.Id,
         });
         await SubmitInterest();
     }
     public async Task RemoveInterest(InterestModel interest)
     {
-        ChosenInterests.Remove(ChosenInterests.Where(i => i.InterestsID == interest.Id).FirstOrDefault());
+        ChosenInterests.Remove(ChosenInterests.Where(i => i.InterestID == interest.Id).FirstOrDefault());
         await SubmitInterest();
     }
     
@@ -86,7 +86,7 @@
     {
         foreach (var item in ChosenInterests)
         {
-            Console.WriteLine(item.InterestsID);
+            Console.WriteLine(item.InterestID);
         }
         await UserManager.UpdateUserInterests(ChosenInterests, CurrentUser.Id);
         StateHasChanged();

@@ -108,7 +108,7 @@ namespace Fora.Server.Controllers
                         {
                             UserId = chosenInterest.UserID,
                             User = dbUser,
-                            InterestId = chosenInterest.InterestsID
+                            InterestId = chosenInterest.InterestID
                         };
                         IntereststoAdd.Add(userInterest);
 
