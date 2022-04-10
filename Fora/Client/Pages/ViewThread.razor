@@ -8,15 +8,38 @@
 
 @if (HasPageLoaded)
 {
-    <h4>@ThisThread.Name</h4>
-    @foreach (MessageModel message in Messages)
-    {
-        <div class="border">
-            <p>@message.Message</p>
-            <p>Posted By: <a href="profile/@message.User.Id">@message.User.Username</a></p>
-        </div>
 
-    }
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8">
+                <h2>@ThisThread.Name</h2>
+                @foreach (MessageModel message in ThisThread.Messages)
+                {
+                    <div class="media border">
+                        <a href="profile/@message.User.Id">
+                            <h5 class="mt-0">@message.User.Username</h5>
+                        </a>
+                        <img src="..." class="mr-3" alt="Profile Picture">
+                        <div class="media-body">
+                            @message.Message
+                        </div>
+                        @if (CurrentUser.Id == message.User.Id)
+                        {
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-link">Edit</button>
+                                <button class="btn btn-link">Remove</button>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+    </div>
+
 
     <button @onclick="StartPost" class="btn btn-primary">Post</button>
     if (UserPosting)
@@ -45,6 +68,7 @@
     public UserModel CurrentUser { get; set; }
 
     ThreadModel ThisThread { get; set; } = new ThreadModel();
+    UserModel ThreadCreator { get; set; }
 
     public bool HasPageLoaded { get; set; } = false;
 
@@ -59,7 +83,7 @@
             CurrentUser = await LoginManager.GetLoggedInUser();
         }
         ThisThread = await ThreadManager.GetThread(ThreadId);
-
+        ThreadCreator = ThisThread.User;
         HasPageLoaded = true;
 
         StateHasChanged();
