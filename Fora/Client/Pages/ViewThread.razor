@@ -95,19 +95,20 @@
         Console.WriteLine("Reload");
     }
 
-    void StartPost()
+    async Task StartPost()
     {
         UserPosting = true;
         StateHasChanged();
     }
 
-    void PostMessageToThread()
+    async Task PostMessageToThread()
     {
         PostMessage.PosterId = CurrentUser.Id;
         PostMessage.ThreadId = ThisThread.Id;
-        ThreadManager.PutMessage(PostMessage);
+        await ThreadManager.PutMessage(PostMessage);
         UserPosting = false;
-        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-
+        ThisThread = await ThreadManager.GetThread(ThreadId);
+        StateHasChanged();
     }
+
 }
