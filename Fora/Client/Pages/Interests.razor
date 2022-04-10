@@ -2,29 +2,49 @@
 @inject IInterestManager InterestManager
 @inject IUserManager UserManager
 @inject ILoginManager LoginManager
-
+<body>
+<div class="row">
+    @for (int i = 0; i < 3; i++)
+    {
+        <div class="col-sm-6 col-md-4">
+            <div class="card" style="width: 18rem;">
+                @if (i < Images.Count)
+                {
+                    <img class="card-img-top" src="@Images[i].ImageURL" alt="Card image cap" style="width: 50%; height: 50%">
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@Intresse[i].Name</h5>
+                    <p class="card-text">Some quick exaaaaaample text to build onaaaaaaa the card title and make up the bulk of the card's content.</p>
+                    <button type="submit" @onclick="@(() => AddInterest(Intresse[i]))" class="btn btn-primary" style="background-color:green">View</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="row">
 <table class="table m-2">
     <thead>
-        <tr>
-            <th>Interest</th>
-            <th>Options</th>
-        </tr>
+    <tr>
+        <th>All Interests (Includes User Added)</th>
+        <th>Options</th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var item in Intresse)
-        {
-            <tr>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
-                    <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
-                </td>
-            </tr>
-        }
+    @foreach (var item in Intresse)
+    {
+        <tr>
+            <td>
+                @item.Name
+            </td>
+            <td>
+                <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
+                <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
+            </td>
+        </tr>
+    }
     </tbody>
 </table>
+<<<<<<< Updated upstream
 
 <EditForm Model="@InterestToCreate" OnSubmit="CreateThisInterest">
     <DataAnnotationsValidator/>
@@ -34,6 +54,20 @@
 </EditForm>
 
 @if (CurrentUser != null)
+=======
+</div>
+<div class="row">
+    <h3>Create your own interest!</h3>
+    <EditForm Model="@InterestToCreate" OnSubmit="CreateThisInterest">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <InputText Placeholder="Interest" @bind-Value="InterestToCreate.InterestsNAME"></InputText>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </EditForm>
+</div>
+</body>
+@*@if (CurrentUser != null)
+>>>>>>> Stashed changes
 {
     if (CurrentUser.UserInterests != null)
     {
@@ -43,45 +77,62 @@
         }
     }
 
-}
+}*@
+
 @code {
+
     [Parameter]
     public List<InterestModel>? Intresse { get; set; } = new();
-    
+
     [Parameter]
     public List<PostUserInterestsModel> ChosenInterests { get; set; } = new List<PostUserInterestsModel>();
 
     [Parameter]
     public UserModel CurrentUser { get; set; }
-    
+
     [Parameter]
     public CreateInterestsModel InterestToCreate { get; set; } = new();
 
+    [Parameter]
+    public List<ImageModel> Images { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
-        
-        Intresse = await InterestManager.GetInterests();
-        if(CurrentUser == null)
+        Images.Add(new ImageModel()
         {
-             CurrentUser = await LoginManager.GetLoggedInUser();
+            ImageURL = "images/Animals.jpg"
+        });
+        Images.Add(new ImageModel()
+        {
+            ImageURL = "images/gaming.jpg"
+        });
+        Images.Add(new ImageModel()
+        {
+            ImageURL = "images/philosophy.jpg"
+        });
+        Intresse = await InterestManager.GetInterests();
+        if (CurrentUser == null)
+        {
+            CurrentUser = await LoginManager.GetLoggedInUser();
         }
     }
 
     public async Task AddInterest(InterestModel interest)
     {
-        ChosenInterests.Add( new PostUserInterestsModel()
+        ChosenInterests.Add(new PostUserInterestsModel()
         {
             InterestID = interest.Id,
             UserID = CurrentUser.Id,
         });
         await SubmitInterest();
     }
+
     public async Task RemoveInterest(InterestModel interest)
     {
         ChosenInterests.Remove(ChosenInterests.Where(i => i.InterestID == interest.Id).FirstOrDefault());
         await SubmitInterest();
     }
-    
+
     public async Task SubmitInterest()
     {
         foreach (var item in ChosenInterests)
@@ -96,5 +147,7 @@
     {
         InterestToCreate.UserID = CurrentUser.Id;
         await InterestManager.CreateNewInterest(InterestToCreate);
+        StateHasChanged();
     }
+
 }
