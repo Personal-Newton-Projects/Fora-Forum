@@ -3,30 +3,31 @@
 @inject IThreadManager ThreadManager
 @inject IJSRuntime JsRuntime
 @inject ILoginManager LoginManager
+@inject NavigationManager NavigationManager
 
 
 @if (HasPageLoaded)
 {
     <h4>@ThisThread.Name</h4>
-        @foreach (MessageModel message in ThisThread.Messages)
-        {
-            <div class="border">
-                            <p>@message.Message</p>
+    @foreach (MessageModel message in Messages)
+    {
+        <div class="border">
+            <p>@message.Message</p>
             <p>Posted By: <a href="profile/@message.User.Id">@message.User.Username</a></p>
-            </div>
+        </div>
 
-        }
+    }
 
     <button @onclick="StartPost" class="btn btn-primary">Post</button>
-    if(UserPosting)
+    if (UserPosting)
     {
-            <EditForm Model="@PostMessage" OnValidSubmit="PostMessageToThread">
-                <InputTextArea @bind-Value="PostMessage.Message">
+        <EditForm Model="@PostMessage" OnValidSubmit="PostMessageToThread">
+            <InputTextArea @bind-Value="PostMessage.Message">
 
-                </InputTextArea>
+            </InputTextArea>
 
-                <button class="btn btn-success" type="submit">Post Message</button>
-            </EditForm>
+            <button class="btn btn-success" type="submit">Post Message</button>
+        </EditForm>
     }
 
 }
@@ -53,12 +54,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if(CurrentUser == null)
+        if (CurrentUser == null)
         {
             CurrentUser = await LoginManager.GetLoggedInUser();
         }
         ThisThread = await ThreadManager.GetThread(ThreadId);
+
         HasPageLoaded = true;
+
         StateHasChanged();
     }
 
@@ -80,6 +83,7 @@
         PostMessage.ThreadId = ThisThread.Id;
         ThreadManager.PutMessage(PostMessage);
         UserPosting = false;
-        StateHasChanged();
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+
     }
 }

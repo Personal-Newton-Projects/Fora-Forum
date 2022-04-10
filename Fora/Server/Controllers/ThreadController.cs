@@ -47,6 +47,10 @@ namespace Fora.Server.Controllers
                 {
                     if (message.ThreadId == thread.Id)
                     {
+                        if(thread.Messages.Contains(message))
+                        {
+                            continue;
+                        }
                         thread.Messages.Add(message);
                     }
                 }
