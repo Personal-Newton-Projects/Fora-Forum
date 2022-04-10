@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Fora.Client.Managers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fora.Server.Controllers;
@@ -57,6 +58,23 @@ public class InterestController : Controller
     public InterestModel GetInterestByName(string name)
     {
         return appDbContext.Interests.Where(i => i.Name.ToLower() == name.ToLower()).FirstOrDefault();
+    }
+    
+    [HttpPost]
+    public async Task<ActionResult<InterestModel>> CreateInterest(CreateInterestsModel thisInterest)
+    {
+        if (thisInterest != null)
+        {
+            InterestModel interest = new InterestModel()
+            {
+                Name = thisInterest.InterestsNAME,
+                UserId = thisInterest.UserID
+            };
+            await appDbContext.Interests.AddAsync(interest);
+            await appDbContext.SaveChangesAsync();
+            return Ok(interest);   
+        }
+        return BadRequest();
     }
     
     //[HttpPost]

@@ -32,5 +32,13 @@ public class InterestManager : IInterestManager
             return null;
         }
     }
+    
+    public async Task<InterestModel> CreateNewInterest(CreateInterestsModel thisInterest)
+    {
+        var result = await _httpClient.PostAsJsonAsync("api/interest/", thisInterest);
+        new JsonDebug(result);
+        return await result.Content.ReadFromJsonAsync<InterestModel>();
+    }
+
 
 }
