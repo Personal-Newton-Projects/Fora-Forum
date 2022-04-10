@@ -20,21 +20,31 @@
 
         @if (Threads != null)
         {
-            @foreach (ThreadModel thread in Threads)
-            {
-                <div class="border">
-                    <h6>@thread.Name</h6>
-                    <h6>@thread.Messages.Count</h6>
-                    <a href="/forum/@InterestName/@thread.Id">Go To</a>
-                </div>
-            }
+
+
+            <div class="list-group">
+                @foreach (ThreadModel thread in Threads)
+                {
+                    <a href="forum/@InterestName/@thread.Id" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">@thread.Name</h5>
+                            <small class="text-muted">Posts: @thread.Messages.Count</small>
+                        </div>
+                        <p class="mb-1" style="text-overflow: ellipsis">@thread.Messages[0].Message</p>
+                        <small class="text-muted">Posted by <a href="/profile/@thread.User.Id">@thread.User.Username</a></small>
+                    </a>
+                }
+            </div>
         }
 
         if (CurrentUser != null)
         {
-            <div class="border">
-                <a href="/forum/@InterestName/post">
-                    <button class="btn btn-primary">Create Thread</button>
+            <div class="list-group">
+                <a href="/forum/@InterestName/post" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <button class="btn btn-primary">Create Thread</button>
+                    </div>
+
                 </a>
             </div>
         }
