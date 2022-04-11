@@ -3,6 +3,7 @@
 @inject IUserManager UserManager
 @inject IInterestManager InterestManager
 @inject ILoginManager LoginManager
+<body class="body">
 
 @if (HasPageLoaded)
 {
@@ -44,10 +45,9 @@
             </h4>
         </div>
     </div>
-    
+
 }
-
-
+</body>
 
 @code {
     [Parameter]
@@ -56,35 +56,12 @@
     public UserModel CurrentUser { get; set; }
 
     public bool IsMyProfile { get; set; }
-
+    
     bool HasPageLoaded { get; set; } = false;
 
     protected async override Task OnInitializedAsync()
     {
         CurrentUser = await UserManager.GetById(CurrentUserId);
-        
-        CurrentUser.Threads.Add(new ThreadModel()
-        {
-            Id = 1,
-            Name = "Apocalypse",
-            UserId = 1
-        });
-        
-        CurrentUser.Messages.Add(new MessageModel()
-        {
-            Id = 1,
-            Message = "Hej",
-            ThreadId = 1,
-            UserId = 1
-        });
-        CurrentUser.Messages.Add(new MessageModel()
-        {
-            Id = 2,
-            Message = "Hejdåre",
-            ThreadId = 2,
-            UserId = 1
-        });
-
         if (CurrentUser == await LoginManager.GetLoggedInUser())
         {
             IsMyProfile = true;

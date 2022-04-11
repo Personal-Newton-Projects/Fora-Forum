@@ -2,33 +2,39 @@
 @inject IInterestManager InterestManager
 @inject IUserManager UserManager
 @inject ILoginManager LoginManager
-<body>
+
+<html class="html">
+<head>
+    <link rel="stylesheet" href="css/app.css" type="text/css">
+</head>
+<body class="body">
 @if (IsOnline == true)
 {
     <div class="row">
-    @for (int i = 0; i < 3; i++)
-    {
-        <div class="col-sm-6 col-md-4">
-            <div class="card" style="width: 18rem;">
-                @if (i < Images.Count)
-                {
-                    <img class="card-img" src="@Images[i].ImageURL" alt="Card image cap" style="width: 100%; height: 100%">
-                }
-                <div class="card-body">
-                    @if (i < Intresse.Count)
+        @for (int i = 0; i < 3; i++)
+        {
+            <div class="col-sm-6 col-md-4" style="text-align: center">
+                <div class="card">
+                    @if (i < Images.Count)
                     {
-                        <h5 class="card-title">@Intresse[i].Name</h5>
+                        <img class="img" src="@Images[i].ImageURL" alt="Card image cap">
                     }
-                    <p class="card-text"></p>
-                    @if (i < Redirect.Count)
-                    {
-                        <a href="@Redirect[i].RedirectToPage" class="btn btn-primary" style="background-color:green">View</a>
-                    }
+                    <div class="card-body">
+                        @if (i < Intresse.Count)
+                        {
+                            <h5 class="card-title">@Intresse[i].Name </h5>
+                        }
+                        <p class="card-text">
+                            @if (i < Redirect.Count)
+                            {
+                                <a href="@Redirect[i].RedirectToPage" class="btn btn-primary" style="background-color:green">View</a>
+                            }
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
 <div class="row">
     <table class="table m-2">
         <thead>
@@ -63,11 +69,13 @@
         </EditForm>
     </div>
 }
+
 else
 {
     <h3 style="text-align: center">Page did not load, perhaps you are not logged in</h3>
 }
 </body>
+</html>
 @code {
 
     [Parameter]
