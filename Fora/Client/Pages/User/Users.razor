@@ -1,0 +1,37 @@
+﻿@page "/users"
+
+@using Components;
+@inject IUserManager UserManager
+
+<div class="container">
+    @if (HasPageLoaded)
+    {
+        <div class="row">
+            @foreach (var user in AllUsers)
+            {
+                <div class="col-sm-2">
+                    <Fora.Client.Pages.Components.User CurrentUser="user">
+
+                    </Fora.Client.Pages.Components.User>
+                </div>
+            }
+        </div>
+    }
+
+
+</div>
+
+
+@code {
+    List<UserModel> AllUsers { get; set; }
+    bool HasPageLoaded { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AllUsers = await UserManager.GetUsers();
+        AllUsers = AllUsers.OrderBy(u => u.Username).OrderByDescending(u => u.UserRole.RoleId).ToList();
+        HasPageLoaded = true;
+        StateHasChanged();
+
+    }
+}
