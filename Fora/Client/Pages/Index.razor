@@ -5,40 +5,39 @@
 
 
 <PageTitle>Index</PageTitle>
-<h3>Login</h3>
-<Login></Login>
-<h3>Signup</h3>
-<Signup></Signup>
 
-<h4>You're logged in as:</h4>
-
-
-@if (CurrentUser != null)
+@if (CurrentUser == null)
 {
-    <h5>@CurrentUser.Username</h5>
-    if (@CurrentUser.UserInterests != null)
-    {
-        foreach (var item in CurrentUser.UserInterests)
-        {
-            <p>@item.Interest.Name</p>
-        }
-    }
-
-    @*<Interests CurrentUser="@CurrentUser"></Interests>*@
-
+    <div class="p-5  bg-light rounded-3">
+        <h1 class="display-4">Welcome to Fora!</h1>
+        <p class="lead">Sign up to explore and contribute to our discussion forum!</p>
+        <p class="lead">
+            <a class="btn btn-outline-primary btn-lg" href="/signup" role="button">Signup</a>
+            <a class="btn btn-outline-primary btn-lg" href="/signup" role="button">Log In</a>
+        </p>
+    </div>
+}
+else
+{
+    <div class="p-5 bg-light rounded-3">
+        <h1 class="display-4">Hello, @CurrentUser.Username</h1>
+        <p class="lead">Explore our forums <a href="/forums">here</a></p>
+        <p class="lead">Or if you're not sure you have set all your interests, set them at your profile page <a href="/profile/@CurrentUser.Id">here</a></p>
+    </div>
 }
 
+
+
+
 @code {
-    string Username { get; set; }
 
     UserModel CurrentUser { get; set; }
-    
+
     protected override async Task OnInitializedAsync()
     {
         CurrentUser = await LoginManager.GetLoggedInUser();
         if (CurrentUser != null)
         {
-            Username = CurrentUser.Username;
             StateHasChanged();
         }
 
