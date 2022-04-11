@@ -53,9 +53,9 @@ namespace Fora.Server.Data
             #region InterestSeed
 
             modelBuilder.Entity<InterestModel>().HasData(
-                new InterestModel { Id = 1, Name = "Animals", Threads = new List<ThreadModel>() },
-                new InterestModel { Id = 2, Name = "Gaming", Threads = new List<ThreadModel>() },
-                new InterestModel { Id = 3, Name = "Philosophy", Threads = new List<ThreadModel>() });
+                new InterestModel { Id = 1, Name = "Animals", ImageUrl = "images/interests/animals.jpg", Threads = new List<ThreadModel>() },
+                new InterestModel { Id = 2, Name = "Gaming", ImageUrl = "images/interests/gaming.jpg", Threads = new List<ThreadModel>() },
+                new InterestModel { Id = 3, Name = "Philosophy", ImageUrl = "images/interests/philosophy.jpg", Threads = new List<ThreadModel>() });
             #endregion
 
             #region RoleSeed
