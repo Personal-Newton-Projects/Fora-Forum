@@ -9,9 +9,9 @@ namespace Fora.Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<UserModel> Create(UserModel user, LoginModel login)    
+        public async Task<UserModel> Create(LoginModel login)    
         {
-            var createUserResult = await _httpClient.PostAsJsonAsync("api/user/", user); // Create User
+            var createUserResult = await _httpClient.PostAsJsonAsync("api/user/", login); // Create User
             if(createUserResult.IsSuccessStatusCode)
             {
                 Console.WriteLine("User has been created");
@@ -20,13 +20,13 @@ namespace Fora.Client.Services
                 if(createIdentityResult.IsSuccessStatusCode)
                 {
                     Console.WriteLine("IdentityUser has been created");
-                    return user; //Return created user
+                    return await createUserResult.Content.ReadFromJsonAsync<UserModel>(); //Return created user
                 }
                 else
                 {
                     Console.WriteLine($"IdentityUser was NOT created ({createIdentityResult.StatusCode}) and User might be created");
                     Console.WriteLine("RESOLVE THIS!");
-                    return user;
+                    return await createUserResult.Content.ReadFromJsonAsync<UserModel>();
                 }
 
             }

@@ -2,7 +2,7 @@
 {
     public interface IUserManager
     {
-        Task<UserModel> Create(UserModel user, LoginModel login);
+        Task<UserModel> Create(LoginModel login);
         Task<List<UserModel>> GetUsers();
         Task<UserModel> GetById(int id);
         Task<UserModel> FindUserByName(string username);
