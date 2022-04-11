@@ -24,7 +24,7 @@
         var User = await InitializeUserFromLogin(SignupForm); // Create user with set values with our login
 
         await UserManager.Create( //Post UserModel User and LoginModel Login to:
-            User, // POST: /api/user/
+                                  // POST: /api/user/
             SignupForm // POST: /api/identityuser/
         );
 
@@ -37,6 +37,7 @@
     /// </summary>
     /// <param name="login"></param>
     /// <returns>UserModel</returns>
+    [Obsolete("No longer used")]
     async Task<UserModel> InitializeUserFromLogin(LoginModel login)
     {
         return new UserModel()
