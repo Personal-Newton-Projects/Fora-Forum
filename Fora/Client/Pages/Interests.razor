@@ -44,7 +44,7 @@
     }
     </tbody>
 </table>
-<<<<<<< Updated upstream
+
 
 <EditForm Model="@InterestToCreate" OnSubmit="CreateThisInterest">
     <DataAnnotationsValidator/>
@@ -53,15 +53,18 @@
     <button type="submit" class="btn btn-primary">Create</button>
 </EditForm>
 
-@if (CurrentUser != null)
-=======
+        @if (CurrentUser != null)
+        {
+            
+        }
+        
 </div>
 <div class="row">
     <h3>Create your own interest!</h3>
     <EditForm Model="@InterestToCreate" OnSubmit="CreateThisInterest">
         <DataAnnotationsValidator/>
         <ValidationSummary/>
-        <InputText Placeholder="Interest" @bind-Value="InterestToCreate.InterestsNAME"></InputText>
+        <InputText Placeholder="Interest" @bind-Value="InterestToCreate.Name"></InputText>
         <button type="submit" class="btn btn-primary">Create</button>
     </EditForm>
 </div>
