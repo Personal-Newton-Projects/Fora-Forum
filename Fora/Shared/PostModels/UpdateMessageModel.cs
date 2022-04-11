@@ -11,5 +11,6 @@ namespace Fora.Shared.PostModels
         public int ThreadId { get; set; }
         public int MessageId { get; set; }
         public string NewMessage { get; set; }
+        public bool RemoveMessage { get; set; }
     }
 }

@@ -82,18 +82,13 @@
         {
             CurrentUser = await LoginManager.GetLoggedInUser();
         }
-        ThisThread = await ThreadManager.GetThread(ThreadId);
+        await ReloadThread();
         ThreadCreator = ThisThread.User;
         HasPageLoaded = true;
 
-        StateHasChanged();
+
     }
 
-    void Reload()
-    {
-        StateHasChanged();
-        Console.WriteLine("Reload");
-    }
 
     async Task StartPost()
     {
@@ -107,8 +102,7 @@
         PostMessage.ThreadId = ThisThread.Id;
         await ThreadManager.PutMessage(PostMessage);
         UserPosting = false;
-        ThisThread = await ThreadManager.GetThread(ThreadId);
-        StateHasChanged();
+        await ReloadThread();
     }
 
     async Task EditMessage(MessageModel message)
@@ -119,7 +113,10 @@
                     MessageId = message.Id,
                     ThreadId = message.ThreadId,
                     NewMessage = message.Message,
+                    RemoveMessage = false,
                 });
+
+        await ReloadThread();
     }
 
     async Task RemoveMessage(MessageModel message)
@@ -129,10 +126,19 @@
                 {
                     MessageId = message.Id,
                     ThreadId = message.ThreadId,
-                    NewMessage = "This post has been removed."
+                    NewMessage = "This post has been removed.",
+                    RemoveMessage = true,
                 }
         );
-        
+
+        await ReloadThread();
+
+    }
+
+    async Task ReloadThread()
+    {
+        ThisThread = await ThreadManager.GetThread(ThreadId);
+        StateHasChanged();
     }
 
 }

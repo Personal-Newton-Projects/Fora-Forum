@@ -11,5 +11,6 @@ namespace Fora.Shared.PostModels
         public int ThreadId { get; set; }
         public string NewName { get; set; }
         public string? NewBody { get; set; }
+        public bool RemoveThread { get; set; }
     }
 }
