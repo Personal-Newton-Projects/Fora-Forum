@@ -28,8 +28,8 @@
                         @if (CurrentUser.Id == message.User.Id)
                         {
                             <div class="d-flex justify-content-end">
-                                <button class="btn btn-link">Edit</button>
-                                <button class="btn btn-link">Remove</button>
+                                <button class="btn btn-link" @onclick="@(() => EditMessage(message))">Edit</button>
+                                <button class="btn btn-link" @onclick="@(() => RemoveMessage(message))">Remove</button>
                             </div>
                         }
                     </div>
@@ -109,6 +109,30 @@
         UserPosting = false;
         ThisThread = await ThreadManager.GetThread(ThreadId);
         StateHasChanged();
+    }
+
+    async Task EditMessage(MessageModel message)
+    {
+        await ThreadManager.UpdateMessage(
+            new UpdateMessageModel()
+                {
+                    MessageId = message.Id,
+                    ThreadId = message.ThreadId,
+                    NewMessage = message.Message,
+                });
+    }
+
+    async Task RemoveMessage(MessageModel message)
+    {
+        await ThreadManager.UpdateMessage(
+            new UpdateMessageModel()
+                {
+                    MessageId = message.Id,
+                    ThreadId = message.ThreadId,
+                    NewMessage = "This post has been removed."
+                }
+        );
+        
     }
 
 }
