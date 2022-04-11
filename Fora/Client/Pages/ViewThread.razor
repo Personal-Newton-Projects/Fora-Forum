@@ -21,16 +21,28 @@
                         <a href="profile/@message.User.Id">
                             <h5 class="mt-0">@message.User.Username</h5>
                         </a>
-                        <img src="..." class="mr-3" alt="Profile Picture">
+                        <img src="@message.User.ImageUrl" class="mr-3" alt="Profile Picture">
                         <div class="media-body">
-                            @message.Message
+                            @if (message.Deleted)
+                            {
+                                <i>@message.Message</i>
+                            }
+                            else
+                            {
+                                @message.Message
+
+                            }
                         </div>
                         @if (CurrentUser.Id == message.User.Id)
                         {
-                            <div class="d-flex justify-content-end">
-                                <button class="btn btn-link" @onclick="@(() => EditMessage(message))">Edit</button>
-                                <button class="btn btn-link" @onclick="@(() => RemoveMessage(message))">Remove</button>
-                            </div>
+                            if (!message.Deleted)
+                            {
+                                <div class="d-flex justify-content-end">
+                                    <button class="btn btn-link" @onclick="@(() => EditMessage(message))">Edit</button>
+                                    <button class="btn btn-link" @onclick="@(() => RemoveMessage(message))">Remove</button>
+                                </div>
+                            }
+
                         }
                     </div>
                 }
