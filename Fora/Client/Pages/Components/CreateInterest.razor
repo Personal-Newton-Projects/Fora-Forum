@@ -1,0 +1,24 @@
+﻿@inject IInterestManager InterestManager
+
+
+<EditForm class="form-group" Model="@InterestToCreate" OnSubmit="CreateThisInterest">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <InputText class="form-control" Placeholder="Interest" @bind-Value="InterestToCreate.Name"></InputText>
+    <button type="submit" class="btn btn-primary">Create</button>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public CreateInterestsModel InterestToCreate { get; set; }
+    [Parameter]
+    public UserModel CurrentUser { get; set; }
+
+    public async Task CreateThisInterest()
+    {
+        InterestToCreate.UserID = CurrentUser.Id;
+        await InterestManager.CreateNewInterest(InterestToCreate);
+        StateHasChanged();
+    }
+}
