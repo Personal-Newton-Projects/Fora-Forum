@@ -1,0 +1,98 @@
+﻿@page "/interests"
+@inject IInterestManager InterestManager
+@inject IUserManager UserManager
+@inject ILoginManager LoginManager
+
+<html class="html">
+
+<body class="body">
+    @if (IsOnline == true)
+    {
+        <div class="row">
+            <table class="table m-2">
+                <thead>
+                    <tr>
+                        <th>All Interests (Includes User Added)</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Intresse)
+                    {
+                        <tr>
+                            <td>
+                                @item.Name
+                                @if (item.UserId != null)
+                                {
+                                    <span> Creator: @item.User.Username</span>
+                                }
+                            </td>
+                            <td>
+                                <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
+                                <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    else
+    {
+        <h3 style="text-align: center">Page did not load, perhaps you are not logged in</h3>
+    }
+
+</body>
+</html>
+@code {
+
+    [Parameter]
+    public List<InterestModel>? Intresse { get; set; } = new();
+    [Parameter]
+    public List<PostUserInterestsModel> ChosenInterests { get; set; } = new List<PostUserInterestsModel>();
+    [Parameter]
+    public UserModel CurrentUser { get; set; }
+    [Parameter]
+    public CreateInterestsModel InterestToCreate { get; set; } = new();
+
+    [Parameter]
+    public bool IsOnline { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Intresse = await InterestManager.GetInterests();
+        if (CurrentUser == null)
+        {
+            CurrentUser = await LoginManager.GetLoggedInUser();
+        }
+        if (CurrentUser.Username == CurrentUser.Username)
+        {
+            IsOnline = true;
+        }
+    }
+
+    public async Task AddInterest(InterestModel interest)
+    {
+        ChosenInterests.Add(new PostUserInterestsModel() { InterestID = interest.Id, UserID = CurrentUser.Id, });
+        await SubmitInterest();
+    }
+
+    public async Task RemoveInterest(InterestModel interest)
+    {
+        ChosenInterests.Remove(ChosenInterests.Where(i => i.InterestID == interest.Id).FirstOrDefault());
+        await SubmitInterest();
+    }
+
+    public async Task SubmitInterest()
+    {
+        foreach (var item in ChosenInterests)
+        {
+            Console.WriteLine(item.InterestID);
+        }
+        await UserManager.UpdateUserInterests(ChosenInterests, CurrentUser.Id);
+        StateHasChanged();
+    }
+
+
+}
