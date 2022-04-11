@@ -3,130 +3,111 @@
 @inject IUserManager UserManager
 @inject ILoginManager LoginManager
 <body>
-<div class="row">
+@if (IsOnline == true)
+{
+    <div class="row">
     @for (int i = 0; i < 3; i++)
     {
         <div class="col-sm-6 col-md-4">
             <div class="card" style="width: 18rem;">
                 @if (i < Images.Count)
                 {
-                    <img class="card-img-top" src="@Images[i].ImageURL" alt="Card image cap" style="width: 50%; height: 50%">
+                    <img class="card-img" src="@Images[i].ImageURL" alt="Card image cap" style="width: 100%; height: 100%">
                 }
                 <div class="card-body">
-                    <h5 class="card-title">@Intresse[i].Name</h5>
-                    <p class="card-text">Some quick exaaaaaample text to build onaaaaaaa the card title and make up the bulk of the card's content.</p>
-                    <button type="submit" @onclick="@(() => AddInterest(Intresse[i]))" class="btn btn-primary" style="background-color:green">View</button>
+                    @if (i < Intresse.Count)
+                    {
+                        <h5 class="card-title">@Intresse[i].Name</h5>
+                    }
+                    <p class="card-text"></p>
+                    @if (i < Redirect.Count)
+                    {
+                        <a href="@Redirect[i].RedirectToPage" class="btn btn-primary" style="background-color:green">View</a>
+                    }
                 </div>
             </div>
         </div>
     }
 </div>
 <div class="row">
-<table class="table m-2">
-    <thead>
-    <tr>
-        <th>All Interests (Includes User Added)</th>
-        <th>Options</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Intresse)
-    {
+    <table class="table m-2">
+        <thead>
         <tr>
-            <td>
-                @item.Name
-            </td>
-            <td>
-                <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
-                <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
-            </td>
+            <th>All Interests (Includes User Added)</th>
+            <th>Options</th>
         </tr>
-    }
-    </tbody>
-</table>
-
-
-<EditForm Model="@InterestToCreate" OnSubmit="CreateThisInterest">
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>
-    <InputText @bind-Value="InterestToCreate.Name"></InputText>
-    <button type="submit" class="btn btn-primary">Create</button>
-</EditForm>
-
-        @if (CurrentUser != null)
+        </thead>
+        <tbody>
+        @foreach (var item in Intresse)
         {
-            
+            <tr>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
+                    <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
+                </td>
+            </tr>
         }
-        
+        </tbody>
+    </table>
 </div>
-<div class="row">
-    <h3>Create your own interest!</h3>
-    <EditForm Model="@InterestToCreate" OnSubmit="CreateThisInterest">
-        <DataAnnotationsValidator/>
-        <ValidationSummary/>
-        <InputText Placeholder="Interest" @bind-Value="InterestToCreate.Name"></InputText>
-        <button type="submit" class="btn btn-primary">Create</button>
-    </EditForm>
-</div>
-</body>
-@*@if (CurrentUser != null)
->>>>>>> Stashed changes
+    <div class="row">
+        <h3>Create your own interest!</h3>
+        <EditForm Model="@InterestToCreate" OnSubmit="CreateThisInterest">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <InputText Placeholder="Interest" @bind-Value="InterestToCreate.Name"></InputText>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+}
+else
 {
-    if (CurrentUser.UserInterests != null)
-    {
-        foreach (var item in CurrentUser.UserInterests)
-        {
-            <p>CurrentUser.UserInterests[@item.InterestId] = </p>
-        }
-    }
-
-}*@
-
+    <h3 style="text-align: center">Page did not load, perhaps you are not logged in</h3>
+}
+</body>
 @code {
 
     [Parameter]
     public List<InterestModel>? Intresse { get; set; } = new();
-
     [Parameter]
     public List<PostUserInterestsModel> ChosenInterests { get; set; } = new List<PostUserInterestsModel>();
-
     [Parameter]
     public UserModel CurrentUser { get; set; }
-
     [Parameter]
     public CreateInterestsModel InterestToCreate { get; set; } = new();
-
     [Parameter]
     public List<ImageModel> Images { get; set; } = new();
+    [Parameter]
+    public List<RedirectToModel> Redirect { get; set; } = new();
+    [Parameter]
+    public bool IsOnline { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        Images.Add(new ImageModel()
-        {
-            ImageURL = "images/Animals.jpg"
-        });
-        Images.Add(new ImageModel()
-        {
-            ImageURL = "images/gaming.jpg"
-        });
-        Images.Add(new ImageModel()
-        {
-            ImageURL = "images/philosophy.jpg"
-        });
         Intresse = await InterestManager.GetInterests();
         if (CurrentUser == null)
         {
             CurrentUser = await LoginManager.GetLoggedInUser();
         }
+        if (CurrentUser.Username == CurrentUser.Username)
+        {
+            IsOnline = true;
+        }
+        Redirect.Add(new RedirectToModel() {RedirectToPage = "/forum/animals"});
+        Redirect.Add(new RedirectToModel() {RedirectToPage = "/forum/gaming"});
+        Redirect.Add(new RedirectToModel() {RedirectToPage = "/forum/philosophy"});
+        
+        Images.Add(new ImageModel() {ImageURL = "images/Animals.jpg"});
+        Images.Add(new ImageModel() {ImageURL = "images/gaming.jpg"});
+        Images.Add(new ImageModel(){ImageURL = "images/philosophy.jpg"});
     }
 
     public async Task AddInterest(InterestModel interest)
     {
-        ChosenInterests.Add(new PostUserInterestsModel()
-        {
-            InterestID = interest.Id,
-            UserID = CurrentUser.Id,
-        });
+        ChosenInterests.Add(new PostUserInterestsModel() {InterestID = interest.Id, UserID = CurrentUser.Id,});
         await SubmitInterest();
     }
 
