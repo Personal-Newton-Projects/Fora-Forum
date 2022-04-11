@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fora.Server.Migrations.AuthDb
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20220408094738_InitialAuth")]
+    [Migration("20220411021526_InitialAuth")]
     partial class InitialAuth
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,6 +139,22 @@ namespace Fora.Server.Migrations.AuthDb
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "2c421943-8c62-40ff-a71d-2ceab7f235dc",
+                            Email = "admin@admin.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEBB84ds7vHL3L2oOLlDxOt7RaM0XhtklSmALP7+KVm7nKFMRXbPqkZT1f9fOGnuIcA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "9edfb987-48ce-4ef1-960a-720ff38e208a",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>

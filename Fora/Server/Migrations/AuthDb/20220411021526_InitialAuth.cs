@@ -154,6 +154,11 @@ namespace Fora.Server.Migrations.AuthDb
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "2c421943-8c62-40ff-a71d-2ceab7f235dc", "admin@admin.com", false, false, null, null, null, "AQAAAAEAACcQAAAAEBB84ds7vHL3L2oOLlDxOt7RaM0XhtklSmALP7+KVm7nKFMRXbPqkZT1f9fOGnuIcA==", null, false, "9edfb987-48ce-4ef1-960a-720ff38e208a", false, "admin" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",

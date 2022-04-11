@@ -69,9 +69,15 @@ namespace Fora.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PostDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ThreadId")
                         .HasColumnType("int");
@@ -86,6 +92,34 @@ namespace Fora.Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("Fora.Shared.RoleModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Role = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Role = 1
+                        });
                 });
 
             modelBuilder.Entity("Fora.Shared.ThreadModel", b =>
@@ -144,6 +178,10 @@ namespace Fora.Server.Migrations
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -151,6 +189,41 @@ namespace Fora.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Banned = false,
+                            Deleted = false,
+                            ImageUrl = "~/Images/default.png",
+                            Username = "admin"
+                        });
+                });
+
+            modelBuilder.Entity("Fora.Shared.UserRoleModel", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 2
+                        });
                 });
 
             modelBuilder.Entity("Fora.Shared.InterestModel", b =>
@@ -218,11 +291,35 @@ namespace Fora.Server.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Fora.Shared.UserRoleModel", b =>
+                {
+                    b.HasOne("Fora.Shared.RoleModel", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Fora.Shared.UserModel", "User")
+                        .WithOne("UserRole")
+                        .HasForeignKey("Fora.Shared.UserRoleModel", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Fora.Shared.InterestModel", b =>
                 {
                     b.Navigation("Threads");
 
                     b.Navigation("UserInterests");
+                });
+
+            modelBuilder.Entity("Fora.Shared.RoleModel", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("Fora.Shared.ThreadModel", b =>
@@ -239,6 +336,9 @@ namespace Fora.Server.Migrations
                     b.Navigation("Threads");
 
                     b.Navigation("UserInterests");
+
+                    b.Navigation("UserRole")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
