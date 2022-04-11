@@ -29,7 +29,9 @@ namespace Fora.Server.Controllers
                 .Include(u => u.UserInterests)
                 .Include(u => u.Interests)
                 .Include(u => u.Threads)
-                .Include(u => u.Messages).ToListAsync<UserModel>();
+                .Include(u => u.Messages)
+                .Include(u => u.UserRole)
+                .ToListAsync<UserModel>();
 
             foreach (UserModel user in dbUsers)
             {
@@ -50,6 +52,14 @@ namespace Fora.Server.Controllers
                     interest.User = user;
                 }
 
+                foreach(RoleModel role in appDbContext.Roles)
+                {
+                    if(user.UserRole.RoleId == role.Id)
+                    {
+                        user.UserRole.Role = role;
+                    }
+                }
+
             }
 
             return dbUsers;
@@ -66,8 +76,17 @@ namespace Fora.Server.Controllers
 
         // POST: api/user
         [HttpPost]
-        public async Task<ActionResult> Post(UserModel user)
+        public async Task<ActionResult> Post(LoginModel login)
         {
+            UserModel user = new UserModel()
+            {
+                Username = login.Username,
+                UserRole = new UserRoleModel()
+                {
+                    RoleId = 1
+                }
+            };
+
             await appDbContext.Users.AddAsync(user);
             await appDbContext.SaveChangesAsync();
             return Ok(user);
