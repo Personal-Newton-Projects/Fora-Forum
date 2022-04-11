@@ -1,0 +1,12 @@
+﻿@inject ILoginManager LoginManager
+
+<h3>Logout</h3>
+
+
+<button class="btn btn-primary" @onclick="LogOut">Click here to log out</button>
+@code {
+    async Task LogOut()
+    {
+        await LoginManager.StoreUser(String.Empty);
+    }
+}

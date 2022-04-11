@@ -1,0 +1,168 @@
+﻿@page "/forum/{InterestName}/{ThreadId:int}"
+
+@inject IThreadManager ThreadManager
+@inject IJSRuntime JsRuntime
+@inject ILoginManager LoginManager
+@inject NavigationManager NavigationManager
+
+
+@if (HasPageLoaded)
+{
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8">
+                <h2>@ThisThread.Name</h2>
+                @foreach (MessageModel message in ThisThread.Messages)
+                {
+                    <div class="m-4">
+                        <div class="d-flex border">
+                            <div class="flex-shrink-0">
+                                <a href="profile/@message.User.Id">
+                                    <h5 class="mt-0">@message.User.Username</h5>
+                                    <img src="@message.User.ImageUrl" class="mr-3 user-img" alt="Profile Picture">
+                                </a>
+                            </div>
+
+
+                            <div class="flex-grow-1 ms-3">
+                                @if (message.Deleted)
+                                {
+                                    <i>@message.Message</i>
+                                }
+                                else
+                                {
+                                    @message.Message
+
+                                }
+                                
+
+
+                                @if (CurrentUser.Id == message.User.Id)
+                                {
+                                    if (!message.Deleted)
+                                    {
+                                        <div class=" justify-content-end">
+                                            <hr>
+                                            <button class="btn btn-link" @onclick="@(() => EditMessage(message))">Edit</button>
+                                            <button class="btn btn-link" @onclick="@(() => RemoveMessage(message))">Remove</button>
+                                        </div>
+                                    }
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                <button @onclick="StartPost" class="d-flex justify-content-end btn btn-primary">Post</button>
+                @if (UserPosting)
+                {
+                    <EditForm Model="@PostMessage" OnValidSubmit="PostMessageToThread">
+                        <InputTextArea @bind-Value="PostMessage.Message">
+
+                        </InputTextArea>
+
+                        <button class="btn btn-success" type="submit">Post Message</button>
+                    </EditForm>
+                }
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+    </div>
+
+
+
+
+}
+
+
+
+@code {
+
+    [Parameter]
+    public string InterestName { get; set; }
+    [Parameter]
+    public int ThreadId { get; set; }
+    [Parameter]
+    public PostMessageModel PostMessage { get; set; } = new PostMessageModel();
+    [Parameter]
+    public UserModel CurrentUser { get; set; }
+
+    ThreadModel ThisThread { get; set; } = new ThreadModel();
+    UserModel ThreadCreator { get; set; }
+
+    public bool HasPageLoaded { get; set; } = false;
+
+    public bool UserPosting { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (CurrentUser == null)
+        {
+            CurrentUser = await LoginManager.GetLoggedInUser();
+        }
+        await ReloadThread();
+        ThreadCreator = ThisThread.User;
+        HasPageLoaded = true;
+
+
+    }
+
+
+    async Task StartPost()
+    {
+        UserPosting = true;
+        StateHasChanged();
+    }
+
+    async Task PostMessageToThread()
+    {
+        PostMessage.PosterId = CurrentUser.Id;
+        PostMessage.ThreadId = ThisThread.Id;
+        await ThreadManager.PutMessage(PostMessage);
+        UserPosting = false;
+        await ReloadThread();
+    }
+
+    async Task EditMessage(MessageModel message)
+    {
+        await ThreadManager.UpdateMessage(
+            new UpdateMessageModel()
+                {
+                    MessageId = message.Id,
+                    ThreadId = message.ThreadId,
+                    NewMessage = message.Message,
+                    RemoveMessage = false,
+                });
+
+        await ReloadThread();
+    }
+
+    async Task RemoveMessage(MessageModel message)
+    {
+        await ThreadManager.UpdateMessage(
+            new UpdateMessageModel()
+                {
+                    MessageId = message.Id,
+                    ThreadId = message.ThreadId,
+                    NewMessage = "This post has been removed.",
+                    RemoveMessage = true,
+                }
+        );
+
+        await ReloadThread();
+
+    }
+
+    async Task ReloadThread()
+    {
+        ThisThread = await ThreadManager.GetThread(ThreadId);
+        StateHasChanged();
+    }
+
+}

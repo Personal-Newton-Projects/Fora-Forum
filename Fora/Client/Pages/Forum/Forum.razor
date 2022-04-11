@@ -1,0 +1,65 @@
+﻿@page "/forum"
+
+@inject IInterestManager InterestManager
+@inject ILoginManager LoginManager
+
+
+<div class="container-fluid">
+
+
+    @if (HasPageLoaded == true)
+    {
+        <h3>Our Sub-forums</h3>
+        @if (CurrentUser != null)
+        {
+            <div class="row">
+                @foreach (var interest in CurrentUser.UserInterests)
+                {
+                    <div class="col-sm-4 d-flex align-items-stretch">
+                        
+                        <div class="card-custom text-center mx-auto">
+                            <a class="text-decoration-none" href="/forum/@interest.Interest.Name">
+                            <img class="card-img" src="@interest.Interest.ImageUrl" alt="...">
+                            <div class="card-body">
+                                <h5>@interest.Interest.Name</h5>
+                                
+                            </div>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+
+
+
+        else
+        {
+            <h5>Log in to browse our forums!</h5>
+        }
+
+    }
+</div>
+
+
+@code {
+    List<InterestModel> Interests = new List<InterestModel>();
+
+    UserModel CurrentUser { get; set; }
+
+    bool HasPageLoaded { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (CurrentUser == null)
+        {
+
+            CurrentUser = await LoginManager.GetLoggedInUser();
+
+        }
+        Interests = await InterestManager.GetInterests();
+        HasPageLoaded = true;
+        StateHasChanged();
+    }
+}

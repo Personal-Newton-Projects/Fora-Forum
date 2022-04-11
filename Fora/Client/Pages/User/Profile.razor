@@ -1,0 +1,129 @@
+﻿@page "/profile/{ProfileUserId:int}"
+@using Fora.Client.Pages.Components;
+@inject IUserManager UserManager
+@inject IInterestManager InterestManager
+@inject ILoginManager LoginManager
+
+@if (HasPageLoaded)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-2">
+                <User CurrentUser="@ProfileUser">
+
+                </User>
+            </div>
+            <div class="col-sm-8">
+                <div class="card mb-4">
+                    <div class="card-header">Threads by this User</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            @foreach (var thread in ProfileUser.Threads)
+                            {
+                                <div class="border rounded-3">
+                                    @thread.Name | Posts: @thread.Messages.Count
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                @if (IsMyProfile == true)
+                {
+                    <div class="card mb-4">
+                        <div class="card-header">Account Options</div>
+                        <div class="card-body">
+                            @if (!ProfileUser.Deleted)
+                            {
+                                <button @onclick="FlagForDelete" class="btn btn-danger">Flag for Deletion</button>
+                            }
+                            else
+                            {
+                                <button @onclick="UndoDelete" class="btn btn-warning">Undo Deletion</button>
+                            }
+
+                            <CreateInterest InterestToCreate="@InterestToCreate" CurrentUser="@ProfileUser">
+
+                            </CreateInterest>
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int ProfileUserId { get; set; }
+
+    public UserModel ProfileUser { get; set; }
+
+    public UserModel CurrentUser { get; set; }
+
+    CreateInterestsModel InterestToCreate { get; set; } = new CreateInterestsModel();
+
+    public bool IsMyProfile { get; set; }
+    public bool IsAdmin { get; set; }
+
+    bool HasPageLoaded { get; set; } = false;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await ReloadUser();
+
+        CurrentUser = await LoginManager.GetLoggedInUser();
+        if (ProfileUser.Id == CurrentUser.Id)
+        {
+            IsMyProfile = true;
+        }
+        else
+        {
+            IsMyProfile = false;
+        }
+
+        if(CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
+        {
+            IsAdmin = true;
+        }
+
+        Console.WriteLine(ProfileUser == await LoginManager.GetLoggedInUser());
+        Console.WriteLine(IsMyProfile);
+
+        HasPageLoaded = true;
+        StateHasChanged();
+    }
+
+    public async Task FlagForDelete()
+    {
+        await UserManager.UpdateUser(new PostUserUpdateModel()
+            {
+                Id = ProfileUser.Id,
+                DeleteUser = true,
+                BanUser = false
+            });
+        await ReloadUser();
+    }
+
+    public async Task UndoDelete()
+    {
+
+        await UserManager.UpdateUser(new PostUserUpdateModel()
+            {
+                Id = ProfileUser.Id,
+                DeleteUser = false,
+                BanUser = false
+            });
+        await ReloadUser();
+    }
+
+    async Task ReloadUser()
+    {
+        ProfileUser = await UserManager.GetById(ProfileUserId);
+        StateHasChanged();
+    }
+}
