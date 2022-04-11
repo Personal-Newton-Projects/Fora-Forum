@@ -122,5 +122,35 @@ namespace Fora.Server.Controllers
             return BadRequest();
         }
 
+        [HttpPut("message")]
+        public async Task<ActionResult<MessageModel>> UpdateMessage(UpdateMessageModel updateMessage)
+        {
+            if(updateMessage != null)
+            {
+                var thread = await Get(updateMessage.ThreadId);
+                thread.Messages.SingleOrDefault(m => m.Id == updateMessage.MessageId).Message = updateMessage.NewMessage;
+                await appDbContext.SaveChangesAsync();
+                return Ok(thread.Messages.LastOrDefault());
+            }
+            return BadRequest();
+        }
+
+        [HttpPut("thread")]
+        public async Task<ActionResult<ThreadModel>> UpdateThread(UpdateThreadModel updateThread)
+        {
+            if(updateThread != null)
+            {
+                var thread = await Get(updateThread.ThreadId);
+                thread.Name = updateThread.NewName;
+                if(updateThread.NewBody != null)
+                {
+                    thread.Messages.First().Message = updateThread.NewBody;
+                }
+                await appDbContext.SaveChangesAsync();
+                return Ok(thread);
+            }
+            return BadRequest();
+        }
+
     }
 }
