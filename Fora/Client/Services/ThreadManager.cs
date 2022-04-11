@@ -39,5 +39,17 @@
             new JsonDebug(result);
             return await result.Content.ReadFromJsonAsync<MessageModel>();
         }
+
+        public async Task<MessageModel> UpdateMessage(UpdateMessageModel updateMessage)
+        {
+            var result = await _httpClient.PutAsJsonAsync("/api/thread/message", updateMessage);
+            return await result.Content.ReadFromJsonAsync<MessageModel>();
+        }
+
+        public async Task<ThreadModel> UpdateThread(UpdateThreadModel updateThread)
+        {
+            var result = await _httpClient.PutAsJsonAsync("api/thread/thread", updateThread);
+            return await result.Content.ReadFromJsonAsync<ThreadModel>();
+        }
     }
 }

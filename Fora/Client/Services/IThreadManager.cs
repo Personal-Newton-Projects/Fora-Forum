@@ -7,5 +7,7 @@
         Task<MessageModel> PutMessage(PostMessageModel message);
         Task<ThreadModel> GetThread(int id);
         Task<List<ThreadModel>> GetThreadsByInterest(int id);
+        Task<MessageModel> UpdateMessage(UpdateMessageModel updateMessage);
+        Task<ThreadModel> UpdateThread(UpdateThreadModel updateThread);
     }
 }
