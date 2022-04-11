@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public string Username { get; set; } = String.Empty;
-        public string ImageUrl { get; set; } = "images/default.png";
+        public string ImageUrl { get; set; } = "images/users/default.png";
         public bool Banned { get; set; }
         public bool Deleted { get; set; }
         public UserRoleModel UserRole { get; set; }
