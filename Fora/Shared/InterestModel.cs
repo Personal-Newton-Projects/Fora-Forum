@@ -8,6 +8,7 @@ namespace Fora.Shared
         [Key]
         public int Id { get; set; }
         public string Name { get; set; } = String.Empty;
+        public string ImageUrl { get; set; } = "images/interests/default.png";
         public List<ThreadModel> Threads { get; set; }
 
         // Relations
