@@ -1,0 +1,14 @@
+﻿
+@if(Role == RoleEnum.ADMIN)
+{
+    <span class="badge bg-danger">Admin</span>
+}
+else if(Role == RoleEnum.USER)
+{
+    <span class="badge bg-secondary">Member</span>
+}
+
+@code {
+    [Parameter]
+    public RoleEnum Role {get;set;}
+}

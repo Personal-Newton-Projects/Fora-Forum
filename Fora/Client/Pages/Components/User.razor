@@ -1,0 +1,22 @@
+﻿@using Components;
+
+<div class="card">
+    <a class="text-decoration-none" href="/profile/@CurrentUser.Id">
+        <img class="card-img-top" src="@CurrentUser.ImageUrl">
+        <div class="card-body">
+            <h6 class="card-title">@CurrentUser.Username</h6>
+            <UserRank Role="@CurrentUser.UserRole.Role.Role">
+
+            </UserRank>
+            <UserStatus User="@CurrentUser">
+
+            </UserStatus>
+
+        </div>
+    </a>
+
+</div>
+@code {
+    [Parameter]
+    public UserModel CurrentUser { get; set; }
+}

@@ -1,0 +1,14 @@
+﻿
+@if(User.Banned)
+{
+    <span class="badge bg-warning">Banned</span>
+}
+@if(User.Deleted)
+{
+    <span class="badge bg-info">Deleted</span>
+}
+
+@code {
+    [Parameter]
+    public UserModel User {get;set;}
+}
