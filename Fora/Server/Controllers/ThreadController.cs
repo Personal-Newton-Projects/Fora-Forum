@@ -128,7 +128,9 @@ namespace Fora.Server.Controllers
             if(updateMessage != null)
             {
                 var thread = await Get(updateMessage.ThreadId);
-                thread.Messages.SingleOrDefault(m => m.Id == updateMessage.MessageId).Message = updateMessage.NewMessage;
+                var message = thread.Messages.SingleOrDefault(m => m.Id == updateMessage.MessageId);
+                message.Message = updateMessage.NewMessage;
+                message.Deleted = updateMessage.RemoveMessage;
                 await appDbContext.SaveChangesAsync();
                 return Ok(thread.Messages.LastOrDefault());
             }
