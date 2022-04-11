@@ -70,13 +70,12 @@ a, .btn-link {
     border-radius: 10px;
 }
 .user-img {
-    width:25px;
-    height: 25px;
+    width:120px;
+    height:120px;
 }
-.card {
+.card-custom {
     padding: 15px;
     width: 18rem;
-    text-align: center;
     border-radius: 10px;
     background-color: #e5e7e9;
     -webkit-animation: bgcolor 20s infinite;
@@ -84,21 +83,28 @@ a, .btn-link {
     -webkit-animation-direction: alternate;
     animation-direction: alternate;
 }
-.card-body {
+.card-rainbow {
+    background-color: #e5e7e9;
+    -webkit-animation: bgcolor 20s infinite;
+    animation: bgcolor 10s infinite;
+    -webkit-animation-direction: alternate;
+    animation-direction: alternate;
+}
+.card-body-custom {
     float: left;
     text-align: left;
     margin-bottom: 20px;
     text-decoration-style: solid;
     text-decoration-color: green;
 }
-.card-title {
+.card-title-custom {
     float: left;
     text-align: left;
     margin-top: 9px;
     text-decoration-style: solid;
     text-decoration-color: green;
 }
-.card-text {
+.card-text-custom {
     float: right;
 }
 .mini-card {
@@ -127,11 +133,7 @@ a, .btn-link {
         background-color: #864cbf
     }
 }
-.body {
-}
+
 .html {
     background-color: lightgray;
-}
-.row {
-    text-align: center;
 }
