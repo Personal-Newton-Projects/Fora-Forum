@@ -59,15 +59,21 @@ namespace Fora.Client.Services
         /// <returns>true if it isn't</returns>
         public async Task<bool> IsLoggedIn()
         {
-           string id = await localStorageService.GetItemAsync<string>("user");
-            if(!String.IsNullOrEmpty(id) || id.Length > 0)
+            string id = await localStorageService.GetItemAsync<string>("user");
+            var userExistResult = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/ID/{id}");
+            if(userExistResult != null)
             {
-                return true;
+                if (!String.IsNullOrEmpty(id) || id.Length > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
-            {
-                return false;
-            }
+            return false;
+
         }
 
         /// <summary>
@@ -85,8 +91,15 @@ namespace Fora.Client.Services
                     if(!String.IsNullOrEmpty(username))
                     {
                         var result = await userManager.FindUserByName(username);
-                        Console.WriteLine($"User is {result.Username}");
-                        return result;
+                        if(result != null)
+                        {
+                            Console.WriteLine($"User is {result.Username}");
+                            return result;
+                        }
+                        else
+                        {
+                            return null;
+                        }
                     }
 
                 }
