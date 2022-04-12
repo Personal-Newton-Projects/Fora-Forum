@@ -3,12 +3,13 @@
 @inject IInterestManager InterestManager
 @inject IThreadManager ThreadManager
 @inject ILoginManager LoginManager
+@inject NavigationManager NavigationManager
 
 @if (HasPageLoaded == true)
 {
     @if (CurrentInterest != null)
     {
-        <h3>@CurrentInterest.Name Subforum</h3>
+        <h3>@CurrentInterest.Name</h3>
         if (CurrentUser != null)
         {
             <h4>Welcome @CurrentUser.Username</h4>
@@ -20,13 +21,12 @@
 
         @if (Threads != null)
         {
-
-
             <div class="list-group">
                 @foreach (ThreadModel thread in Threads)
                 {
-                    if(thread.Messages[0].Deleted) { continue; } // SKIP THREAD IF THREAD BODY IS DELETED
-                    <a href="forum/@InterestName/@thread.Id" class="list-group-item list-group-item-action flex-column align-items-start">
+                    if (thread.Messages[0].Deleted) { continue; } // SKIP THREAD IF THREAD BODY IS DELETED
+                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+                    <a class="text-decoration-none" href="forum/@InterestName/@thread.Id">
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1">@thread.Name</h5>
                             <small class="text-muted">Posts: @thread.Messages.Count</small>
@@ -34,6 +34,14 @@
                         <p class="mb-1" style="text-overflow: ellipsis">@thread.Messages[0].Message</p>
                         <small class="text-muted">Posted by <a href="/profile/@thread.User.Id">@thread.User.Username</a></small>
                     </a>
+                    @if (CurrentUser.Id == thread.UserId || CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
+                    {
+                        <span class="d-flex w-100 justify-content-end">
+                        <button class="btn btn-link" @onclick="@(() => EditThread(thread))">Edit</button>
+                        <button class="btn btn-link" @onclick="@(() => RemoveThread(thread))">Remove</button>
+                        </span>
+                    }
+                    </div>
                 }
             </div>
         }
@@ -54,7 +62,7 @@
     else
     {
         <h1>Error, subforum not found!</h1>
-        <button class="btn btn-primary" onclick="@Reload">Reload</button>
+        <button class="btn btn-primary" onclick="@ReloadThreads">Reload</button>
     }
 
 }
@@ -78,7 +86,7 @@
     {
         var interestResult = await InterestManager.GetInterests();
         CurrentInterest = interestResult.Where(i => i.Name.ToLower() == InterestName.ToLower()).FirstOrDefault();
-        Threads = await ThreadManager.GetThreadsByInterest(CurrentInterest.Id);
+        await ReloadThreads();
 
         if (await LoginManager.IsLoggedIn())
         {
@@ -93,8 +101,26 @@
         StateHasChanged();
     }
 
-    public void Reload()
+    public async Task ReloadThreads()
     {
+        Threads = await ThreadManager.GetThreadsByInterest(CurrentInterest.Id);
         StateHasChanged();
     }
+
+    async Task RemoveThread(ThreadModel thread)
+    {
+        await ThreadManager.UpdateThread(new UpdateThreadModel()
+            {
+                ThreadId = thread.Id,
+                RemoveThread = true
+            });
+
+        await ReloadThreads();
+    }
+
+    void EditThread(ThreadModel thread)
+    {
+        NavigationManager.NavigateTo(NavigationManager.Uri + $"/{thread.Id}/edit", forceLoad: true);
+    }
+
 }
