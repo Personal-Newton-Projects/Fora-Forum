@@ -10,23 +10,34 @@
 {
 
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-8">
-                <h2>@ThisThread.Name</h2>
-                @foreach (MessageModel message in ThisThread.Messages)
-                {
+
+        <h2>@ThisThread.Name</h2>
+        <hr>
+        @foreach (MessageModel message in ThisThread.Messages)
+
+        {
+            
+            <div class="row mt-3 p-0">
+                <div class="col-sm-2 p-0">
+                    <Fora.Client.Pages.Components.User CurrentUser="message.User">
+
+                    </Fora.Client.Pages.Components.User>
+                </div>
+                <div class="col-sm-8 border">
+
+
                     <div class="m-4">
-                        <div class="d-flex border">
-                            <div class="flex-shrink-0">
-                                <a href="profile/@message.User.Id">
-                                    <h5 class="mt-0">@message.User.Username</h5>
-                                    <img src="@message.User.ImageUrl" class="mr-3 user-img" alt="Profile Picture">
-                                </a>
-                            </div>
+                        @if (message.UserId == CurrentUser.Id)
+                        {
+                            MessageStyle = "bg-info";
+                        }
+                        else
+                        {
+                            MessageStyle = String.Empty;
+                        }
 
 
+                        <div class="d-flex">
                             <div class="flex-grow-1 ms-3">
                                 @if (message.Deleted)
                                 {
@@ -37,29 +48,70 @@
                                     @message.Message
 
                                 }
-                                
+                            </div>
 
+
+                            <div class=" pt-5 justify-content-end align-items-end flex-column">
                                 <small>Posted @message.PostDate</small>
-                                @if(message.Edited)
+                                @if (message.Edited)
                                 {
-                                    <small>Message has been edited @message.EditDate</small>
+                                    <small><em>Message has been edited</em> @message.EditDate</small>
                                 }
+                                <hr>
                                 @if (CurrentUser.Id == message.User.Id)
                                 {
-                                    if (!message.Deleted)
+                                    if (message == ThisThread.Messages.First())
                                     {
                                         <div class=" justify-content-end">
-                                            <hr>
+                                            <button class="btn btn-link" @onclick="@(() => EditThread())">Edit Thread</button>
+                                            <button class="btn btn-link" @onclick="@(() => RemoveThread())">Remove Thread</button>
+                                        </div>
+
+                                    }
+                                    else if (!message.Deleted)
+                                    {
+                                        <div class=" justify-content-end">
                                             <button class="btn btn-link" @onclick="@(() => EditMessage(message))">Edit</button>
                                             <button class="btn btn-link" @onclick="@(() => RemoveMessage(message))">Remove</button>
                                         </div>
                                     }
 
                                 }
+                                else if (CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
+                                {
+                                    if (message == ThisThread.Messages.First())
+                                    {
+                                        <div class=" justify-content-end">
+                                            
+                                            <button class="btn btn-link" @onclick="@(() => EditThread())">Edit Thread</button>
+                                            <button class="btn btn-link" @onclick="@(() => RemoveThread())">Remove Thread</button>
+                                        </div>
+
+                                    }
+                                    else if (!message.Deleted)
+                                    {
+                                        <div class=" justify-content-end">
+                                            
+                                            <button class="btn btn-link" @onclick="@(() => RemoveMessage(message))">Remove</button>
+                                        </div>
+
+                                    }
+                                }
                             </div>
+
+
                         </div>
                     </div>
-                }
+                </div>
+            </div>
+        }
+
+
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8 p-2 text-center">
+
                 <button @onclick="StartPost" class="d-flex justify-content-end btn btn-primary">Post</button>
                 @if (UserPosting)
                 {
@@ -71,16 +123,19 @@
                         <button class="btn btn-success" type="submit">Post Message</button>
                     </EditForm>
                 }
+
             </div>
             <div class="col-md-2">
             </div>
+
         </div>
+
     </div>
-
-
-
-
 }
+
+
+
+
 
 
 
@@ -102,6 +157,7 @@
 
     public bool UserPosting { get; set; }
 
+    string MessageStyle { get; set; } = String.Empty;
 
 
     protected override async Task OnInitializedAsync()
@@ -167,6 +223,23 @@
     {
         ThisThread = await ThreadManager.GetThread(ThreadId);
         StateHasChanged();
+    }
+
+    async Task EditThread()
+    {
+        NavigationManager.NavigateTo(NavigationManager.Uri + "/edit", forceLoad: true);
+        await ReloadThread();
+    }
+
+    async Task RemoveThread()
+    {
+        await ThreadManager.UpdateThread(new UpdateThreadModel()
+            {
+                ThreadId = ThisThread.Id,
+                RemoveThread = true,
+            });
+
+        await ReloadThread();
     }
 
 }
