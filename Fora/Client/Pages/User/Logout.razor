@@ -1,4 +1,6 @@
-﻿@inject ILoginManager LoginManager
+﻿@page "/logout"
+@inject ILoginManager LoginManager
+@inject NavigationManager NavigationManager
 
 <h3>Logout</h3>
 
@@ -8,5 +10,6 @@
     async Task LogOut()
     {
         await LoginManager.StoreUser(String.Empty);
+        NavigationManager.NavigateTo(NavigationManager.BaseUri, forceLoad: true);
     }
 }

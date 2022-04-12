@@ -2,6 +2,7 @@
 
 @inject ILoginManager LoginManager
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 <EditForm Model="LoginForm" OnSubmit="HandleSubmit"> 
     <DataAnnotationsValidator/>
@@ -19,7 +20,7 @@
         Console.WriteLine("Submitted");
 
         await LoginManager.LogInWithUser(LoginForm);
-        StateHasChanged();
+        NavigationManager.NavigateTo(NavigationManager.BaseUri, forceLoad: true);
     }
 
 }
