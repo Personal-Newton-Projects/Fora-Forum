@@ -90,7 +90,8 @@ namespace Fora.Server.Controllers
                         new MessageModel()
                         {
                             Message = postThread.Description,
-                            UserId = postThread.CreatorId
+                            UserId = postThread.CreatorId,
+                            PostDate = DateTime.Now,
                         }
                     },
                     InterestId = postThread.InterestId
@@ -113,7 +114,8 @@ namespace Fora.Server.Controllers
                 thread.Messages.Add(new MessageModel()
                 {
                     Message = postMessage.Message,
-                    UserId = postMessage.PosterId
+                    UserId = postMessage.PosterId,
+                    PostDate = DateTime.Now,
                 });
 
                 await appDbContext.SaveChangesAsync();
@@ -131,6 +133,11 @@ namespace Fora.Server.Controllers
                 var message = thread.Messages.SingleOrDefault(m => m.Id == updateMessage.MessageId);
                 message.Message = updateMessage.NewMessage;
                 message.Deleted = updateMessage.RemoveMessage;
+                if(message.Deleted == false)
+                {
+                    message.Edited = true;
+                    message.EditDate = DateTime.Now;
+                }
                 await appDbContext.SaveChangesAsync();
                 return Ok(thread.Messages.LastOrDefault());
             }
