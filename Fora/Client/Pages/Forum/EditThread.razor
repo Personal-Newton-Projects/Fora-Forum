@@ -1,0 +1,96 @@
+﻿@page "/forum/{InterestName}/{ThreadId:int}/edit"
+
+@inject ILoginManager LoginManager
+@inject IInterestManager InterestManager
+@inject IThreadManager ThreadManager
+@inject NavigationManager NavigationManager
+
+@if (HasPageLoaded == true)
+{
+    @if (CurrentThread != null)
+    {
+        @if (CurrentUser != null)
+        {
+            @if (CurrentUser.Id == CurrentThread.UserId || CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
+            {
+                <EditForm Model="@ThreadUpdate" class="form-group" OnValidSubmit="@HandleSubmit">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <InputText class="form-control" placeholder="@CurrentThread.Name" @bind-Value="@ThreadUpdate.NewName">
+
+                    </InputText>
+                    <InputTextArea class="form-control" placeholder="@CurrentThread.Messages.First().Message" @bind-Value="@ThreadUpdate.NewBody">
+
+                    </InputTextArea>
+
+                    <button class="btn btn-success" type="submit">Create Thread</button>
+
+                </EditForm>
+            }
+            else
+            {
+                <div class="alert alert-danger" role="alert">
+                    You are not able to edit this thread. Permission Denied.
+                </div>
+            }
+
+        }
+        else
+        {
+            <div class="alert alert-danger" role="alert">
+                Please log in to edit this thread.
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            This thread does not exist.
+        </div>
+    }
+
+}
+
+
+@code {
+    [Parameter]
+    public string InterestName { get; set; }
+    [Parameter]
+    public int ThreadId { get; set; }
+
+    InterestModel Interest { get; set; }
+
+    UpdateThreadModel ThreadUpdate { get; set; } = new UpdateThreadModel();
+
+    UserModel CurrentUser { get; set; }
+
+    ThreadModel CurrentThread { get; set; }
+
+    public bool HasPageLoaded { get; set; } = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var interestResult = await InterestManager.GetInterests();
+        Interest = interestResult.Where(i => i.Name.ToLower() == InterestName.ToLower()).FirstOrDefault();
+        CurrentThread = await ThreadManager.GetThread(ThreadId);
+
+        if(await LoginManager.IsLoggedIn())
+        {
+            CurrentUser = await LoginManager.GetLoggedInUser();
+        }
+
+        HasPageLoaded = true;
+        StateHasChanged();
+
+    }
+
+    async Task HandleSubmit()
+    {
+        ThreadUpdate.ThreadId = CurrentThread.Id;
+        await ThreadManager.UpdateThread(ThreadUpdate);
+        NavigationManager.NavigateTo(NavigationManager.BaseUri + $"/forum/{InterestName}/{CurrentThread.Id}", forceLoad: true);
+
+    }
+
+}
