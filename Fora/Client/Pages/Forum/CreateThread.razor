@@ -9,19 +9,40 @@
 {
     @if (CurrentUser != null)
     {
-        <EditForm Model="@ThreadtoCreate" class="form-group" OnValidSubmit="@HandleSubmit">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-            <InputText class="form-control" @bind-Value="@ThreadtoCreate.Title">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-8">
+                    <h5 class="text-center">Create a Thread</h5>
+                    <EditForm Model="@ThreadtoCreate" OnValidSubmit="@HandleSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="form-group">
+                            <label>Title</label>
+                            <InputText class="form-control" placeholder="Title" @bind-Value="@ThreadtoCreate.Title">
 
-            </InputText>
-            <InputTextArea class="form-control" @bind-Value="@ThreadtoCreate.Description">
+                            </InputText>
+                        </div>
 
-            </InputTextArea>
 
-            <button class="btn btn-success" type="submit">Create Thread</button>
+                        <div class="form-group">
+                            <label>Body</label>
+                            <InputTextArea class="form-control" placeholder="Body" @bind-Value="@ThreadtoCreate.Description">
 
-        </EditForm>
+                            </InputTextArea>
+                        </div>
+                    <div class="mt-3 d-flex align-content-center">
+                        <button class="btn btn-success" type="submit">Create Thread</button>
+                    </div>
+
+                    </EditForm>
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
+        </div>
+
     }
     else
     {
