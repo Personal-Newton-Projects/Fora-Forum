@@ -5,11 +5,9 @@
 
 
 <div class="container-fluid">
-
-
     @if (HasPageLoaded == true)
     {
-        <h3>Our Sub-forums</h3>
+        <h3>Browse our forums!</h3>
         @if (CurrentUser != null)
         {
             <div class="row">
@@ -30,10 +28,6 @@
                 }
             </div>
         }
-
-
-
-
         else
         {
             <h5>Log in to browse our forums!</h5>
