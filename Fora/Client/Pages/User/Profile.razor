@@ -13,7 +13,7 @@
 
                 </User>
             </div>
-            <div class="col-sm-8">
+            <div class="col-sm-10">
                 <div class="card mb-4">
                     <div class="card-header">Threads by this User</div>
                     <div class="card-body">
@@ -21,13 +21,17 @@
                             @foreach (var thread in ProfileUser.Threads)
                             {
                                 <div class="border rounded-3">
-                                    @thread.Name | Posts: @thread.Messages.Count
+                                    <a class="text-decoration-none" href="/forum/@thread.Interest.Name/@thread.Id">
+                                    <span class="text-info">@thread.Interest.Name:</span> <span class="text-lg-start">@thread.Name</span> | Posts: @thread.Messages.Count
+                                    </a>
                                 </div>
                             }
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div class="col-sm-2">
                 @if (IsMyProfile == true)
                 {
@@ -86,7 +90,7 @@
             IsMyProfile = false;
         }
 
-        if(CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
+        if (CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
         {
             IsAdmin = true;
         }
