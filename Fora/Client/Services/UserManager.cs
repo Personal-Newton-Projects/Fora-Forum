@@ -11,29 +11,38 @@ namespace Fora.Client.Services
 
         public async Task<UserModel> Create(LoginModel login)    
         {
-            var createUserResult = await _httpClient.PostAsJsonAsync("api/user/", login); // Create User
-            if(createUserResult.IsSuccessStatusCode)
+            var userExist = await FindUserByName(login.Username);
+            if (userExist != null)
             {
-                Console.WriteLine("User has been created");
-                var createIdentityResult = await _httpClient.PostAsJsonAsync("api/identityuser/", login); // Create IdentityUser
-
-                if(createIdentityResult.IsSuccessStatusCode)
-                {
-                    Console.WriteLine("IdentityUser has been created");
-                    return await createUserResult.Content.ReadFromJsonAsync<UserModel>(); //Return created user
-                }
-                else
-                {
-                    Console.WriteLine($"IdentityUser was NOT created ({createIdentityResult.StatusCode}) and User might be created");
-                    Console.WriteLine("RESOLVE THIS!");
-                    return await createUserResult.Content.ReadFromJsonAsync<UserModel>();
-                }
-
+                return null;
             }
             else
             {
-                Console.WriteLine($"User was not created ({createUserResult.StatusCode})");
+                var createUserResult = await _httpClient.PostAsJsonAsync("api/user/", login); // Create User
+                if (createUserResult.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("User has been created");
+                    var createIdentityResult = await _httpClient.PostAsJsonAsync("api/identityuser/", login); // Create IdentityUser
+
+                    if (createIdentityResult.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("IdentityUser has been created");
+                        return await createUserResult.Content.ReadFromJsonAsync<UserModel>(); //Return created user
+                    }
+                    else
+                    {
+                        Console.WriteLine($"IdentityUser was NOT created ({createIdentityResult.StatusCode}) and User might be created");
+                        Console.WriteLine("RESOLVE THIS!");
+                        return await createUserResult.Content.ReadFromJsonAsync<UserModel>();
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine($"User was not created ({createUserResult.StatusCode})");
+                }
             }
+
             return null;
             
 
@@ -52,7 +61,7 @@ namespace Fora.Client.Services
         public async Task<UserModel> FindUserByName(string username)
         {
             var Users = await GetUsers();
-            return Users.Where(u => u.Username == username).FirstOrDefault();
+            return Users.SingleOrDefault(u => u.Username.ToLower() == username.ToLower());
         }
 
         public async Task<UserModel> UpdateUser(PostUserUpdateModel postUser)
