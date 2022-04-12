@@ -40,16 +40,25 @@ namespace Fora.Client.Services
         /// </summary>
         /// <param name="id">id of IdentityUser</param>
         /// <returns></returns>
-        public async Task StoreUser(string id)
+        public async Task StoreUser(string? id)
         {
-            if(id.Length > 1)
+
+            if(!String.IsNullOrEmpty(id))
             {
+                if (!await DoesUserExist(id))
+                {
+                    await localStorageService.RemoveItemAsync("user");
+                }
+
                 await localStorageService.SetItemAsStringAsync("user", $"{id}");
             }
             else
             {
-                await localStorageService.SetItemAsStringAsync("user", null);
+                await localStorageService.RemoveItemAsync("user");
+
             }
+
+
 
         }
         
@@ -59,9 +68,11 @@ namespace Fora.Client.Services
         /// <returns>true if it isn't</returns>
         public async Task<bool> IsLoggedIn()
         {
-            string id = await localStorageService.GetItemAsync<string>("user");
-            var userExistResult = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/ID/{id}");
-            if(userExistResult != null)
+            string? id = await localStorageService.GetItemAsync<string>("user");
+
+            if (id == null) return false;
+            
+            if(await DoesUserExist(id) != null)
             {
                 if (!String.IsNullOrEmpty(id) || id.Length > 0)
                 {
@@ -74,6 +85,19 @@ namespace Fora.Client.Services
             }
             return false;
 
+        }
+
+        async Task<bool> DoesUserExist(string id)
+        {
+            var userExistResult = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/ID/{id}");
+            if(userExistResult != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
