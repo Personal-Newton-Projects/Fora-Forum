@@ -2,56 +2,49 @@
 
 @inject IUserManager UserManager
 @inject ILoginManager LoginManager
-@inject IInterestManager InterestManager
-@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+
+@if(AlertMessage.Length > 0)
+{
+    <div class="alert alert-warning">@AlertMessage</div>
+}
 
 <EditForm Model="SignupForm" OnSubmit="HandleSubmit"> 
     <DataAnnotationsValidator/>
     <ValidationSummary/>
     <InputText @bind-Value="SignupForm.Username" Placeholder="Username"></InputText>
     <InputText @bind-Value="SignupForm.Password" Placeholder="Password"></InputText>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary " disabled="@disabled">Submit</button>
 </EditForm>
 @code {
     [Parameter]
     public LoginModel SignupForm { get; set; } = new();
 
+    public string AlertMessage { get; set; } = String.Empty;
+
+    bool disabled = false;
+
     public async Task HandleSubmit()
     {
         Console.WriteLine("Submitted");
         //Calls method to
-
-        var User = await InitializeUserFromLogin(SignupForm); // Create user with set values with our login
-
-        await UserManager.Create( //Post UserModel User and LoginModel Login to:
-                                  // POST: /api/user/
+        disabled = true;
+        StateHasChanged();
+        var CreateResult = await UserManager.Create( //Post UserModel User and LoginModel Login to:
+                                                     // POST: /api/user/
             SignupForm // POST: /api/identityuser/
         );
 
-        await JSRuntime.InvokeAsync<UserModel>("console.log", User);
+        if(CreateResult == null)
+        {
+            AlertMessage = "This user already exists!";
+            StateHasChanged();
+            return;
+        }
+        Console.WriteLine("passed anyways");
+        AlertMessage = "";
         await LoginManager.LogInWithUser(SignupForm);
-    }
-
-    /// <summary>
-    /// /// Initialize an User with set values from paramref name="login"
-    /// </summary>
-    /// <param name="login"></param>
-    /// <returns>UserModel</returns>
-    [Obsolete("No longer used")]
-    async Task<UserModel> InitializeUserFromLogin(LoginModel login)
-    {
-        return new UserModel()
-            {
-                // Id = 1, // await UserManager.GetUserCount() + 1,
-                Username = login.Username,
-                Interests = new List<InterestModel>(),
-                UserInterests = new List<UserInterestModel>(),
-                Messages = new List<MessageModel>(),
-                Threads = new List<ThreadModel>(),
-                Deleted = false,
-                Banned = false,
-            };
-       
-
+        NavigationManager.NavigateTo(NavigationManager.BaseUri, forceLoad: true);
     }
 }
