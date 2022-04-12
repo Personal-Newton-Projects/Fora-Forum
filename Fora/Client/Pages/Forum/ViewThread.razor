@@ -39,7 +39,11 @@
                                 }
                                 
 
-
+                                <small>Posted @message.PostDate</small>
+                                @if(message.Edited)
+                                {
+                                    <small>Message has been edited @message.EditDate</small>
+                                }
                                 @if (CurrentUser.Id == message.User.Id)
                                 {
                                     if (!message.Deleted)
