@@ -1,5 +1,4 @@
-﻿@page "/interests"
-@inject IInterestManager InterestManager
+﻿@inject IInterestManager InterestManager
 @inject IUserManager UserManager
 @inject ILoginManager LoginManager
 
@@ -12,7 +11,7 @@
             <table class="table m-2">
                 <thead>
                     <tr>
-                        <th>All Interests (Includes User Added)</th>
+                        <th>All Interests, Includes UserAdded</th>
                         <th>Options</th>
                     </tr>
                 </thead>
@@ -21,6 +20,10 @@
                     {
                         <tr>
                             <td>
+                                @if (item.Name.Length > 3)
+                                {
+                                    <span>✔</span>
+                                }
                                 @item.Name
                                 @if (item.UserId != null)
                                 {
@@ -28,8 +31,14 @@
                                 }
                             </td>
                             <td>
-                                <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
-                                <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
+                                @if (isAdded(item))
+                                {
+                                    <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
+                                }
                             </td>
                         </tr>
                     }
@@ -37,7 +46,6 @@
             </table>
         </div>
     }
-
     else
     {
         <h3 style="text-align: center">Page did not load, perhaps you are not logged in</h3>
@@ -59,6 +67,14 @@
     [Parameter]
     public bool IsOnline { get; set; } = new();
 
+    [Parameter]
+    public bool IsAdded { get; set; } = new();
+
+    [Parameter]
+    public bool IsRemoved { get; set; } = new();
+    
+    public List<MainIntererstModel> MainInterests = new();
+
     protected override async Task OnInitializedAsync()
     {
         Intresse = await InterestManager.GetInterests();
@@ -69,7 +85,19 @@
         if (CurrentUser.Username == CurrentUser.Username)
         {
             IsOnline = true;
+            MainInterests.Add(new MainIntererstModel() {Name = "✔"});
+            MainInterests.Add(new MainIntererstModel() {Name = "✔"});
+            MainInterests.Add(new MainIntererstModel() {Name = "✔"});
         }
+        foreach (UserInterestModel userInterest in CurrentUser.UserInterests)
+        {
+            ChosenInterests.Add(new PostUserInterestsModel()
+            {
+                InterestID = userInterest.InterestId,
+                UserID = userInterest.UserId
+            });
+        }
+        StateHasChanged();
     }
 
     public async Task AddInterest(InterestModel interest)
@@ -94,5 +122,12 @@
         StateHasChanged();
     }
 
-
+    bool isAdded(InterestModel interest)
+    {
+        if (CurrentUser.UserInterests.SingleOrDefault(x => x.InterestId == interest.Id) != null)
+        {
+            return true;
+        }
+        return false;
+    }
 }
