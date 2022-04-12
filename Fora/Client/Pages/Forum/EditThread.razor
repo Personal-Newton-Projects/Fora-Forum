@@ -13,19 +13,41 @@
         {
             @if (CurrentUser.Id == CurrentThread.UserId || CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
             {
-                <EditForm Model="@ThreadUpdate" class="form-group" OnValidSubmit="@HandleSubmit">
-                    <DataAnnotationsValidator />
-                    <ValidationSummary />
-                    <InputText class="form-control" placeholder="@CurrentThread.Name" @bind-Value="@ThreadUpdate.NewName">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-2">
+                        </div>
+                        <div class="col-md-8">
+                            <EditForm Model="@ThreadUpdate" OnValidSubmit="@HandleSubmit">
+                                <DataAnnotationsValidator />
+                                <ValidationSummary />
+                                <div class="form-group">
+                                    <label>New Title</label>
 
-                    </InputText>
-                    <InputTextArea class="form-control" placeholder="@CurrentThread.Messages.First().Message" @bind-Value="@ThreadUpdate.NewBody">
+                                    <InputText class="form-control" placeholder="@CurrentThread.Name" @bind-Value="@ThreadUpdate.NewName">
 
-                    </InputTextArea>
+                                    </InputText>
+                                </div>
+                                <small class="text-muted">Leave empty to not change</small>
 
-                    <button class="btn btn-success" type="submit">Create Thread</button>
+                                <div class="form-group">
+                                    <label>New Body</label>
 
-                </EditForm>
+                                    <InputTextArea class="form-control" placeholder="@CurrentThread.Messages.First().Message" @bind-Value="@ThreadUpdate.NewBody">
+
+                                    </InputTextArea>
+                                    <small>Leave empty to not change</small>
+                                </div>
+                                <div class="mt-3 d-flex align-content-center">
+                                    <button class="btn btn-success" type="submit">Update Thread</button>
+                                </div>
+                            </EditForm>
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                </div>
+
             }
             else
             {
@@ -75,7 +97,7 @@
         Interest = interestResult.Where(i => i.Name.ToLower() == InterestName.ToLower()).FirstOrDefault();
         CurrentThread = await ThreadManager.GetThread(ThreadId);
 
-        if(await LoginManager.IsLoggedIn())
+        if (await LoginManager.IsLoggedIn())
         {
             CurrentUser = await LoginManager.GetLoggedInUser();
         }
