@@ -150,7 +150,15 @@ namespace Fora.Server.Controllers
             if(updateThread != null)
             {
                 var thread = await Get(updateThread.ThreadId);
-                thread.Name = updateThread.NewName;
+                if(updateThread.NewName != null)
+                {
+                    thread.Name = updateThread.NewName;
+                }
+                if(updateThread.RemoveThread == true)
+                {
+                    thread.Messages.First().Message = "This post has been removed";
+                    thread.Messages.First().Deleted = true;
+                }
                 if(updateThread.NewBody != null)
                 {
                     thread.Messages.First().Message = updateThread.NewBody;
