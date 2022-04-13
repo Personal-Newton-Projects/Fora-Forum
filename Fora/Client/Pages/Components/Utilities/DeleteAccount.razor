@@ -1,0 +1,47 @@
+﻿
+@inject IUserManager UserManager
+
+<div class="card mb-4">
+    <div class="card-header">
+        <p>Account Deletion</p>
+    </div>
+    <div class="card-body">
+        @if (CurrentUser.Deleted)
+        {
+            <button @onclick="FlagForDelete" class="btn btn-danger">Flag for Deletion</button>
+        }
+        else
+        {
+            <button @onclick="UndoDelete" class="btn btn-warning">Undo Deletion</button>
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public UserModel CurrentUser { get; set; }
+
+    public async Task FlagForDelete()
+    {
+        await UserManager.UpdateUser(new PostUserUpdateModel()
+            {
+                Id = CurrentUser.Id,
+                DeleteUser = true,
+                BanUser = false
+            });
+    }
+
+    public async Task UndoDelete()
+    {
+
+        await UserManager.UpdateUser(new PostUserUpdateModel()
+            {
+                Id = CurrentUser.Id,
+                DeleteUser = false,
+                BanUser = false
+            });
+        
+    }
+
+}
