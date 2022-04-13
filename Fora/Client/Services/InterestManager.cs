@@ -41,9 +41,9 @@ public class InterestManager : IInterestManager
     }
 
     
-    public async Task<InterestModel> RemoveExistingInterest(RemoveInterestModel removeInterestModel)
+    public async Task<InterestModel> RemoveExistingInterest(int id)
     {
-        var result = await _httpClient.PostAsJsonAsync($"api/interest/", removeInterestModel);
+        var result = await _httpClient.DeleteAsync($"api/interest/{id}");
         new JsonDebug(result);
         if (result.IsSuccessStatusCode)
         {

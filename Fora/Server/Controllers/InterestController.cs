@@ -81,12 +81,13 @@ public class InterestController : Controller
         return BadRequest();
     }
 
-    [HttpPost]
-    public async Task<ActionResult<InterestModel>> RemoveInterest(RemoveInterestModel removeInterestModel)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<InterestModel>> RemoveInterest(int id)
     {
-        if (removeInterestModel != null)
+        if (id != 0)
         {
-            InterestModel interest = appDbContext.Interests.FirstOrDefault(x => x.Id == removeInterestModel.Id);
+            InterestModel interest = appDbContext.Interests.FirstOrDefault(x => x.Id == id);
+            if (interest == null) return BadRequest();
             appDbContext.Remove(interest);
             appDbContext.SaveChangesAsync();
             return Ok(interest);

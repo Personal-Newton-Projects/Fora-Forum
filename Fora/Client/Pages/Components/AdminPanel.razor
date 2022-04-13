@@ -36,9 +36,6 @@
     [Parameter]
     public UserModel UserModel { get; set; } = new();
 
-    [Parameter]
-    public RemoveInterestModel RemoveInterestModel { get; set; } = new();
-
     protected override async Task OnInitializedAsync()
     {
         InterestModel = await InterestManager.GetInterests();
@@ -46,7 +43,7 @@
 
     public async Task RemoveInterest(InterestModel interest)
     {
-        await InterestManager.RemoveExistingInterest(new RemoveInterestModel()             {Id = interest.Id});
+        await InterestManager.RemoveExistingInterest(interest.Id);
         StateHasChanged();
     }
 }
