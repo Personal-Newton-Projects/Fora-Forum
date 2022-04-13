@@ -5,7 +5,7 @@
 <html class="html">
 
 <body class="body">
-    @if (IsOnline == true)
+    @if (HasPageLoaded == true)
     {
         <div class="row" style="background-color:lightgray;">
             <table class="table m-2">
@@ -18,7 +18,7 @@
                 <tbody>
                 @if (CurrentUser.UserInterests != null)
                 {
-                    @foreach (var item in Intresse)
+                    @foreach (var item in InterestsList)
                     {
                         <tr>
                             <td>
@@ -59,30 +59,29 @@
 
 </body>
 </html>
+
 @code {
 
     [Parameter]
-    public List<InterestModel>? Intresse { get; set; } = new();
-    [Parameter]
-    public List<PostUserInterestsModel> ChosenInterests { get; set; } = new List<PostUserInterestsModel>();
+    public List<InterestModel>? InterestsList { get; set; } = new();
+
     [Parameter]
     public UserModel CurrentUser { get; set; }
-    [Parameter]
-    public CreateInterestsModel InterestToCreate { get; set; } = new();
-    [Parameter]
-    public bool IsOnline { get; set; } = new();
+
+
+    public List<PostUserInterestsModel> ChosenInterests { get; set; } = new List<PostUserInterestsModel>();
+
+
+    public bool HasPageLoaded { get; set; } = new();
     
     protected override async Task OnInitializedAsync()
     {
-        Intresse = await InterestManager.GetInterests();
+        InterestsList = await InterestManager.GetInterests();
         if (CurrentUser == null)
         {
             CurrentUser = await LoginManager.GetLoggedInUser();
         }
-        if (CurrentUser.Username == CurrentUser.Username)
-        {
-            IsOnline = true;
-        }
+
         foreach (UserInterestModel userInterest in CurrentUser.UserInterests)
         {
             ChosenInterests.Add(new PostUserInterestsModel()
