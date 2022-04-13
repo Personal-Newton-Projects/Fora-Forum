@@ -7,31 +7,36 @@
 <body class="body">
     @if (IsOnline == true)
     {
-        <div class="row">
+        <div class="row" style="background-color:lightgray;">
             <table class="table m-2">
                 <thead>
                     <tr>
-                        <th>All Interests, Includes UserAdded</th>
+                        <th>All Interests</th>
                         <th>Options</th>
                     </tr>
                 </thead>
                 <tbody>
+                @if (CurrentUser.UserInterests != null)
+                {
                     @foreach (var item in Intresse)
                     {
                         <tr>
                             <td>
-                                @if (item.Name.Length > 3)
+                                @if (IsAdded(item))
                                 {
-                                    <span>✔</span>
+                                    @item.Name <span style="color: blue">✔</span>
                                 }
-                                @item.Name
+                                else
+                                {
+                                    @item.Name
+                                }
                                 @if (item.UserId != null)
                                 {
-                                    <span> Creator: @item.User.Username</span>
+                                    <span> -- Created By: @item.User.Username</span>
                                 }
                             </td>
                             <td>
-                                @if (isAdded(item))
+                                @if (IsAdded(item))
                                 {
                                     <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
                                 }
@@ -42,6 +47,7 @@
                             </td>
                         </tr>
                     }
+                }
                 </tbody>
             </table>
         </div>
@@ -63,18 +69,9 @@
     public UserModel CurrentUser { get; set; }
     [Parameter]
     public CreateInterestsModel InterestToCreate { get; set; } = new();
-
     [Parameter]
     public bool IsOnline { get; set; } = new();
-
-    [Parameter]
-    public bool IsAdded { get; set; } = new();
-
-    [Parameter]
-    public bool IsRemoved { get; set; } = new();
     
-    public List<MainIntererstModel> MainInterests = new();
-
     protected override async Task OnInitializedAsync()
     {
         Intresse = await InterestManager.GetInterests();
@@ -85,9 +82,6 @@
         if (CurrentUser.Username == CurrentUser.Username)
         {
             IsOnline = true;
-            MainInterests.Add(new MainIntererstModel() {Name = "✔"});
-            MainInterests.Add(new MainIntererstModel() {Name = "✔"});
-            MainInterests.Add(new MainIntererstModel() {Name = "✔"});
         }
         foreach (UserInterestModel userInterest in CurrentUser.UserInterests)
         {
@@ -122,7 +116,7 @@
         StateHasChanged();
     }
 
-    bool isAdded(InterestModel interest)
+    bool IsAdded(InterestModel interest)
     {
         if (CurrentUser.UserInterests.SingleOrDefault(x => x.InterestId == interest.Id) != null)
         {

@@ -1,0 +1,15 @@
+﻿
+
+@code {
+    [Parameter]
+    public List<InterestModel> interestModel { get; set; }
+    
+    [Parameter]
+    public UserModel userModel { get; set; }
+
+    protected override async Task OnInitializeAsync()
+    {
+        interestModel = await InterestManager.GetInterests();
+    }
+
+}

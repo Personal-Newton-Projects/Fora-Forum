@@ -36,16 +36,8 @@
                 @if (IsMyProfile == true)
                 {
                     <div class="card mb-4">
-                        <div class="card-header">Account Options</div>
+                        <div class="card-header">Create a Interest</div>
                         <div class="card-body">
-                            @if (!ProfileUser.Deleted)
-                            {
-                                <button @onclick="FlagForDelete" class="btn btn-danger">Flag for Deletion</button>
-                            }
-                            else
-                            {
-                                <button @onclick="UndoDelete" class="btn btn-warning">Undo Deletion</button>
-                            }
 
                             <CreateInterest InterestToCreate="@InterestToCreate" CurrentUser="@ProfileUser">
 
@@ -55,9 +47,50 @@
                 }
             </div>
         </div>
-        <div class="row">
-            <Interests></Interests>
-        </div>
+        @if (IsMyProfile)
+        {
+            <div class="row m-2">
+                <Interests></Interests>
+            </div>
+            <div class="row" style="text-align:center">
+                <div class="col-sm-2">
+                    <div class="card mb-4">
+                    <div class="card-header">
+                        <p>Account Deletion</p>
+                    </div>
+                    <div class="card-body">
+                        @if (!ProfileUser.Deleted)
+                        {
+                            <button @onclick="FlagForDelete" class="btn btn-danger">Flag for Deletion</button>
+                        }
+                        else
+                        {
+                            <button @onclick="UndoDelete" class="btn btn-warning">Undo Deletion</button>
+                        }
+                    </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="card mb-4">
+                        <div class="card-header">Change Password</div>
+                        <div class="card-body">
+                            <ChangePassword></ChangePassword>
+                        </div>
+                    </div>
+                </div>
+                @if (IsAdmin)
+                {
+                    <div class="col-sm-2">
+                        <div class="card mb-4">
+                            <div class="card-header">Admin Panel</div>
+                            <div class="card-body">
+                                <AdminPanel></AdminPanel>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
     </div>
 }
 
