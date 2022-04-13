@@ -21,10 +21,17 @@ namespace Fora.Server.Data
             {
                 Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                 UserName = "admin",
-                PasswordHash = hasher.HashPassword(null, "Password1234!"),
+                NormalizedUserName = "ADMIN",
                 Email = "admin@admin.com",
+                NormalizedEmail = "ADMIN@ADMIN.COM",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "Password1234!"),
+                SecurityStamp = String.Empty,
+                
 
             });
+
+
 
             
         }
