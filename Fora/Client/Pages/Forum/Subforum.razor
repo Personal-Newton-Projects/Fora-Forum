@@ -38,7 +38,7 @@
                             <small class="text-muted">Posts: @thread.Messages.Count</small>
                         </div>
                         <p class="mb-1" style="text-overflow: ellipsis">@thread.Messages[0].Message</p>
-                            <small class="text-muted"><Fora.Client.Pages.Components.UserStatus User="@thread.User"></Fora.Client.Pages.Components.UserStatus>Posted by <a href="/profile/@thread.User.Id">@thread.User.Username</a></small>
+                            <small class="text-muted"><Fora.Client.Pages.Components.User.UserStatus User="@thread.User"></Fora.Client.Pages.Components.User.UserStatus>Posted by <a href="/profile/@thread.User.Id">@thread.User.Username</a></small>
                         </a>
                     @if (CurrentUser.Id == thread.UserId || CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
                     {
