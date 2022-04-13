@@ -1,0 +1,55 @@
+﻿@page "/profile/{ProfileUserId:int}/interests"
+@inject IUserManager UserManager
+@inject IInterestManager InterestManager
+@inject ILoginManager LoginManager
+
+
+@if (HasPageLoaded)
+{
+    if (ProfileUser != null)
+    {            
+        if (CurrentUser.Id == ProfileUserId)
+        {
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <Fora.Client.Pages.Components.User.Interests CurrentUser="CurrentUser">
+
+                        </Fora.Client.Pages.Components.User.Interests>
+                        <Fora.Client.Pages.Components.Utilities.CreateInterest InterestToCreate="InterestToCreate" CurrentUser="CurrentUser">
+
+                        </Fora.Client.Pages.Components.Utilities.CreateInterest>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+
+        }
+    }
+}
+
+
+@code {
+    [Parameter]
+    public int ProfileUserId { get; set; }
+
+    public UserModel ProfileUser { get; set; }
+
+    public UserModel CurrentUser { get; set; }
+
+    bool HasPageLoaded { get; set; } = false;
+
+    CreateInterestsModel InterestToCreate { get; set; } = new CreateInterestsModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ProfileUser = await UserManager.GetById(ProfileUserId);
+        CurrentUser = await LoginManager.GetLoggedInUser();
+
+
+        HasPageLoaded = true;
+        StateHasChanged();
+
+    }
+}
