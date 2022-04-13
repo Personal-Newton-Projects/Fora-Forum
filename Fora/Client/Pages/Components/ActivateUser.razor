@@ -1,0 +1,22 @@
+﻿<div class="p-5 bg-warning rounded-3">
+    <h1 class="display-4">Your account is disabled</h1>
+    <p class="lead">Please re-activate your account before accessing this feature.</p>
+    <p class="lead justify-content-evenly">
+        <a class="btn btn-outline-secondary btn-lg" @onclick="@(() => Activate())" role="button">Activate User</a>
+    </p>
+</div>
+
+@code {
+    [Parameter]
+    public UserModel CurrentUser { get; set; }
+
+    async Task Activate()
+    {
+        if(CurrentUser != null)
+        {
+            CurrentUser.Deleted = false;
+        }
+
+        StateHasChanged();
+    }
+}
