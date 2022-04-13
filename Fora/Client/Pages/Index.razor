@@ -11,7 +11,7 @@
     <div class="p-5  bg-light rounded-3">
         <h1 class="display-4">Welcome to Fora!</h1>
         <p class="lead">Sign up to explore and contribute to our discussion forum!</p>
-        <p class="lead">
+        <p class="lead justify-content-evenly">
             <a class="btn btn-outline-primary btn-lg" href="/signup" role="button">Signup</a>
             <a class="btn btn-outline-primary btn-lg" href="/login" role="button">Log In</a>
         </p>
@@ -21,7 +21,7 @@ else
 {
     <div class="p-5 bg-light rounded-3">
         <h1 class="display-4">Hello, @CurrentUser.Username</h1>
-        <p class="lead">Explore our forums <a href="/forums">here</a></p>
+        <p class="lead">Explore our forums <a href="/forum">here</a></p>
         <p class="lead">Or if you're not sure you have set all your interests, set them at your profile page <a href="/profile/@CurrentUser.Id">here</a></p>
     </div>
 }
