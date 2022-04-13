@@ -9,41 +9,60 @@
 {
     @if (CurrentUser != null)
     {
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-8">
-                    <h5 class="text-center">Create a Thread</h5>
-                    <EditForm Model="@ThreadtoCreate" OnValidSubmit="@HandleSubmit">
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
-                        <div class="form-group">
-                            <label>Title</label>
-                            <InputText class="form-control" placeholder="Title" @bind-Value="@ThreadtoCreate.Title">
-
-                            </InputText>
+        @if (!CurrentUser.Deleted)
+        {
+            @if (!CurrentUser.Banned)
+            {
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
                         </div>
+                        <div class="col-md-8">
+                            <h5 class="text-center">Create a Thread</h5>
+                            <EditForm Model="@ThreadtoCreate" OnValidSubmit="@HandleSubmit">
+                                <DataAnnotationsValidator />
+                                <ValidationSummary />
+                                <div class="form-group">
+                                    <label>Title</label>
+                                    <InputText class="form-control" placeholder="Title" @bind-Value="@ThreadtoCreate.Title">
+
+                                    </InputText>
+                                </div>
 
 
-                        <div class="form-group">
-                            <label>Body</label>
-                            <InputTextArea class="form-control" placeholder="Body" @bind-Value="@ThreadtoCreate.Description">
+                                <div class="form-group">
+                                    <label>Body</label>
+                                    <InputTextArea class="form-control" placeholder="Body" @bind-Value="@ThreadtoCreate.Description">
 
-                            </InputTextArea>
+                                    </InputTextArea>
+                                </div>
+                                <div class="mt-3 d-flex align-content-center">
+                                    <button class="btn btn-success" type="submit">Create Thread</button>
+                                </div>
+
+                            </EditForm>
                         </div>
-                    <div class="mt-3 d-flex align-content-center">
-                        <button class="btn btn-success" type="submit">Create Thread</button>
+                        <div class="col-md-2">
+                        </div>
                     </div>
-
-                    </EditForm>
                 </div>
-                <div class="col-md-2">
-                </div>
-            </div>
-        </div>
+            }
+            else
+            {
+                <Fora.Client.Pages.Components.Banned>
 
-    }
+                </Fora.Client.Pages.Components.Banned>
+            }
+        }
+        else
+        {
+            <Fora.Client.Pages.Components.ActivateUser CurrentUser="CurrentUser">
+
+            </Fora.Client.Pages.Components.ActivateUser>
+        }
+
+
+}
     else
     {
         <div class="alert alert-danger" role="alert">

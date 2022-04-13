@@ -13,7 +13,11 @@
         {
             @if (CurrentUser.Id == CurrentThread.UserId || CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
             {
-                <div class="container">
+                @if(!CurrentUser.Deleted)
+                {
+                    if(!CurrentUser.Banned)
+                    {
+                       <div class="container">
                     <div class="row">
                         <div class="col-md-2">
                         </div>
@@ -46,9 +50,24 @@
                         <div class="col-md-2">
                         </div>
                     </div>
-                </div>
+                        </div>
+                    }
+                    else
+                    {
+                       <Fora.Client.Pages.Components.Banned>
 
-            }
+                       </Fora.Client.Pages.Components.Banned> 
+                    }
+                }
+                else
+                {
+                    <Fora.Client.Pages.Components.ActivateUser CurrentUser="CurrentUser">
+
+                    </Fora.Client.Pages.Components.ActivateUser>
+                }
+
+
+}
             else
             {
                 <div class="alert alert-danger" role="alert">
