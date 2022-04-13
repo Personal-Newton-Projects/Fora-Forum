@@ -21,7 +21,11 @@
                                 <div class="card-body">
                                     <h5>@interest.Interest.Name</h5>
                                     <hr>
-                                    <span>@interest.Interest.Threads.Count posts</span>
+                                    @if (interest.Interest.Threads != null)
+                                    {
+                                        <span>@interest.Interest.Threads.Count posts</span>
+
+                                    }
                                 </div>
                             </a>
                         </div>
