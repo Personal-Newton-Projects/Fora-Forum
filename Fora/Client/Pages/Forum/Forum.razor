@@ -14,17 +14,33 @@
                 @foreach (var interest in CurrentUser.UserInterests)
                 {
                     <div class="col-sm-4 d-flex align-items-stretch">
-                        
+
                         <div class="card-custom text-center mx-auto">
                             <a class="text-decoration-none" href="/forum/@interest.Interest.Name">
-                            <img class="card-img" src="@interest.Interest.ImageUrl" alt="...">
-                            <div class="card-body">
-                                <h5>@interest.Interest.Name</h5>
-                                
-                            </div>
+                                <img class="card-img" src="@interest.Interest.ImageUrl" alt="...">
+                                <div class="card-body">
+                                    <h5>@interest.Interest.Name</h5>
+                                    <hr>
+                                    <span>@interest.Interest.Threads.Count posts</span>
+                                </div>
                             </a>
                         </div>
                     </div>
+                    @if (CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
+                    {
+                        <div class="col-sm-4 d-flex align-items-stretch">
+
+                            <div class="card-custom text-center mx-auto">
+                                <div class="card-body">
+                                    <h5>Create new Interest</h5>
+                                    <hr>
+                                    <Fora.Client.Pages.Components.CreateInterest InterestToCreate="AdminCreate"></Fora.Client.Pages.Components.CreateInterest>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+
                 }
             </div>
         }
@@ -41,6 +57,8 @@
     List<InterestModel> Interests = new List<InterestModel>();
 
     UserModel CurrentUser { get; set; }
+
+    CreateInterestsModel AdminCreate { get; set; } = new CreateInterestsModel();
 
     bool HasPageLoaded { get; set; } = false;
 
