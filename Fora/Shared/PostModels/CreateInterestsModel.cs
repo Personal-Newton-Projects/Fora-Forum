@@ -3,5 +3,5 @@
 public class CreateInterestsModel
 {
     public string Name { get; set; }
-    public int UserID { get; set; }
+    public int? UserID { get; set; }
 }
