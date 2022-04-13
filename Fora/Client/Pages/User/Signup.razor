@@ -5,18 +5,27 @@
 @inject NavigationManager NavigationManager
 
 
-@if(AlertMessage.Length > 0)
+@if (AlertMessage.Length > 0)
 {
     <div class="alert alert-warning">@AlertMessage</div>
 }
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <EditForm Model="SignupForm" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <InputText @bind-Value="SignupForm.Username" Placeholder="Username"></InputText>
+                <InputText type="password" @bind-Value="SignupForm.Password" Placeholder="Password"></InputText>
+                <button type="submit" class="btn btn-primary " disabled="@disabled">Submit</button>
+            </EditForm>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
 
-<EditForm Model="SignupForm" OnSubmit="HandleSubmit"> 
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>
-    <InputText @bind-Value="SignupForm.Username" Placeholder="Username"></InputText>
-    <InputText @bind-Value="SignupForm.Password" Placeholder="Password"></InputText>
-    <button type="submit" class="btn btn-primary " disabled="@disabled">Submit</button>
-</EditForm>
 @code {
     [Parameter]
     public LoginModel SignupForm { get; set; } = new();
@@ -36,7 +45,7 @@
             SignupForm // POST: /api/identityuser/
         );
 
-        if(CreateResult == null)
+        if (CreateResult == null)
         {
             AlertMessage = "This user already exists!";
             StateHasChanged();

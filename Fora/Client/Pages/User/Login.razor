@@ -4,13 +4,25 @@
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 
-<EditForm Model="LoginForm" OnSubmit="HandleSubmit"> 
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>
-    <InputText @bind-Value="LoginForm.Username" Placeholder="Username"></InputText>
-    <InputText @bind-Value="LoginForm.Password" Placeholder="Password"></InputText>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</EditForm>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <h5>Log in</h5>
+            <EditForm Model="LoginForm" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <InputText @bind-Value="LoginForm.Username" Placeholder="Username"></InputText>
+                <InputText type="password" @bind-Value="LoginForm.Password" Placeholder="Password"></InputText>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </EditForm>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+</div>
+
 @code {
     [Parameter]
     public LoginModel LoginForm { get; set; } = new();
