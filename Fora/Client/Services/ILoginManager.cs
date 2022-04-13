@@ -6,5 +6,6 @@
         Task StoreUser(string id);
         Task<bool> IsLoggedIn();
         Task<UserModel> GetLoggedInUser();
+        Task<bool> VerifyLogin(LoginModel login);
     }
 }

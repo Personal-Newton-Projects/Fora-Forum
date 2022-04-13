@@ -35,6 +35,19 @@ namespace Fora.Client.Services
             }
         }
 
+        public async Task<bool> VerifyLogin(LoginModel login)
+        {
+            string loginToken = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/verify/{login.Username}/{login.Password}");
+            if (!String.IsNullOrEmpty(loginToken))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Stores user in LocalStorage
         /// </summary>
