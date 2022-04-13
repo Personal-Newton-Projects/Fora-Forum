@@ -143,13 +143,15 @@ namespace Fora.Server.Migrations.AuthDb
                         {
                             Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2c421943-8c62-40ff-a71d-2ceab7f235dc",
+                            ConcurrencyStamp = "bb77a5c6-5082-4cf9-92ab-aea4c7872c94",
                             Email = "admin@admin.com",
-                            EmailConfirmed = false,
+                            EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEBB84ds7vHL3L2oOLlDxOt7RaM0XhtklSmALP7+KVm7nKFMRXbPqkZT1f9fOGnuIcA==",
+                            NormalizedEmail = "ADMIN@ADMIN.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAEA+2r3P0eEX49AWnfkUCsVMczZJonzSTuE7ktqm11NcPa2sWgfuOD58cW1WX6RVXrw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9edfb987-48ce-4ef1-960a-720ff38e208a",
+                            SecurityStamp = "",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
