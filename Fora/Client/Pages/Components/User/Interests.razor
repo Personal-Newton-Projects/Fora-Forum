@@ -72,8 +72,8 @@
     public List<PostUserInterestsModel> ChosenInterests { get; set; } = new List<PostUserInterestsModel>();
 
 
-    public bool HasPageLoaded { get; set; } = new();
-    
+    public bool HasPageLoaded { get; set; } = true;
+
     protected override async Task OnInitializedAsync()
     {
         InterestsList = await InterestManager.GetInterests();
