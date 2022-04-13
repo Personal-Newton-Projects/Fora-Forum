@@ -70,6 +70,10 @@ public class InterestController : Controller
                 Name = thisInterest.Name,
                 UserId = thisInterest.UserID
             };
+            if(appDbContext.Interests.Any(i => i.Name == interest.Name))
+            {
+                return BadRequest();
+            }
             await appDbContext.Interests.AddAsync(interest);
             await appDbContext.SaveChangesAsync();
             return Ok(interest);   

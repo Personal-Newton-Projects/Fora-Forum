@@ -1,5 +1,5 @@
 ﻿@inject IInterestManager InterestManager
-
+@inject IJSRuntime JSRuntime
 
 <EditForm class="form-group" Model="@InterestToCreate" OnSubmit="CreateThisInterest">
     <DataAnnotationsValidator />
@@ -13,12 +13,20 @@
     [Parameter]
     public CreateInterestsModel InterestToCreate { get; set; }
     [Parameter]
-    public UserModel CurrentUser { get; set; }
+    public UserModel? CurrentUser { get; set; }
 
     public async Task CreateThisInterest()
     {
-        InterestToCreate.UserID = CurrentUser.Id;
-        await InterestManager.CreateNewInterest(InterestToCreate);
+        if (CurrentUser != null)
+        {
+            InterestToCreate.UserID = CurrentUser.Id;
+        }
+
+        InterestModel createdInterest = await InterestManager.CreateNewInterest(InterestToCreate);
+        if(createdInterest == null)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "An interest by this name already exists");
+        }
         StateHasChanged();
     }
 }
