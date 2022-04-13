@@ -6,7 +6,7 @@
         <p>Account Deletion</p>
     </div>
     <div class="card-body">
-        @if (CurrentUser.Deleted)
+        @if (!CurrentUser.Deleted)
         {
             <button @onclick="FlagForDelete" class="btn btn-danger">Flag for Deletion</button>
         }
