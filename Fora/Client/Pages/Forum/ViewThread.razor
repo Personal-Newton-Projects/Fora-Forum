@@ -1,5 +1,9 @@
 ﻿@page "/forum/{InterestName}/{ThreadId:int}"
 
+@using Components.User;
+@using Components.Utilities;
+@using Components.Administration;
+
 @inject IThreadManager ThreadManager
 @inject IJSRuntime JsRuntime
 @inject ILoginManager LoginManager
@@ -19,25 +23,25 @@
 
             <div class="row mt-3 p-0">
                 <div class="col-sm-2 p-0">
-                    <Fora.Client.Pages.Components.User CurrentUser="message.User">
+                    <Fora.Client.Pages.Components.User.User CurrentUser="message.User">
 
-                    </Fora.Client.Pages.Components.User>
+                    </Fora.Client.Pages.Components.User.User>
                 </div>
-                <div class="col-sm-8 border">
 
+                @if (message.UserId == CurrentUser.Id)
+                {
+                    MessageStyle = "bg-info";
+                }
+                else
+                {
+                    MessageStyle = String.Empty;
+                }
+
+                <div class="col-sm-8 @MessageStyle border">
 
                     <div class="m-4">
-                        @if (message.UserId == CurrentUser.Id)
-                        {
-                            MessageStyle = "bg-info";
-                        }
-                        else
-                        {
-                            MessageStyle = String.Empty;
-                        }
 
-
-                        <div class="d-flex">
+                        <div class="d-flex ">
                             <div class="flex-grow-1 ms-3">
                                 @if (message.Deleted)
                                 {
@@ -49,11 +53,11 @@
                                     {
 
                                         <EditForm Model="@UpdateMessage" OnValidSubmit="UpdateMessageInThread">
-                                                                                <DataAnnotationsValidator />
-                                    <ValidationSummary />
+                                            <DataAnnotationsValidator />
+                                            <ValidationSummary />
                                             <div class="form-group">
                                                 <InputTextArea class="form-control" @bind-Value="UpdateMessage.NewMessage">
-                                                    
+
                                                 </InputTextArea>
 
                                                 <button class="btn btn-success" type="submit">Update Message</button>
@@ -62,7 +66,7 @@
                                     }
                                     else
                                     {
-                                      @message.Message
+                                        @message.Message
 
                                     }
 
@@ -162,13 +166,13 @@
                         }
                         else
                         {
-                            <Fora.Client.Pages.Components.Banned></Fora.Client.Pages.Components.Banned>
+                            <Fora.Client.Pages.Components.Administration.Banned></Fora.Client.Pages.Components.Administration.Banned>
                         }
 
                     }
                     else
                     {
-                        <Fora.Client.Pages.Components.ActivateUser></Fora.Client.Pages.Components.ActivateUser>
+                        <Fora.Client.Pages.Components.Administration.ActivateUser></Fora.Client.Pages.Components.Administration.ActivateUser>
                     }
 
                 }
