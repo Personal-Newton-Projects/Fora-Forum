@@ -16,7 +16,7 @@
         @foreach (MessageModel message in ThisThread.Messages)
 
         {
-            
+
             <div class="row mt-3 p-0">
                 <div class="col-sm-2 p-0">
                     <Fora.Client.Pages.Components.User CurrentUser="message.User">
@@ -82,7 +82,7 @@
                                     if (message == ThisThread.Messages.First())
                                     {
                                         <div class=" justify-content-end">
-                                            
+
                                             <button class="btn btn-link" @onclick="@(() => EditThread())">Edit Thread</button>
                                             <button class="btn btn-link" @onclick="@(() => RemoveThread())">Remove Thread</button>
                                         </div>
@@ -91,7 +91,7 @@
                                     else if (!message.Deleted)
                                     {
                                         <div class=" justify-content-end">
-                                            
+
                                             <button class="btn btn-link" @onclick="@(() => RemoveMessage(message))">Remove</button>
                                         </div>
 
@@ -102,8 +102,15 @@
 
                         </div>
                     </div>
+
+
                 </div>
+                @if (message == ThisThread.Messages.First())
+                {
+                    <div class="mb-2" />
+                }
             </div>
+
         }
 
 
