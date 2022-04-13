@@ -45,7 +45,26 @@
                                 }
                                 else
                                 {
-                                    @message.Message
+                                    if (EditMessageID == message.Id)
+                                    {
+
+                                        <EditForm Model="@UpdateMessage" OnValidSubmit="UpdateMessageInThread">
+                                                                                <DataAnnotationsValidator />
+                                    <ValidationSummary />
+                                            <div class="form-group">
+                                                <InputTextArea class="form-control" @bind-Value="UpdateMessage.NewMessage">
+                                                    
+                                                </InputTextArea>
+
+                                                <button class="btn btn-success" type="submit">Update Message</button>
+                                            </div>
+                                        </EditForm>
+                                    }
+                                    else
+                                    {
+                                      @message.Message
+
+                                    }
 
                                 }
                             </div>
@@ -119,37 +138,41 @@
             </div>
             <div class="col-md-8 p-2 text-center">
                 <h5>Contribute to the conversation</h5>
-                @if(CurrentUser != null)
+                @if (CurrentUser != null)
                 {
-                    if(!CurrentUser.Deleted)
+                    if (!CurrentUser.Deleted)
                     {
-                        if(!CurrentUser.Banned)
+                        if (!CurrentUser.Banned)
                         {
-                            <button @onclick="StartPost" class="d-flex justify-content-end btn btn-primary">Post</button>
+                            <button @onclick="StartPost" class="btn btn-primary">Post</button>
+                            @if (UserPosting)
+                            {
+                                <EditForm Model="@PostMessage" OnValidSubmit="PostMessageToThread">
+                                    <DataAnnotationsValidator />
+                                    <ValidationSummary />
+                                    <div class="form-group">
+                                        <InputTextArea class="form-control" @bind-Value="PostMessage.Message">
 
+                                        </InputTextArea>
+
+                                        <button class="btn btn-success" type="submit">Post Message</button>
+                                    </div>
+                                </EditForm>
+                            }
                         }
                         else
                         {
                             <Fora.Client.Pages.Components.Banned></Fora.Client.Pages.Components.Banned>
                         }
 
-                    } 
+                    }
                     else
                     {
                         <Fora.Client.Pages.Components.ActivateUser></Fora.Client.Pages.Components.ActivateUser>
                     }
 
                 }
-                @if (UserPosting)
-                {
-                    <EditForm Model="@PostMessage" OnValidSubmit="PostMessageToThread">
-                        <InputTextArea @bind-Value="PostMessage.Message">
 
-                        </InputTextArea>
-
-                        <button class="btn btn-success" type="submit">Post Message</button>
-                    </EditForm>
-                }
 
             </div>
             <div class="col-md-2">
@@ -172,13 +195,14 @@
     public string InterestName { get; set; }
     [Parameter]
     public int ThreadId { get; set; }
-    [Parameter]
+
+
     public PostMessageModel PostMessage { get; set; } = new PostMessageModel();
-    [Parameter]
     public UserModel CurrentUser { get; set; }
 
     ThreadModel ThisThread { get; set; } = new ThreadModel();
     UserModel ThreadCreator { get; set; }
+    UpdateMessageModel UpdateMessage { get; set; } = new UpdateMessageModel();
 
     public bool HasPageLoaded { get; set; } = false;
 
@@ -186,6 +210,7 @@
 
     string MessageStyle { get; set; } = String.Empty;
 
+    int EditMessageID { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -218,16 +243,18 @@
 
     async Task EditMessage(MessageModel message)
     {
-        await ThreadManager.UpdateMessage(
-            new UpdateMessageModel()
-                {
-                    MessageId = message.Id,
-                    ThreadId = message.ThreadId,
-                    NewMessage = message.Message,
-                    RemoveMessage = false,
-                });
+        EditMessageID = message.Id;
 
         await ReloadThread();
+    }
+
+    async Task UpdateMessageInThread()
+    {
+        UpdateMessage.ThreadId = ThisThread.Id;
+        UpdateMessage.MessageId = EditMessageID;
+        UpdateMessage.RemoveMessage = false;
+
+        await ThreadManager.UpdateMessage(UpdateMessage);
     }
 
     async Task RemoveMessage(MessageModel message)
