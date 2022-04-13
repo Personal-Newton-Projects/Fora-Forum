@@ -100,6 +100,23 @@ namespace Fora.Client.Services
             }
 
         }
+        public async Task<UpdateUserInfoModel> UpdateUserPassword(UpdateUserInfoModel updateUserInfo)
+        {
+            UserModel userModel = await GetById(updateUserInfo.Id);
+            string id = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/{userModel.Username}");
+            var updateResult = await _httpClient.PutAsJsonAsync($"api/identityuser/{id}/", updateUserInfo);
+            new JsonDebug(updateResult);
+
+            if (updateResult.IsSuccessStatusCode)
+            {
+                return updateUserInfo;
+            }
+            else
+            {
+                Console.WriteLine("Update UserInfo Failed!");
+                return null;
+            }
+        }
 
     }
 

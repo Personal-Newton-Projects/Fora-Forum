@@ -82,6 +82,22 @@ namespace Fora.Server.Controllers
             
         }
 
+        [HttpPut("ID/{id}")]
+        public async Task<IActionResult> UpdatePasswordById(string id, UpdateUserInfoModel updateUserInfo)
+        {
+            IdentityUser user = await signInManager.UserManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                user.PasswordHash = signInManager.UserManager.PasswordHasher.HashPassword(null, updateUserInfo.NewPassword);
+                await signInManager.UserManager.UpdateAsync(user);
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         //// POST: UserController/Create
         //[HttpPost]
         //[ValidateAntiForgeryToken]

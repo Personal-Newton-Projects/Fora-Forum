@@ -40,5 +40,9 @@ public class InterestManager : IInterestManager
         return await result.Content.ReadFromJsonAsync<InterestModel>();
     }
 
+    public async Task<InterestModel> RemoveInterest()
+    {
+
+    }
 
 }
