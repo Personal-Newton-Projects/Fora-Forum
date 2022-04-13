@@ -9,6 +9,5 @@ namespace Fora.Shared.PostModels
     public class RemoveInterestModel
     {
         public int Id { get; set; }
-        public int Name { get; set; }
     }
 }

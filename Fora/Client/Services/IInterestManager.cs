@@ -6,5 +6,5 @@ public interface IInterestManager
     Task<InterestModel> GetInterest(int id);
     Task<InterestModel> PostInterest(InterestModel interest);
     Task<InterestModel> CreateNewInterest(CreateInterestsModel thisInterest);
-    Task<InterestModel> RemoveInterest()
+    Task<InterestModel> RemoveExistingInterest(RemoveInterestModel removeInterestModel);
 }

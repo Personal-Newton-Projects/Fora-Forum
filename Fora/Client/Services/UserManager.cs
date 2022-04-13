@@ -88,7 +88,6 @@ namespace Fora.Client.Services
             // Hackfix
             var updateResult = await _httpClient.PutAsJsonAsync($"api/user/interest/{id}", userInterests);
             new JsonDebug(updateResult);
-
             if(updateResult.IsSuccessStatusCode)
             {
                 return userInterests;
@@ -98,7 +97,6 @@ namespace Fora.Client.Services
                 Console.WriteLine("Update UserInterests failed");
                 return null;
             }
-
         }
         public async Task<UpdateUserInfoModel> UpdateUserPassword(UpdateUserInfoModel updateUserInfo)
         {

@@ -40,10 +40,19 @@ public class InterestManager : IInterestManager
         return await result.Content.ReadFromJsonAsync<InterestModel>();
     }
 
-    //
-    // public async Task<InterestModel> RemoveInterest()
-    // {
-    //     
-    // }
+    
+    public async Task<InterestModel> RemoveExistingInterest(RemoveInterestModel removeInterestModel)
+    {
+        var result = await _httpClient.PostAsJsonAsync($"api/interest/", removeInterestModel);
+        new JsonDebug(result);
+        if (result.IsSuccessStatusCode)
+        {
+            return await result.Content.ReadFromJsonAsync<InterestModel>();
+        }
+        else
+        {
+            return null;
+        }
+    }
 
 }

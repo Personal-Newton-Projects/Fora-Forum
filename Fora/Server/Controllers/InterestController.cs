@@ -32,7 +32,7 @@ public class InterestController : Controller
 
         foreach (InterestModel interest in dbInterests)
         {
-
+        
             foreach (ThreadModel thread in appDbContext.Threads)
             {
                 if(thread.Interest == interest)
@@ -80,7 +80,35 @@ public class InterestController : Controller
         }
         return BadRequest();
     }
-    
+
+    [HttpPost]
+    public async Task<ActionResult<InterestModel>> RemoveInterest(RemoveInterestModel removeInterestModel)
+    {
+        if (removeInterestModel != null)
+        {
+            InterestModel interest = appDbContext.Interests.FirstOrDefault(x => x.Id == removeInterestModel.Id);
+            appDbContext.Remove(interest);
+            appDbContext.SaveChangesAsync();
+            return Ok(interest);
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     //[HttpPost]
     //public async Task<IActionResult> AddInterestForUser(UserInterestModel userInterest)
     //{
