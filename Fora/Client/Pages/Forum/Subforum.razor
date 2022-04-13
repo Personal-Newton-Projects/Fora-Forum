@@ -5,7 +5,12 @@
 @inject ILoginManager LoginManager
 @inject NavigationManager NavigationManager
 
-@if (HasPageLoaded == true)
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            @if (HasPageLoaded == true)
 {
     @if (CurrentInterest != null)
     {
@@ -58,6 +63,14 @@
                 </a>
             </div>
         }
+        else
+        {
+            <div class="list-group">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5>Sign in to create your own thread!</h5>
+                </div>
+            </div>
+        }
 
     }
     else
@@ -67,6 +80,12 @@
     }
 
 }
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+</div>
+
 
 
 
