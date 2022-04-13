@@ -118,8 +118,28 @@
             <div class="col-md-2">
             </div>
             <div class="col-md-8 p-2 text-center">
+                <h5>Contribute to the conversation</h5>
+                @if(CurrentUser != null)
+                {
+                    if(!CurrentUser.Deleted)
+                    {
+                        if(!CurrentUser.Banned)
+                        {
+                            <button @onclick="StartPost" class="d-flex justify-content-end btn btn-primary">Post</button>
 
-                <button @onclick="StartPost" class="d-flex justify-content-end btn btn-primary">Post</button>
+                        }
+                        else
+                        {
+                            <Fora.Client.Pages.Components.Banned></Fora.Client.Pages.Components.Banned>
+                        }
+
+                    } 
+                    else
+                    {
+                        <Fora.Client.Pages.Components.ActivateUser></Fora.Client.Pages.Components.ActivateUser>
+                    }
+
+                }
                 @if (UserPosting)
                 {
                     <EditForm Model="@PostMessage" OnValidSubmit="PostMessageToThread">
