@@ -101,8 +101,8 @@ namespace Fora.Client.Services
         public async Task<UpdateUserInfoModel> UpdateUserPassword(UpdateUserInfoModel updateUserInfo)
         {
             UserModel userModel = await GetById(updateUserInfo.Id);
-            string id = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/{userModel.Username}");
-            var updateResult = await _httpClient.PutAsJsonAsync($"api/identityuser/{id}/", updateUserInfo);
+            //string id = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/{userModel.Username}");
+            var updateResult = await _httpClient.PutAsJsonAsync($"api/identityuser/change/{userModel.Username}/", updateUserInfo);
             new JsonDebug(updateResult);
 
             if (updateResult.IsSuccessStatusCode)

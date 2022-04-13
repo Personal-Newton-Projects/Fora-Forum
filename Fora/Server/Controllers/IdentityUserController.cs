@@ -82,15 +82,15 @@ namespace Fora.Server.Controllers
             
         }
 
-        [HttpPut("ID/{id}")]
-        public async Task<IActionResult> UpdatePasswordById(string id, UpdateUserInfoModel updateUserInfo)
+        [HttpPut("change/{username}")]
+        public async Task<IActionResult> UpdatePasswordById(string username, UpdateUserInfoModel updateUserInfo)
         {
-            IdentityUser user = await signInManager.UserManager.FindByIdAsync(id);
+            IdentityUser user = await signInManager.UserManager.FindByNameAsync(username);
             if (user != null)
             {
-                user.PasswordHash = signInManager.UserManager.PasswordHasher.HashPassword(null, updateUserInfo.NewPassword);
+                await signInManager.UserManager.ChangePasswordAsync(user, updateUserInfo.OldPassword, updateUserInfo.NewPassword);
                 await signInManager.UserManager.UpdateAsync(user);
-                return Ok();
+                return Ok(user);
             }
             else
             {
