@@ -116,6 +116,22 @@ namespace Fora.Server.Controllers
             return NoContent();
         }
 
+        [HttpPut("role")]
+        public async Task<ActionResult<UserRoleModel>> PutUserRole(UpdateUserRoleModel newRole)
+        {
+            UserModel user = await Get(newRole.UserId);
+            if(user != null)
+            {
+                user.UserRole.RoleId = newRole.newRoleId;
+                await appDbContext.SaveChangesAsync();
+                return Ok(user.UserRole);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpPut("interest/{id}")]
         public async Task<ActionResult> PutUserInterests(List<PostUserInterestsModel> chosenInterests, int id)
         {
