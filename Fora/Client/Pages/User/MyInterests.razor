@@ -17,9 +17,6 @@
                         <Fora.Client.Pages.Components.User.Interests CurrentUser="CurrentUser">
 
                         </Fora.Client.Pages.Components.User.Interests>
-                        <Fora.Client.Pages.Components.Utilities.CreateInterest InterestToCreate="InterestToCreate" CurrentUser="CurrentUser">
-
-                        </Fora.Client.Pages.Components.Utilities.CreateInterest>
                     </div>
                     <div class="col-md-2"></div>
                 </div>
@@ -39,8 +36,6 @@
     public UserModel CurrentUser { get; set; }
 
     bool HasPageLoaded { get; set; } = false;
-
-    CreateInterestsModel InterestToCreate { get; set; } = new CreateInterestsModel();
 
     protected override async Task OnInitializedAsync()
     {

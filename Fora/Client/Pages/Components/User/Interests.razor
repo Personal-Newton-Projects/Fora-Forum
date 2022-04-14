@@ -47,6 +47,16 @@
                             </td>
                         </tr>
                     }
+                    <tr>
+                        <td>
+                            Create Interest
+                        </td>
+                        <td>
+                            <Fora.Client.Pages.Components.Utilities.CreateInterest CurrentUser="CurrentUser" InterestToCreate="InterestToCreate">
+
+                            </Fora.Client.Pages.Components.Utilities.CreateInterest>
+                        </td>
+                    </tr>
                 }
                 </tbody>
             </table>
@@ -67,6 +77,8 @@
 
     [Parameter]
     public UserModel CurrentUser { get; set; }
+
+    CreateInterestsModel InterestToCreate { get; set; } = new CreateInterestsModel();
 
 
     public List<PostUserInterestsModel> ChosenInterests { get; set; } = new List<PostUserInterestsModel>();
