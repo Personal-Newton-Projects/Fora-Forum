@@ -19,5 +19,7 @@
             var result = await GetUsers();
             return result.Count;
         }
+
+        Task<UserRoleModel> UpdateUserRole(UpdateUserRoleModel newRole);
     }
 }

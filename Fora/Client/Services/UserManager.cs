@@ -98,6 +98,16 @@ namespace Fora.Client.Services
                 return null;
             }
         }
+
+        public async Task<UserRoleModel> UpdateUserRole(UpdateUserRoleModel newRole)
+        {
+            var result = await _httpClient.PutAsJsonAsync($"api/user/role", newRole);
+            if(result.IsSuccessStatusCode)
+            {
+                return await result.Content.ReadFromJsonAsync<UserRoleModel>();
+            }
+            return null;
+        }
         public async Task<UpdateUserInfoModel> UpdateUserPassword(UpdateUserInfoModel updateUserInfo)
         {
             UserModel userModel = await GetById(updateUserInfo.Id);
