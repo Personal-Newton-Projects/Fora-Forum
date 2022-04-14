@@ -88,7 +88,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        InterestsList = await InterestManager.GetInterests();
+        await ReloadInterests();
         if (CurrentUser == null)
         {
             CurrentUser = await LoginManager.GetLoggedInUser();
@@ -102,6 +102,12 @@
                 UserID = userInterest.UserId
             });
         }
+        StateHasChanged();
+    }
+
+    async Task ReloadInterests()
+    {
+        InterestsList = await InterestManager.GetInterests();
         StateHasChanged();
     }
 
@@ -124,7 +130,7 @@
             Console.WriteLine(item.InterestID);
         }
         await UserManager.UpdateUserInterests(ChosenInterests, CurrentUser.Id);
-        StateHasChanged();
+        await ReloadInterests();
     }
 
     bool IsAdded(InterestModel interest)
