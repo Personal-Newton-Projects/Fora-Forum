@@ -10,7 +10,7 @@
         <h3>Browse our forums!</h3>
         @if (CurrentUser != null)
         {
-            <div class="row">
+            <div class="row mb-2">
                 @foreach (var interest in CurrentUser.UserInterests)
                 {
                     <div class="col-sm-4 d-flex align-items-stretch">
@@ -30,7 +30,11 @@
                             </a>
                         </div>
                     </div>
-                    @if (CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
+
+
+                }
+
+                @if (CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
                     {
                         <div class="col-sm-4 d-flex align-items-stretch">
 
@@ -38,14 +42,13 @@
                                 <div class="card-body">
                                     <h5>Create new Interest</h5>
                                     <hr>
-                                    <Fora.Client.Pages.Components.CreateInterest InterestToCreate="AdminCreate"></Fora.Client.Pages.Components.CreateInterest>
+                                    <Fora.Client.Pages.Components.Utilities.CreateInterest InterestToCreate="AdminCreate" ></Fora.Client.Pages.Components.Utilities.CreateInterest>
                                 </div>
                             </div>
                         </div>
 
                     }
 
-                }
             </div>
         }
         else
