@@ -1,0 +1,50 @@
+﻿@inject IInterestManager InterestManager
+@inject ILoginManager LoginManager
+@inject IUserManager UserManager
+
+<div class="card mb-4">
+    <div class="card-header">
+        <p>Ban User</p>
+    </div>
+    <div class="card-body">
+        @if(!CurrentUser.Banned)
+        {
+            <button @onclick="BanUser" class="btn btn-danger">Ban Admin</button>
+        }
+        else
+        {
+            <button @onclick="UnbanUser" class="btn btn-warning">Unban Admin</button>
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public UserModel CurrentUser { get; set; }
+
+    async Task BanUser()
+    {
+        await UserManager.UpdateUser(new PostUserUpdateModel()
+        {
+            Id = CurrentUser.Id,
+            DeleteUser = false,
+            BanUser = true
+        });
+
+        StateHasChanged();
+    }
+
+    async Task UnbanUser()
+    {
+        await UserManager.UpdateUser(new PostUserUpdateModel()
+        {
+            Id = CurrentUser.Id,
+            DeleteUser = false,
+            BanUser = false,
+        });
+
+        StateHasChanged();
+    }
+
+}

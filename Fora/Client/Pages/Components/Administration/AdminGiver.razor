@@ -1,0 +1,48 @@
+﻿@inject IInterestManager InterestManager
+@inject ILoginManager LoginManager
+@inject IUserManager UserManager
+
+<div class="card mb-4">
+    <div class="card-header">
+        <p>Admin Giver</p>
+    </div>
+    <div class="card-body">
+        @if (CurrentUser.UserRole.Role.Role == RoleEnum.USER)
+        {
+            <button @onclick="MakeAdmin" class="btn btn-danger">Make Admin</button>
+        }
+        else
+        {
+            <button @onclick="RemoveAdmin" class="btn btn-warning">Remove Admin</button>
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public UserModel CurrentUser { get; set; }
+
+    async Task MakeAdmin()
+    {
+        await UserManager.UpdateUserRole(new UpdateUserRoleModel()
+        {
+            UserId = CurrentUser.Id,
+            newRoleId = 2
+        });
+
+        StateHasChanged();
+    }
+
+    async Task RemoveAdmin()
+    {
+        await UserManager.UpdateUserRole(new UpdateUserRoleModel()
+        {
+            UserId = CurrentUser.Id,
+            newRoleId = 1
+        });
+
+        StateHasChanged();
+    }
+
+}
