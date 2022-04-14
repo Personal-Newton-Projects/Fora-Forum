@@ -1,12 +1,16 @@
 ﻿@inject IInterestManager InterestManager
 @inject IJSRuntime JSRuntime
 
-<EditForm class="form-group" Model="@InterestToCreate" OnSubmit="CreateThisInterest">
+<div class="form-group">
+<EditForm Model="@InterestToCreate" OnSubmit="CreateThisInterest">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <InputText class="form-control" Placeholder="Interest" @bind-Value="InterestToCreate.Name"></InputText>
+    <div class="form-group w-50">
+        <InputText class="form-control" Placeholder="Interest" @bind-Value="InterestToCreate.Name"></InputText>
+    </div>
     <button type="submit" class="btn btn-primary">Create</button>
 </EditForm>
+</div>
 
 @code {
 
