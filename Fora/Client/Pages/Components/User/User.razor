@@ -33,18 +33,15 @@
 
     bool HasModalLoaded = false;
 
-    protected override async Task OnInitializedAsync()
+
+    protected override async Task OnParametersSetAsync()
     {
-        if (CurrentUser.UserRole == null)
-        {
-            var id = CurrentUser.Id;
-            UserModel FullUserModel = await UserManager.GetById(id);
+        var id = CurrentUser.Id;
+        UserModel FullUserModel = await UserManager.GetById(id);
 
-            CurrentUser = FullUserModel;
-        }
+        CurrentUser = FullUserModel;
 
-        HasModalLoaded = true;
+                HasModalLoaded = true;
         StateHasChanged();
-
     }
 }
