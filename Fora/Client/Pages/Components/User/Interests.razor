@@ -126,7 +126,7 @@
 
     public async Task RemoveInterest(InterestModel interest)
     {
-        ChosenInterests.Remove(ChosenInterests.Where(i => i.InterestID == interest.Id).FirstOrDefault());
+        ChosenInterests.Remove(ChosenInterests.SingleOrDefault(c => c.InterestID == interest.Id));
         await SubmitInterest();
     }
 
