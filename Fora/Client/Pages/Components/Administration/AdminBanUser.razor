@@ -7,13 +7,13 @@
         <p>Ban User</p>
     </div>
     <div class="card-body">
-        @if(!CurrentUser.Banned)
+        @if (!DisplayUser.Banned)
         {
-            <button @onclick="BanUser" class="btn btn-danger">Ban Admin</button>
+            <button @onclick="BanUser" class="btn btn-danger">Ban @DisplayUser.Username</button>
         }
         else
         {
-            <button @onclick="UnbanUser" class="btn btn-warning">Unban Admin</button>
+            <button @onclick="UnbanUser" class="btn btn-warning">Unban @DisplayUser.Username</button>
         }
     </div>
 </div>
@@ -23,28 +23,48 @@
     [Parameter]
     public UserModel CurrentUser { get; set; }
 
+    UserModel DisplayUser { get; set; }
+
+    [Parameter]
+    public EventCallback UpdateParent { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        DisplayUser = CurrentUser;
+    }
+
     async Task BanUser()
     {
         await UserManager.UpdateUser(new PostUserUpdateModel()
-        {
-            Id = CurrentUser.Id,
-            DeleteUser = false,
-            BanUser = true
-        });
+            {
+                Id = CurrentUser.Id,
+                DeleteUser = false,
+                BanUser = true
+            });
 
-        StateHasChanged();
+        await ReloadComponent();
     }
 
     async Task UnbanUser()
     {
         await UserManager.UpdateUser(new PostUserUpdateModel()
-        {
-            Id = CurrentUser.Id,
-            DeleteUser = false,
-            BanUser = false,
-        });
+            {
+                Id = CurrentUser.Id,
+                DeleteUser = false,
+                BanUser = false,
+            });
 
-        StateHasChanged();
+        await ReloadComponent();
+    }
+
+    async Task ReloadComponent()
+    {
+        if (UpdateParent.HasDelegate)
+        {
+            DisplayUser = await UserManager.GetById(CurrentUser.Id);
+            await UpdateParent.InvokeAsync();
+            StateHasChanged();
+        }
     }
 
 }
