@@ -1,4 +1,6 @@
-﻿<div class="p-5 bg-warning rounded-3">
+﻿@inject IUserManager UserManager
+
+<div class="p-5 bg-warning rounded-3">
     <h1 class="display-4">Your account is disabled</h1>
     <p class="lead">Please re-activate your account before accessing this feature.</p>
     <p class="lead justify-content-evenly">
@@ -9,14 +11,24 @@
 @code {
     [Parameter]
     public UserModel CurrentUser { get; set; }
+    [Parameter]
+    public EventCallback UpdateParent { get; set; }
 
     async Task Activate()
     {
-        if(CurrentUser != null)
-        {
-            CurrentUser.Deleted = false;
-        }
+
+        await UserManager.UpdateUser(new PostUserUpdateModel()
+            {
+                Id = CurrentUser.Id,
+                BanUser = false,
+                DeleteUser = false
+            });
 
         StateHasChanged();
+        if (UpdateParent.HasDelegate)
+        {
+            await UpdateParent.InvokeAsync();
+        }
+
     }
 }
