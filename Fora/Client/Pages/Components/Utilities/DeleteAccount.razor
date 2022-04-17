@@ -1,12 +1,11 @@
-﻿
-@inject IUserManager UserManager
+﻿@inject IUserManager UserManager
 
 <div class="card mb-4">
     <div class="card-header">
         <p>Account Deletion</p>
     </div>
     <div class="card-body">
-        @if (!CurrentUser.Deleted)
+        @if (!DisplayUser.Deleted)
         {
             <button @onclick="FlagForDelete" class="btn btn-danger">Flag for Deletion</button>
         }
@@ -22,6 +21,16 @@
     [Parameter]
     public UserModel CurrentUser { get; set; }
 
+    UserModel DisplayUser { get; set; }
+
+    [Parameter]
+    public EventCallback UpdateParent { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        DisplayUser = CurrentUser;
+    }
+
     public async Task FlagForDelete()
     {
         await UserManager.UpdateUser(new PostUserUpdateModel()
@@ -30,6 +39,9 @@
                 DeleteUser = true,
                 BanUser = false
             });
+
+        await ReloadComponent();
+
     }
 
     public async Task UndoDelete()
@@ -41,7 +53,22 @@
                 DeleteUser = false,
                 BanUser = false
             });
-        
+
+
+        await ReloadComponent();
+    }
+
+    public async Task ReloadComponent()
+    {
+        if (UpdateParent.HasDelegate)
+        {
+            Console.WriteLine($"is User banned? : {CurrentUser.Deleted} ");
+            DisplayUser = await UserManager.GetById(CurrentUser.Id);
+            await UpdateParent.InvokeAsync();
+            Console.WriteLine($"is User banned? : {DisplayUser.Deleted} After new User");
+            StateHasChanged();
+        }
+
     }
 
 }

@@ -13,7 +13,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-2">
-                <User CurrentUser="@ProfileUser">
+                <User UpdateParent="@ReloadUser" CurrentUser="@ProfileUser">
 
                 </User>
             </div>
@@ -44,7 +44,7 @@
                     <div class="card mb-4">
                         <div class="card-header">Account Options</div>
                         <div class="card-body">
-                            <DeleteAccount CurrentUser="CurrentUser">
+                            <DeleteAccount UpdateParent="@ReloadUser" CurrentUser="CurrentUser">
 
                             </DeleteAccount>
                             <ChangePassword CurrentUser="CurrentUser">
@@ -89,6 +89,7 @@
     public bool IsAdmin { get; set; }
 
     bool HasPageLoaded { get; set; } = false;
+
 
     protected async override Task OnInitializedAsync()
     {
