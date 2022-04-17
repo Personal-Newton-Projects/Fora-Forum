@@ -10,7 +10,7 @@
         <AdminGiver CurrentUser="CurrentUser">
 
         </AdminGiver>
-        <AdminBanUser CurrentUser="CurrentUser">
+        <AdminBanUser UpdateParent="@UpdateParent" CurrentUser="CurrentUser">
 
         </AdminBanUser>
     </div>
@@ -21,6 +21,7 @@
     [Parameter]
     public UserModel CurrentUser { get; set; }
 
-
+    [Parameter]
+    public EventCallback UpdateParent { get; set; }
 
 }
