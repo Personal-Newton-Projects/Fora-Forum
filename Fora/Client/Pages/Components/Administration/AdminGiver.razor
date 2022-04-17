@@ -7,13 +7,13 @@
         <p>Admin Giver</p>
     </div>
     <div class="card-body">
-        @if (CurrentUser.UserRole.Role.Role == RoleEnum.USER)
+        @if (DisplayUser.UserRole.Role.Role == RoleEnum.USER)
         {
-            <button @onclick="MakeAdmin" class="btn btn-danger">Make Admin</button>
+            <button @onclick="MakeAdmin" class="btn btn-danger">Make @DisplayUser.Username Admin</button>
         }
         else
         {
-            <button @onclick="RemoveAdmin" class="btn btn-warning">Remove Admin</button>
+            <button @onclick="RemoveAdmin" class="btn btn-warning">Remove Admin from @DisplayUser.Username </button>
         }
     </div>
 </div>
@@ -23,6 +23,16 @@
     [Parameter]
     public UserModel CurrentUser { get; set; }
 
+    UserModel DisplayUser { get; set; }
+
+    [Parameter]
+    public EventCallback UpdateParent { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        DisplayUser = CurrentUser;
+    }
+
     async Task MakeAdmin()
     {
         await UserManager.UpdateUserRole(new UpdateUserRoleModel()
@@ -31,7 +41,7 @@
             newRoleId = 2
         });
 
-        StateHasChanged();
+        await ReloadComponent();
     }
 
     async Task RemoveAdmin()
@@ -42,7 +52,17 @@
             newRoleId = 1
         });
 
-        StateHasChanged();
+        await ReloadComponent();
+    }
+
+    async Task ReloadComponent()
+    {
+        if (UpdateParent.HasDelegate)
+        {
+            DisplayUser = await UserManager.GetById(CurrentUser.Id);
+            await UpdateParent.InvokeAsync();
+            StateHasChanged();
+        }
     }
 
 }
