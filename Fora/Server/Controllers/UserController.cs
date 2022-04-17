@@ -35,11 +35,11 @@ namespace Fora.Server.Controllers
 
             foreach (UserModel user in dbUsers)
             {
-                foreach(UserInterestModel userInterests in user.UserInterests)
+                foreach (UserInterestModel userInterests in user.UserInterests)
                 {
                     foreach (InterestModel interest in appDbContext.Interests)
                     {
-                        if(userInterests.InterestId == interest.Id)
+                        if (userInterests.InterestId == interest.Id)
                         {
                             userInterests.Interest = interest; // Set Interest to interest
                         }
@@ -47,14 +47,14 @@ namespace Fora.Server.Controllers
                     userInterests.User = user; //Set userInterests user to this user
                 }
 
-                foreach(InterestModel interest in user.Interests)
+                foreach (InterestModel interest in user.Interests)
                 {
                     interest.User = user;
                 }
 
-                foreach(RoleModel role in appDbContext.Roles)
+                foreach (RoleModel role in appDbContext.Roles)
                 {
-                    if(user.UserRole.RoleId == role.Id)
+                    if (user.UserRole.RoleId == role.Id)
                     {
                         user.UserRole.Role = role;
                     }
@@ -87,7 +87,7 @@ namespace Fora.Server.Controllers
                 }
             };
 
-            if(appDbContext.Users.SingleOrDefault(u => u.Username.ToLower() == login.Username.ToLower()) != null)
+            if (appDbContext.Users.SingleOrDefault(u => u.Username.ToLower() == login.Username.ToLower()) != null)
             {
                 return BadRequest();
             }
@@ -101,9 +101,9 @@ namespace Fora.Server.Controllers
         public async Task<ActionResult> Put(PostUserUpdateModel postUser)
         {
             var dbUser = await Get(postUser.Id);
-            if(dbUser != null)
+            if (dbUser != null)
             {
-                if(postUser.NewName != null)
+                if (postUser.NewName != null)
                 {
                     dbUser.Username = postUser.NewName;
                 }
@@ -120,7 +120,7 @@ namespace Fora.Server.Controllers
         public async Task<ActionResult<UserRoleModel>> PutUserRole(UpdateUserRoleModel newRole)
         {
             UserModel user = await Get(newRole.UserId);
-            if(user != null)
+            if (user != null)
             {
                 user.UserRole.RoleId = newRole.newRoleId;
                 await appDbContext.SaveChangesAsync();
@@ -135,11 +135,12 @@ namespace Fora.Server.Controllers
         [HttpPut("interest/{id}")]
         public async Task<ActionResult> PutUserInterests(List<PostUserInterestsModel> chosenInterests, int id)
         {
-            if (chosenInterests != null)
+
+            var dbUser = await Get(id);
+            List<UserInterestModel> IntereststoAdd = new List<UserInterestModel>();
+            if (dbUser != null)
             {
-                var dbUser = await Get(id);
-                List<UserInterestModel> IntereststoAdd = new List<UserInterestModel>();
-                if(dbUser != null)
+                if(chosenInterests != null)
                 {
                     foreach (var chosenInterest in chosenInterests)
                     {
@@ -153,12 +154,19 @@ namespace Fora.Server.Controllers
                         IntereststoAdd.Add(userInterest);
 
                     }
+                    dbUser.UserInterests = IntereststoAdd;
                 }
-                dbUser.UserInterests = IntereststoAdd;
+                else
+                {
+                    dbUser.UserInterests = new List<UserInterestModel>();
+                }
+
+
                 await appDbContext.SaveChangesAsync();
                 return Ok(chosenInterests);
             }
-            return NoContent();
+            return BadRequest();
+
         }
     }
 }
