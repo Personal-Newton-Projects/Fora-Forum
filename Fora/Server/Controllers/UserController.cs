@@ -119,12 +119,21 @@ namespace Fora.Server.Controllers
         [HttpPut("role")]
         public async Task<ActionResult<UserRoleModel>> PutUserRole(UpdateUserRoleModel newRole)
         {
-            UserModel user = await Get(newRole.UserId);
-            if (user != null)
+            UserRoleModel userRole = appDbContext.UserRoles.SingleOrDefault(ur => ur.UserId == newRole.UserId);
+            if (userRole != null)
             {
-                user.UserRole.RoleId = newRole.newRoleId;
+                appDbContext.Remove(userRole);
                 await appDbContext.SaveChangesAsync();
-                return Ok(user.UserRole);
+
+                UserRoleModel newUserRole = new UserRoleModel()
+                {
+                    RoleId = newRole.newRoleId,
+                    UserId = newRole.UserId,
+                };
+
+                await appDbContext.AddAsync(newUserRole);
+                await appDbContext.SaveChangesAsync();
+                return Ok(userRole);
             }
             else
             {
