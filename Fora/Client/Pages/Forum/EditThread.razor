@@ -13,61 +13,61 @@
         {
             @if (CurrentUser.Id == CurrentThread.UserId || CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
             {
-                @if(!CurrentUser.Deleted)
+                @if (!CurrentUser.Deleted)
                 {
-                    if(!CurrentUser.Banned)
+                    if (!CurrentUser.Banned)
                     {
-                       <div class="container">
-                    <div class="row">
-                        <div class="col-md-2">
-                        </div>
-                        <div class="col-md-8">
-                            <EditForm Model="@ThreadUpdate" OnValidSubmit="@HandleSubmit">
-                                <DataAnnotationsValidator />
-                                <ValidationSummary />
-                                <div class="form-group">
-                                    <label>New Title</label>
-
-                                    <InputText class="form-control" placeholder="@CurrentThread.Name" @bind-Value="@ThreadUpdate.NewName">
-
-                                    </InputText>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-2">
                                 </div>
-                                <small class="text-muted">Leave empty to not change</small>
+                                <div class="col-md-8">
+                                    <EditForm Model="@ThreadUpdate" OnValidSubmit="@HandleSubmit">
+                                        <DataAnnotationsValidator />
+                                        <ValidationSummary />
+                                        <div class="form-group">
+                                            <label>New Title</label>
 
-                                <div class="form-group">
-                                    <label>New Body</label>
+                                            <InputText class="form-control" placeholder="@CurrentThread.Name" @bind-Value="@ThreadUpdate.NewName">
 
-                                    <InputTextArea class="form-control" placeholder="@CurrentThread.Messages.First().Message" @bind-Value="@ThreadUpdate.NewBody">
+                                            </InputText>
+                                        </div>
+                                        <small class="text-muted">Leave empty to not change</small>
 
-                                    </InputTextArea>
-                                    <small>Leave empty to not change</small>
+                                        <div class="form-group">
+                                            <label>New Body</label>
+
+                                            <InputTextArea class="form-control" placeholder="@CurrentThread.Messages.First().Message" @bind-Value="@ThreadUpdate.NewBody">
+
+                                            </InputTextArea>
+                                            <small class="text-muted">Leave empty to not change</small>
+                                        </div>
+                                        <div class="mt-3 d-flex align-content-center">
+                                            <button class="btn btn-success" type="submit">Update Thread</button>
+                                        </div>
+                                    </EditForm>
                                 </div>
-                                <div class="mt-3 d-flex align-content-center">
-                                    <button class="btn btn-success" type="submit">Update Thread</button>
+                                <div class="col-md-2">
                                 </div>
-                            </EditForm>
-                        </div>
-                        <div class="col-md-2">
-                        </div>
-                    </div>
+                            </div>
                         </div>
                     }
                     else
                     {
-                       <Fora.Client.Pages.Components.Administration.Banned>
+                        <Fora.Client.Pages.Components.Administration.Banned>
 
-                       </Fora.Client.Pages.Components.Administration.Banned> 
+                        </Fora.Client.Pages.Components.Administration.Banned>
                     }
                 }
                 else
                 {
-                    <Fora.Client.Pages.Components.Administration.ActivateUser CurrentUser="CurrentUser">
+                    <Fora.Client.Pages.Components.Administration.ActivateUser UpdateParent="@ReloadPage" CurrentUser="CurrentUser">
 
                     </Fora.Client.Pages.Components.Administration.ActivateUser>
                 }
 
 
-}
+            }
             else
             {
                 <div class="alert alert-danger" role="alert">
@@ -116,6 +116,12 @@
         Interest = interestResult.Where(i => i.Name.ToLower() == InterestName.ToLower()).FirstOrDefault();
         CurrentThread = await ThreadManager.GetThread(ThreadId);
 
+        await ReloadPage();
+
+    }
+
+    async Task ReloadPage()
+    {
         if (await LoginManager.IsLoggedIn())
         {
             CurrentUser = await LoginManager.GetLoggedInUser();
@@ -123,7 +129,6 @@
 
         HasPageLoaded = true;
         StateHasChanged();
-
     }
 
     async Task HandleSubmit()

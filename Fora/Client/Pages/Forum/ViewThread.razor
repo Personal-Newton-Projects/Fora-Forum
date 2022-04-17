@@ -79,7 +79,7 @@
                                 <br />
                                 @if (message.Edited)
                                 {
-                                    
+
                                     <small><em>Message has been edited</em> @message.EditDate</small>
                                 }
                                 <hr>
@@ -174,7 +174,7 @@
                     }
                     else
                     {
-                        <Fora.Client.Pages.Components.Administration.ActivateUser></Fora.Client.Pages.Components.Administration.ActivateUser>
+                        <Fora.Client.Pages.Components.Administration.ActivateUser CurrentUser="CurrentUser" UpdateParent="@ReloadThread"></Fora.Client.Pages.Components.Administration.ActivateUser>
                     }
 
                 }
@@ -220,10 +220,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (CurrentUser == null)
-        {
-            CurrentUser = await LoginManager.GetLoggedInUser();
-        }
+
         await ReloadThread();
         ThreadCreator = ThisThread.User;
         HasPageLoaded = true;
@@ -281,6 +278,9 @@
 
     async Task ReloadThread()
     {
+
+        CurrentUser = await LoginManager.GetLoggedInUser();
+
         ThisThread = await ThreadManager.GetThread(ThreadId);
         StateHasChanged();
     }
