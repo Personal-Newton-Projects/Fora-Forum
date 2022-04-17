@@ -62,10 +62,8 @@
     {
         if (UpdateParent.HasDelegate)
         {
-            Console.WriteLine($"is User banned? : {CurrentUser.Deleted} ");
             DisplayUser = await UserManager.GetById(CurrentUser.Id);
             await UpdateParent.InvokeAsync();
-            Console.WriteLine($"is User banned? : {DisplayUser.Deleted} After new User");
             StateHasChanged();
         }
 
