@@ -56,13 +56,13 @@
         }
         else
         {
-            <Fora.Client.Pages.Components.Administration.ActivateUser CurrentUser="CurrentUser">
+            <Fora.Client.Pages.Components.Administration.ActivateUser UpdateParent="@ReloadPage" CurrentUser="CurrentUser">
 
             </Fora.Client.Pages.Components.Administration.ActivateUser>
         }
 
 
-}
+    }
     else
     {
         <div class="alert alert-danger" role="alert">
@@ -88,6 +88,11 @@
     //public ThreadModel ThreadtoCreate { get; set; } = new ThreadModel();
 
     protected override async Task OnInitializedAsync()
+    {
+        await ReloadPage();
+    }
+
+    async Task ReloadPage()
     {
         if (await LoginManager.IsLoggedIn())
         {
