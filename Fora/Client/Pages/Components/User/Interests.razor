@@ -16,48 +16,48 @@
                     </tr>
                 </thead>
                 <tbody>
-                @if (CurrentUser.UserInterests != null)
-                {
-                    @foreach (var item in InterestsList)
+                    @if (CurrentUser.UserInterests != null)
                     {
+                        @foreach (var item in InterestsList)
+                        {
+                            <tr>
+                                <td>
+                                    @if (IsAdded(item))
+                                    {
+                                        @item.Name <span style="color: blue">✔</span>
+                                    }
+                                    else
+                                    {
+                                        @item.Name
+                                    }
+                                    @if (item.UserId != null)
+                                    {
+                                        <span> -- Created By: @item.User.Username</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (IsAdded(item))
+                                    {
+                                        <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
                         <tr>
                             <td>
-                                @if (IsAdded(item))
-                                {
-                                    @item.Name <span style="color: blue">✔</span>
-                                }
-                                else
-                                {
-                                    @item.Name
-                                }
-                                @if (item.UserId != null)
-                                {
-                                    <span> -- Created By: @item.User.Username</span>
-                                }
+                                Create Interest
                             </td>
                             <td>
-                                @if (IsAdded(item))
-                                {
-                                    <button @onclick="@(() => RemoveInterest(item))" class="btn btn-primary" style="background-color:red">Remove</button>
-                                }
-                                else
-                                {
-                                    <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
-                                }
+                                <Fora.Client.Pages.Components.Utilities.CreateInterest CurrentUser="CurrentUser" InterestToCreate="InterestToCreate">
+
+                                </Fora.Client.Pages.Components.Utilities.CreateInterest>
                             </td>
                         </tr>
                     }
-                    <tr>
-                        <td>
-                            Create Interest
-                        </td>
-                        <td>
-                            <Fora.Client.Pages.Components.Utilities.CreateInterest CurrentUser="CurrentUser" InterestToCreate="InterestToCreate">
-
-                            </Fora.Client.Pages.Components.Utilities.CreateInterest>
-                        </td>
-                    </tr>
-                }
                 </tbody>
             </table>
         </div>
@@ -78,36 +78,43 @@
     [Parameter]
     public UserModel CurrentUser { get; set; }
 
+    UserModel DisplayUser { get; set; }
+
     CreateInterestsModel InterestToCreate { get; set; } = new CreateInterestsModel();
 
 
     public List<PostUserInterestsModel> ChosenInterests { get; set; } = new List<PostUserInterestsModel>();
 
 
-    public bool HasPageLoaded { get; set; } = true;
+    public bool HasPageLoaded { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
-        await ReloadInterests();
         if (CurrentUser == null)
         {
             CurrentUser = await LoginManager.GetLoggedInUser();
         }
+        DisplayUser = CurrentUser;
 
-        foreach (UserInterestModel userInterest in CurrentUser.UserInterests)
-        {
-            ChosenInterests.Add(new PostUserInterestsModel()
-            {
-                InterestID = userInterest.InterestId,
-                UserID = userInterest.UserId
-            });
-        }
+        await ReloadInterests();
+        HasPageLoaded = true;
         StateHasChanged();
     }
 
     async Task ReloadInterests()
     {
+        foreach (UserInterestModel userInterest in DisplayUser.UserInterests)
+        {
+            if (ChosenInterests.Any(c => c.InterestID == userInterest.InterestId)) break;
+            ChosenInterests.Add(new PostUserInterestsModel()
+                {
+                    InterestID = userInterest.InterestId,
+                    UserID = userInterest.UserId
+                });
+        }
+
         InterestsList = await InterestManager.GetInterests();
+
         StateHasChanged();
     }
 
@@ -129,13 +136,13 @@
         {
             Console.WriteLine(item.InterestID);
         }
-        await UserManager.UpdateUserInterests(ChosenInterests, CurrentUser.Id);
+        await UserManager.UpdateUserInterests(ChosenInterests, DisplayUser.Id);
         await ReloadInterests();
     }
 
     bool IsAdded(InterestModel interest)
     {
-        if (CurrentUser.UserInterests.SingleOrDefault(x => x.InterestId == interest.Id) != null)
+        if (ChosenInterests.SingleOrDefault(c => c.InterestID == interest.Id) != null)
         {
             return true;
         }
