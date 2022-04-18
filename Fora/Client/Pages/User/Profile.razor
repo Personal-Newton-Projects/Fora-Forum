@@ -13,7 +13,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-2">
-                <User CurrentUser="@ProfileUser">
+                <User @ref="UserComponent" CurrentUser="@ProfileUser">
 
                 </User>
             </div>
@@ -90,10 +90,11 @@
 
     bool HasPageLoaded { get; set; } = false;
 
+    User UserComponent;
 
     protected async override Task OnInitializedAsync()
     {
-        await ReloadUser();
+        await ReloadUserPage();
 
         CurrentUser = await LoginManager.GetLoggedInUser();
         if (ProfileUser.Id == CurrentUser.Id)
@@ -119,9 +120,17 @@
 
 
 
-    async Task ReloadUser()
+    async Task ReloadUserPage()
     {
         ProfileUser = await UserManager.GetById(ProfileUserId);
         StateHasChanged();
+    }
+
+    async Task ReloadUser()
+    {
+        ProfileUser = await UserManager.GetById(ProfileUserId);
+        await UserComponent.ReloadUser();
+        StateHasChanged();
+
     }
 }
