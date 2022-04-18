@@ -111,18 +111,6 @@ public class InterestController : Controller
         return NotFound();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     //[HttpPost]
     //public async Task<IActionResult> AddInterestForUser(UserInterestModel userInterest)
     //{

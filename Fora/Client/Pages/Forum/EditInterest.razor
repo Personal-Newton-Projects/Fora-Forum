@@ -26,7 +26,7 @@
     
     public async Task EditThisInterest()
     {
-        if (InterestToEdit.InterestID > 3)
+        if (InterestToEdit.InterestID < 3)
         {
             ErrorMessage = "You cannot change main interests";
             StateHasChanged();
