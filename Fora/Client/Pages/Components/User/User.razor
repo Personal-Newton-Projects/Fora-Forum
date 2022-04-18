@@ -4,43 +4,50 @@
 
 @inject IUserManager UserManager
 
-<div class="card">
-    @if (CurrentUser != null)
-    {
-        <a class="text-decoration-none" href="/profile/@CurrentUser.Id">
-            <img class="card-img-top" src="@CurrentUser.ImageUrl">
-            <div class="card-body">
-                <h6 class="card-title">@CurrentUser.Username</h6>
-                @if (HasModalLoaded)
-                {
-                    <UserRank Role="@CurrentUser.UserRole.Role.Role">
+@if (HasModalLoaded)
+{
+    <div class="card">
+        @if (FullUserModel != null)
+        {
+            <a class="text-decoration-none" href="/profile/@FullUserModel.Id">
+                <img class="card-img-top" src="@FullUserModel.ImageUrl">
+                <div class="card-body">
+                    <h6 class="card-title">@FullUserModel.Username</h6>
+                    @if (HasModalLoaded)
+                    {
+                        <UserRank Role="@FullUserModel.UserRole.Role.Role">
 
-                    </UserRank>
-                    <UserStatus User="@CurrentUser">
+                        </UserRank>
+                        <UserStatus User="@FullUserModel">
 
-                    </UserStatus>
-                }
+                        </UserStatus>
+                    }
 
 
-            </div>
-        </a>
-    }
+                </div>
+            </a>
+        }
 
-</div>
+    </div>
+}
+
 @code {
     [Parameter]
     public UserModel CurrentUser { get; set; }
 
+    UserModel FullUserModel { get; set; }
+
     bool HasModalLoaded = false;
 
-    protected override async Task OnParametersSetAsync()
+
+    protected override async Task OnInitializedAsync()
     {
-        var id = CurrentUser.Id;
-        UserModel FullUserModel = await UserManager.GetById(id);
+        if (FullUserModel == null)
+        {
+            FullUserModel = await UserManager.GetById(CurrentUser.Id);
+        }
 
-        CurrentUser = FullUserModel;
-
-                HasModalLoaded = true;
+        HasModalLoaded = true;
         StateHasChanged();
     }
 }
