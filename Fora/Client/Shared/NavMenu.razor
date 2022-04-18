@@ -48,6 +48,18 @@
             </div>
         }
 
+        @if (UserRole == 2)
+        {
+            <hr />
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="@($"interests/admin")">
+                    <span class="oi oi-user" aria-hidden="true"></span> Admin Interests
+                </NavLink>
+            </div>
+
+
+        }
+
 
     </nav>
 </div>
@@ -59,6 +71,7 @@
 
     bool IsLoggedIn { get; set; }
     int UserId { get; set; }
+    int UserRole { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,6 +80,7 @@
         {
             UserModel user = await LoginManager.GetLoggedInUser();
             UserId = user.Id;
+            UserRole = user.UserRole.RoleId;
         }
 
 
