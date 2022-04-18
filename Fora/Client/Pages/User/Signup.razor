@@ -48,6 +48,7 @@
         if (CreateResult == null)
         {
             AlertMessage = "This user already exists!";
+            disabled = false;
             StateHasChanged();
             return;
         }
