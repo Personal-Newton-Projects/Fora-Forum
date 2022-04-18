@@ -42,7 +42,7 @@
                                 <div class="card-body">
                                     <h5>Create new Interest</h5>
                                     <hr>
-                                    <Fora.Client.Pages.Components.Utilities.CreateInterest InterestToCreate="AdminCreate" ></Fora.Client.Pages.Components.Utilities.CreateInterest>
+                                    <Fora.Client.Pages.Components.Utilities.CreateInterest UpdateParent="@ReloadInterests" InterestToCreate="AdminCreate" ></Fora.Client.Pages.Components.Utilities.CreateInterest>
                                 </div>
                             </div>
                         </div>
@@ -71,12 +71,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (CurrentUser == null)
-        {
+        await ReloadInterests();
+    }
 
-            CurrentUser = await LoginManager.GetLoggedInUser();
-
-        }
+    async Task ReloadInterests()
+    {
+        CurrentUser = await LoginManager.GetLoggedInUser();
         Interests = await InterestManager.GetInterests();
         HasPageLoaded = true;
         StateHasChanged();
