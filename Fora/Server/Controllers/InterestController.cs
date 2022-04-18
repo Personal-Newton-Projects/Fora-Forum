@@ -97,19 +97,32 @@ public class InterestController : Controller
             return NotFound();
         }
     }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+    [HttpPut]
+    public async Task<ActionResult> UpdateInterest(UpdateCreatedInterestModel thisInterest)
+    {
+        if (thisInterest != null)
+        {
+            InterestModel interest = await GetInterest(thisInterest.InterestID);
+            interest.Name = thisInterest.InterestName;
+            appDbContext.Update(interest);
+            appDbContext.SaveChanges();
+            return Ok(interest);
+        }
+        return NotFound();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     //[HttpPost]
     //public async Task<IActionResult> AddInterestForUser(UserInterestModel userInterest)
     //{
@@ -121,6 +134,6 @@ public class InterestController : Controller
     //    userInterest.User.UserInterests.Add(userInterest);
     //    return Ok(await GetDbInterests());
     //}
-    
-    
+
+
 }

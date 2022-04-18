@@ -1,0 +1,42 @@
+﻿@inject IInterestManager InterestManager
+@inject IJSRuntime JSRuntime
+
+<div class="form-group">
+    <EditForm Model="@InterestToEdit" OnSubmit="EditThisInterest">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <div class="form-group w-50">
+            <InputText class="form-control" Placeholder="Name" @bind-Value="InterestToEdit.InterestName"></InputText>
+            <InputNumber class="form-control" Placeholder="ID" @bind-Value="InterestToEdit.InterestID"></InputNumber>
+        </div>
+        <button type="submit" class="btn btn-primary">Edit</button>
+        <span>@ErrorMessage</span>
+    </EditForm>
+</div>
+
+@code {
+
+    [Parameter]
+    public UpdateCreatedInterestModel InterestToEdit { get; set; } = new();
+    
+    [Parameter]
+    public UserModel? CurrentUser { get; set; }
+
+    public string ErrorMessage { get; set; }
+    
+    public async Task EditThisInterest()
+    {
+        if (InterestToEdit.InterestID > 3)
+        {
+            ErrorMessage = "You cannot change main interests";
+            StateHasChanged();
+        }
+        else
+        {
+            InterestToEdit.InterestID = InterestToEdit.InterestID;
+            InterestToEdit.InterestName = InterestToEdit.InterestName;
+            await InterestManager.UpdateExistingInterest(InterestToEdit);
+            StateHasChanged();
+        }
+    }
+}

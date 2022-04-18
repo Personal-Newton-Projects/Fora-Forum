@@ -54,5 +54,14 @@ public class InterestManager : IInterestManager
             return null;
         }
     }
+    public async Task<UpdateCreatedInterestModel> UpdateExistingInterest(UpdateCreatedInterestModel updateThis)
+    {
+        var result = await _httpClient.PutAsJsonAsync($"api/interest/", updateThis);
+        if (result.IsSuccessStatusCode)
+        {
+            return updateThis;
+        }
 
+        return null;
+    }
 }
