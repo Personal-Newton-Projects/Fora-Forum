@@ -42,11 +42,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (FullUserModel == null)
-        {
-            FullUserModel = await UserManager.GetById(CurrentUser.Id);
-        }
+        await ReloadUser();
+    }
 
+    public async Task ReloadUser()
+    {
+        FullUserModel = await UserManager.GetById(CurrentUser.Id);
         HasModalLoaded = true;
         StateHasChanged();
     }
