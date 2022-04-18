@@ -35,19 +35,19 @@
                 }
 
                 @if (CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
-                    {
-                        <div class="col-sm-4 d-flex align-items-stretch">
+                {
+                    <div class="col-sm-4 d-flex align-items-stretch">
 
-                            <div class="card-custom text-center mx-auto">
-                                <div class="card-body">
-                                    <h5>Create new Interest</h5>
-                                    <hr>
-                                    <Fora.Client.Pages.Components.Utilities.CreateInterest UpdateParent="@ReloadInterests" InterestToCreate="AdminCreate" ></Fora.Client.Pages.Components.Utilities.CreateInterest>
-                                </div>
+                        <div class="card-custom text-center mx-auto">
+                            <div class="card-body">
+                                <h5>Create new Interest</h5>
+                                <hr>
+                                <Fora.Client.Pages.Components.Utilities.CreateInterest UpdateParent="@ReloadInterests" InterestToCreate="AdminCreate"></Fora.Client.Pages.Components.Utilities.CreateInterest>
                             </div>
                         </div>
+                    </div>
 
-                    }
+                }
 
             </div>
         }
@@ -68,6 +68,7 @@
     CreateInterestsModel AdminCreate { get; set; } = new CreateInterestsModel();
 
     bool HasPageLoaded { get; set; } = false;
+
 
     protected override async Task OnInitializedAsync()
     {
