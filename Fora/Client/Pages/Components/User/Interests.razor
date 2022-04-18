@@ -52,7 +52,7 @@
                                 Create Interest
                             </td>
                             <td>
-                                <Fora.Client.Pages.Components.Utilities.CreateInterest CurrentUser="CurrentUser" InterestToCreate="InterestToCreate">
+                                <Fora.Client.Pages.Components.Utilities.CreateInterest CurrentUser="CurrentUser" UpdateParent="@ReloadInterests" InterestToCreate="InterestToCreate">
 
                                 </Fora.Client.Pages.Components.Utilities.CreateInterest>
                             </td>
@@ -81,6 +81,9 @@
     UserModel DisplayUser { get; set; }
 
     CreateInterestsModel InterestToCreate { get; set; } = new CreateInterestsModel();
+
+    [Parameter]
+    public EventCallback UpdateParent { get; set; }
 
 
     public List<PostUserInterestsModel> ChosenInterests { get; set; } = new List<PostUserInterestsModel>();
@@ -116,6 +119,10 @@
         InterestsList = await InterestManager.GetInterests();
 
         StateHasChanged();
+        if(UpdateParent.HasDelegate)
+        {
+            await UpdateParent.InvokeAsync();
+        }
     }
 
     public async Task AddInterest(InterestModel interest)
