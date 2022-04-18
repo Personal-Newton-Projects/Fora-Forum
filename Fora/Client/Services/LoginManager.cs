@@ -20,19 +20,31 @@ namespace Fora.Client.Services
         /// Logins with <paramref name="login"/>
         /// </summary>
         /// <param name="login"></param>
-        public async Task LogInWithUser(LoginModel login)
+        public async Task<bool> LogInWithUser(LoginModel login)
         {
             Console.WriteLine("Attempted Login");
             if(login.Username != null && login.Password != null)
-            { 
-                // This does not work V
-                string loginToken = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/verify/{login.Username}/{login.Password}");
-                if(!String.IsNullOrEmpty(loginToken))
+            {
+                try
                 {
-                    await StoreUser(loginToken); //Store user in local storage on sucessfull login
-                    Console.WriteLine("Logged in");
+                    string loginToken = await _httpClient.GetFromJsonAsync<string>($"api/identityuser/verify/{login.Username}/{login.Password}");
+
+                    if (!String.IsNullOrEmpty(loginToken))
+                    {
+                        await StoreUser(loginToken); //Store user in local storage on sucessfull login
+                        Console.WriteLine("Logged in");
+                    }
+
+                    return true;
                 }
+                catch
+                {
+                    return false;
+                }
+
             }
+
+            return false;
         }
 
         public async Task<bool> VerifyLogin(LoginModel login)
