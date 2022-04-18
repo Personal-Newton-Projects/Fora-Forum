@@ -258,6 +258,8 @@
         UpdateMessage.RemoveMessage = false;
 
         await ThreadManager.UpdateMessage(UpdateMessage);
+        EditMessageID = 0;
+        await ReloadThread();
     }
 
     async Task RemoveMessage(MessageModel message)
