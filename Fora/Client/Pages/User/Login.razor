@@ -10,6 +10,11 @@
         </div>
         <div class="col-md-8">
             <h5>Log in</h5>
+            @if(!String.IsNullOrEmpty(AlertBox))
+            {
+                <div class="alert alert-warning">@AlertBox</div>
+            }
+
             <EditForm Model="LoginForm" OnValidSubmit="HandleSubmit">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
@@ -27,12 +32,21 @@
     [Parameter]
     public LoginModel LoginForm { get; set; } = new();
 
+    string AlertBox { get; set; } = String.Empty;
+
     public async Task HandleSubmit()
     {
         Console.WriteLine("Submitted");
 
-        await LoginManager.LogInWithUser(LoginForm);
-        NavigationManager.NavigateTo(NavigationManager.BaseUri, forceLoad: true);
+        if(await LoginManager.LogInWithUser(LoginForm))
+        {
+            NavigationManager.NavigateTo(NavigationManager.BaseUri, forceLoad: true);
+        }
+        else
+        {
+            AlertBox = "User does not exist!";
+            StateHasChanged();
+        }
     }
 
 }
