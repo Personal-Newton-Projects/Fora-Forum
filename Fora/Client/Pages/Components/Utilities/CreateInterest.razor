@@ -18,6 +18,8 @@
     public CreateInterestsModel InterestToCreate { get; set; }
     [Parameter]
     public UserModel? CurrentUser { get; set; }
+    [Parameter]
+    public EventCallback UpdateParent { get; set; }
 
     public async Task CreateThisInterest()
     {
@@ -32,5 +34,11 @@
             await JSRuntime.InvokeVoidAsync("alert", "An interest by this name already exists");
         }
         StateHasChanged();
+        if(UpdateParent.HasDelegate)
+        {
+            await UpdateParent.InvokeAsync();
+        }
+
+
     }
 }
