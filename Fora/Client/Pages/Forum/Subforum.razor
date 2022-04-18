@@ -11,75 +11,85 @@
         </div>
         <div class="col-md-8">
             @if (HasPageLoaded == true)
-{
-    @if (CurrentInterest != null)
-    {
-        <h3>@CurrentInterest.Name</h3>
-        if (CurrentUser != null)
-        {
-            <h4>Welcome @CurrentUser.Username</h4>
-        }
-        else
-        {
-            <h4>Create an account to contribute to the discussion</h4>
-        }
-
-        @if (Threads != null)
-        {
-            <div class="list-group">
-                @foreach (ThreadModel thread in Threads)
+            {
+                @if (CurrentInterest != null)
                 {
-                    if (thread.Messages[0].Deleted) { continue; } // SKIP THREAD IF THREAD BODY IS DELETED
-                    <div class="list-group-item list-group-item-action flex-column align-items-start">
-                    <a class="text-decoration-none" href="forum/@InterestName/@thread.Id">
-                        <div class="d-flex w-100 justify-content-between">
-                            
-                            <h5 class="mb-1">@thread.Name</h5>
-                            <small class="text-muted">Posts: @thread.Messages.Count</small>
-                        </div>
-                        <p class="mb-1" style="text-overflow: ellipsis">@thread.Messages[0].Message</p>
-                            <small class="text-muted"><Fora.Client.Pages.Components.User.UserStatus User="@thread.User"></Fora.Client.Pages.Components.User.UserStatus>Posted by <a href="/profile/@thread.User.Id">@thread.User.Username</a></small>
-                        </a>
-                    @if (CurrentUser.Id == thread.UserId || CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
+                    <div>
+                                                <select class="float-end form-control w-50" value="@SelectedSortId" @onchange="SortThreads">
+                            @foreach (var sort in Enum.GetValues(typeof(SelectedSortEnum)))
+                            {
+                                <option value="@sort">@sort.ToString()</option>
+                            }
+                        </select>
+                        <h3>@CurrentInterest.Name</h3>
+
+                    </div>
+
+                    if (CurrentUser != null)
                     {
-                        <span class="d-flex w-100 justify-content-end">
-                        <button class="btn btn-link" @onclick="@(() => EditThread(thread))">Edit</button>
-                        <button class="btn btn-link" @onclick="@(() => RemoveThread(thread))">Remove</button>
-                        </span>
+                        <h4>Welcome @CurrentUser.Username</h4>
                     }
-                    </div>
+                    else
+                    {
+                        <h4>Create an account to contribute to the discussion</h4>
+                    }
+
+                    @if (SortedThreads != null)
+                    {
+                        <div class="list-group">
+                            @foreach (ThreadModel thread in SortedThreads)
+                            {
+                                if (thread.Messages[0].Deleted) { continue; } // SKIP THREAD IF THREAD BODY IS DELETED
+                                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                                    <a class="text-decoration-none" href="forum/@InterestName/@thread.Id">
+                                        <div class="d-flex w-100 justify-content-between">
+
+                                            <h5 class="mb-1">@thread.Name</h5>
+                                            <small class="text-muted">Posts: @thread.Messages.Count</small>
+                                        </div>
+                                        <p class="mb-1" style="text-overflow: ellipsis">@thread.Messages[0].Message</p>
+                                        <small class="text-muted"><Fora.Client.Pages.Components.User.UserStatus User="@thread.User"></Fora.Client.Pages.Components.User.UserStatus>Posted by <a href="/profile/@thread.User.Id">@thread.User.Username</a></small>
+                                    </a>
+                                    @if (CurrentUser.Id == thread.UserId || CurrentUser.UserRole.Role.Role == RoleEnum.ADMIN)
+                                    {
+                                        <span class="d-flex w-100 justify-content-end">
+                                            <button class="btn btn-link" @onclick="@(() => EditThread(thread))">Edit</button>
+                                            <button class="btn btn-link" @onclick="@(() => RemoveThread(thread))">Remove</button>
+                                        </span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    if (CurrentUser != null)
+                    {
+                        <div class="list-group">
+                            <a href="/forum/@InterestName/post" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <button class="btn btn-primary">Create Thread</button>
+                                </div>
+
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5>Sign in to create your own thread!</h5>
+                            </div>
+                        </div>
+                    }
+
                 }
-            </div>
-        }
+                else
+                {
+                    <h1>Error, subforum not found!</h1>
+                    <button class="btn btn-primary" onclick="@ReloadThreads">Reload</button>
+                }
 
-        if (CurrentUser != null)
-        {
-            <div class="list-group">
-                <a href="/forum/@InterestName/post" class="list-group-item list-group-item-action flex-column align-items-start">
-                    <div class="d-flex w-100 justify-content-between">
-                        <button class="btn btn-primary">Create Thread</button>
-                    </div>
-
-                </a>
-            </div>
-        }
-        else
-        {
-            <div class="list-group">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5>Sign in to create your own thread!</h5>
-                </div>
-            </div>
-        }
-
-    }
-    else
-    {
-        <h1>Error, subforum not found!</h1>
-        <button class="btn btn-primary" onclick="@ReloadThreads">Reload</button>
-    }
-
-}
+            }
         </div>
         <div class="col-md-2">
         </div>
@@ -98,16 +108,29 @@
 
     InterestModel? CurrentInterest;
 
+    List<ThreadModel> SortedThreads { get; set; }
+
     List<ThreadModel> Threads { get; set; }
 
     public bool HasPageLoaded { get; set; } = false;
+
+
+    enum SelectedSortEnum
+    {
+        OrderByDescending,
+        OrderByAscending,
+        OrderByPostCount,
+        OrderByTitle
+    }
+
+    SelectedSortEnum SelectedSortId { get; set; } = SelectedSortEnum.OrderByDescending;
 
     protected override async Task OnInitializedAsync()
     {
         var interestResult = await InterestManager.GetInterests();
         CurrentInterest = interestResult.Where(i => i.Name.ToLower() == InterestName.ToLower()).FirstOrDefault();
         await ReloadThreads();
-
+        SortedThreads = Threads.OrderByDescending(s => s.Messages.First().PostDate).ToList();
         if (await LoginManager.IsLoggedIn())
         {
             CurrentUser = await LoginManager.GetLoggedInUser();
@@ -142,5 +165,32 @@
     {
         NavigationManager.NavigateTo(NavigationManager.Uri + $"/{thread.Id}/edit", forceLoad: true);
     }
+
+    async Task SortThreads(ChangeEventArgs args)
+    {
+
+        
+        SelectedSortId = Enum.Parse<SelectedSortEnum>(args.Value.ToString());
+        switch (SelectedSortId)
+        {
+            default:
+            case SelectedSortEnum.OrderByDescending:
+                SortedThreads = Threads.OrderByDescending(s => s.Messages.First().PostDate).ToList();
+                break;
+            case SelectedSortEnum.OrderByAscending:
+                SortedThreads = Threads.OrderBy(s => s.Messages.First().PostDate).ToList();
+                break;
+            case SelectedSortEnum.OrderByPostCount:
+                SortedThreads = Threads.OrderByDescending(s => s.Messages.Count).ToList();
+                break;
+            case SelectedSortEnum.OrderByTitle:
+                SortedThreads = Threads.OrderByDescending(s => s.Name).ToList();
+                break;
+
+        }
+
+        StateHasChanged();
+    }
+
 
 }
