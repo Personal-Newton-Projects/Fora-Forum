@@ -85,7 +85,7 @@ namespace Fora.Client.Services
 
             if (id == null) return false;
             
-            if(await DoesUserExist(id) != null)
+            if(await DoesUserExist(id) == true)
             {
                 if (!String.IsNullOrEmpty(id) || id.Length > 0)
                 {
