@@ -15,7 +15,11 @@
                 @if (CurrentInterest != null)
                 {
                     <div>
-                                                <select class="float-end form-control w-50" value="@SelectedSortId" @onchange="SortThreads">
+                            <input class="float-end form-control w-25" value="@SearchString" @oninput="SearchThreads">
+
+                            </input>
+
+                        <select class="float-end form-control w-25" value="@SelectedSortId" @oninput="SortThreads">
                             @foreach (var sort in Enum.GetValues(typeof(SelectedSortEnum)))
                             {
                                 <option value="@sort">@sort.ToString()</option>
@@ -114,6 +118,7 @@
 
     public bool HasPageLoaded { get; set; } = false;
 
+    string SearchString { get; set; } = String.Empty;
 
     enum SelectedSortEnum
     {
@@ -169,7 +174,7 @@
     async Task SortThreads(ChangeEventArgs args)
     {
 
-        
+
         SelectedSortId = Enum.Parse<SelectedSortEnum>(args.Value.ToString());
         switch (SelectedSortId)
         {
@@ -192,5 +197,10 @@
         StateHasChanged();
     }
 
-
+    async Task SearchThreads(ChangeEventArgs args)
+    {
+        SearchString = args.Value.ToString();
+        SortedThreads = SortedThreads.Where(s => s.Name.ToLower().Contains(SearchString.ToLower())).ToList();
+        StateHasChanged();
+    }
 }
