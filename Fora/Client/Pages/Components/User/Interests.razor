@@ -22,8 +22,21 @@
                         {
                             <tr>
                                 <td>
-                                    @if (IsAdded(item))
+                                    @if (IsEditing(item))
                                     {
+                                        <EditForm Model="UpdateInterest" OnSubmit="@(() => SubmitEdit(item))">
+                                            <div class="form-group">
+                                                <InputText class="form-control" @bind-Value="@UpdateInterest.InterestName">
+
+                                                </InputText>
+                                                <button type="submit" class="btn btn-success">Update</button>
+                                            </div>
+
+                                        </EditForm>
+                                    }
+                                    else if (IsAdded(item))
+                                    {
+
                                         @item.Name <span style="color: blue">✔</span>
                                     }
                                     else
@@ -34,6 +47,7 @@
                                     {
                                         <span> -- Created By: @item.User.Username</span>
                                     }
+
                                 </td>
                                 <td>
                                     @if (IsAdded(item))
@@ -43,6 +57,11 @@
                                     else
                                     {
                                         <button type="submit" @onclick="@(() => AddInterest(item))" class="btn btn-primary" style="background-color:green">Add</button>
+                                    }
+                                    @if (item.UserId == CurrentUser.Id && (item.Threads == null || item.Threads.Count == 0))
+                                    {
+                                        <button @onclick="@(() => EnableEdit(item))" class="btn btn-info">Edit</button>
+                                        <button @onclick="@(() => DeleteInterest(item))" class="btn btn-warning">Delete</button>
                                     }
                                 </td>
                             </tr>
@@ -55,16 +74,6 @@
                                 <Fora.Client.Pages.Components.Utilities.CreateInterest CurrentUser="CurrentUser" UpdateParent="@ReloadInterests" InterestToCreate="InterestToCreate">
 
                                 </Fora.Client.Pages.Components.Utilities.CreateInterest>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Edit Interest
-                            </td>
-                            <td>
-                                <Fora.Client.Pages.Components.Utilities.EditInterest CurrentUser="CurrentUser" UpdateParent="@ReloadInterests" InterestToEdit="InterestToEdit">
-                                    
-                                </Fora.Client.Pages.Components.Utilities.EditInterest>
                             </td>
                         </tr>
                     }
@@ -92,11 +101,13 @@
 
     CreateInterestsModel InterestToCreate { get; set; } = new CreateInterestsModel();
 
-    UpdateCreatedInterestModel InterestToEdit { get; set; } = new UpdateCreatedInterestModel();
 
     [Parameter]
     public EventCallback UpdateParent { get; set; }
 
+    int CurrentEditInterestId { get; set; }
+
+    UpdateCreatedInterestModel UpdateInterest { get; set; } = new UpdateCreatedInterestModel();
 
     public List<PostUserInterestsModel> ChosenInterests { get; set; } = new List<PostUserInterestsModel>();
 
@@ -131,7 +142,7 @@
         InterestsList = await InterestManager.GetInterests();
 
         StateHasChanged();
-        if(UpdateParent.HasDelegate)
+        if (UpdateParent.HasDelegate)
         {
             await UpdateParent.InvokeAsync();
         }
@@ -166,5 +177,35 @@
             return true;
         }
         return false;
+    }
+
+    public async Task EnableEdit(InterestModel interest)
+    {
+        CurrentEditInterestId = interest.Id;
+        StateHasChanged();
+    }
+
+    bool IsEditing(InterestModel interest)
+    {
+        if (interest.Id == CurrentEditInterestId)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public async Task DeleteInterest(InterestModel interest)
+    {
+        await InterestManager.RemoveExistingInterest(interest.Id);
+        await ReloadInterests();
+    }
+
+    public async Task SubmitEdit(InterestModel interest)
+    {
+        UpdateInterest.InterestID = interest.Id;
+
+        await InterestManager.UpdateExistingInterest(UpdateInterest);
+        CurrentEditInterestId = 0;
+        await ReloadInterests();
     }
 }
