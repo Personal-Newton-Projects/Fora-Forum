@@ -35,15 +35,28 @@
 
     [Parameter]
     public UserModel UserModel { get; set; } = new();
+    [Parameter]
+    public EventCallback UpdateParent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        InterestModel = await InterestManager.GetInterests();
+        await ReloadInterests();
     }
 
     public async Task RemoveInterest(InterestModel interest)
     {
         await InterestManager.RemoveExistingInterest(interest.Id);
+        await ReloadInterests();
+    }
+
+
+    public async Task ReloadInterests()
+    {
+        InterestModel = await InterestManager.GetInterests();
         StateHasChanged();
+        if(UpdateParent.HasDelegate)
+        {
+            await UpdateParent.InvokeAsync();
+        }
     }
 }
