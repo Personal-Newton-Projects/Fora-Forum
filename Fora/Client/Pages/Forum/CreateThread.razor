@@ -117,7 +117,7 @@
 
         await ThreadManager.PostThread(ThreadtoCreate);
         var lastThread = await ThreadManager.GetThreads();
-        NavigationManager.NavigateTo(NavigationManager.BaseUri + $"/forum/{InterestName}/{lastThread.Last().Id}", forceLoad: true);
+        NavigationManager.NavigateTo(NavigationManager.BaseUri + $"forum/{InterestName}/{lastThread.Last().Id}", forceLoad: true);
 
     }
 }
